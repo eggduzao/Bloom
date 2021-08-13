@@ -591,7 +591,11 @@ class Sica(): # TODO - Correct all places where A, T, C, O and S appear.
     #self.pvalue_dictionary[chromosome][sica_dist] = [best_distribution, best_params, best_pvalue]
 
     if(len(data) > minimum_data_size):
-      curr_bins = min(int(len(data) * histogram_below_factor), histogram_maximum_bins)
+      # ------- Previous version --------
+      # curr_bins = min(int(len(data) * histogram_below_factor), histogram_maximum_bins)
+      # ------- Modfication valid for counts only!!! --------
+      curr_bins = np.arange(np.min(data), np.max(data), 1)
+      #
       best_distribution, best_params, best_pvalue = self.best_fit_distribution(data, bins = curr_bins)
       self.pvalue_dictionary[chromosome][sica_dist] = [best_distribution, best_params, best_pvalue]
     else:
