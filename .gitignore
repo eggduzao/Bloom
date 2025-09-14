@@ -171,4 +171,4 @@ cython_debug/
 .pypirc
 
 # Ignore legacy code
-legacy
+legacy/

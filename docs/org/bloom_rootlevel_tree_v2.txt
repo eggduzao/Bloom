@@ -1,0 +1,126 @@
+Bloom/									# 🌱 Bloom’s core Python package (importable as `import bloom`)
+├── .bandit								# 🔐 Security linter config
+├── .env								# 🌿 Optional: environment variable definitions
+├── .env.example						# Template for .env, shared with team
+├── .editorconfig						# ✍️ Editor style standardization
+├── .flake8								# 🧼 Linting config
+├── .git/								# 🧬 Git repo data (auto-managed)
+├── .gitattributes						# ⚙️ Normalize line endings, linguist detection
+├── .github/							# 🚀 GitHub-specific config
+│	├── workflows/						# CI/CD pipelines (test, build, docs, deploy)
+│	│	├── test.yaml
+│	│	├── docs.yaml
+│	│	├── lint-test.yaml				# ruff + mypy + pytest matrix (py 3.x)
+│	│	├── publish.yaml				# optional: build & release to PyPI
+│	│	├── release.yaml
+│	│	└── build.yaml
+│	├── ISSUE_TEMPLATE.md				# Single template file
+│	├── PULL_REQUEST_TEMPLATE.md
+│	└── FUNDING.yaml					# GitHub sponsors
+├── .gitignore							# 🚫 Files and folders to ignore in Git
+├── .mypy.ini							# 🧠 Type checker config
+├── .pre-commit-config.yaml				# 
+├── .prettierrc							# 🎨 Prettier formatting rules (if JS front)
+├── .pylintrc							# Optional: PyLint rules
+├── CHANGELOG.md						# 🕓 Release history (manual or keepachangelog.com)
+├── CITATION.cff						# 📖 For citation via GitHub, Zenodo, etc.
+├── CODE_OF_CONDUCT.md					# 💖 Be kind to others
+├── CONTRIBUTING.md						# 🧑‍🤝‍🧑 Dev contribution rules and etiquette
+├── DESIGN.md							# ✏️ Architecture decisions, data models, diagrams
+├── GOVERNANCE.md						# 🏛️ Maintainer roles, decision rules (optional)
+├── LICENSE								# ⚖️ Choose wisely (MIT, Apache, GPL, etc.)
+├── Makefile							# 🛠️ Traditional dev commands (`make test`, `make docs`)
+├── README.md							# 🏡 Project landing page (badge city, clear and proud)
+├── ROADMAP.md							# 🗺️ Long-term vision (CABs, cathedrals, collapse)
+├── SECURITY.md							# 🔐 Vulnerability reporting instructions
+├── STYLE_GUIDE.md						# 🧼 Code style, naming conventions
+├── TODO.md								# 📌 Loose ends and dream trails
+├── VERSION								# 📦 Single-source-of-truth version (optional if not in setup)
+├── environment.yaml					# 🌍 Conda environment file (cross-platform)
+├── noxfile.py							# 🔁 Nox sessions (testing across Python versions)
+├── pyproject.toml						# 🧩 Core config for building, dependencies, tools (PEP 517/518/621)
+├── pyrightconfig.json					# 🔍 Optional: advanced static typing support (Pyright)
+├── requirements.txt					# 📜 Production dependencies
+├── requirements-dev.txt				# 🧪 Dev/test/build docs dependencies
+├── ruff.toml							# Ruff config (can live in pyproject; split here for clarity)
+├── setup.cfg							# 📦 Declarative metadata for setuptools (optional)
+├── setup.py							# 🐍 Legacy support (optional but common)
+├── tox.ini								# 🧪 Tox multi-environment testing config
+├── uv.lock								# or poetry.lock if you prefer Poetry (switch as desired)
+├── benchmarks/
+│	├── README.md
+│	├── suites/
+│	│	├── uci_adult.yaml
+│	│	├── mice_credit.yaml
+│	│	└── custom_dataset.yaml
+│	└── run_benchmarks.py
+├── configs/
+│	├── base.yaml						# Global defaults merged by environment/config set
+│	├── data/
+│	│	├── sequence_formats.json		# JSON Schema for sequence formats (.sra, .fasta, .fastq, etc.)
+│	│	├── variant_formats.json		# JSON Schema for variant data (vcf, bcf, gatk formats, etc.)
+│	│	├── genome_formats.json			# JSON Schema for genomic formats (gff, gtf, etc.)
+│	│	├── alignment_formats.json		# JSON Schema for alignment output data (sam, bam, cram)
+│	│	├── ucsc_formats.json			# JSON Schema for UCSC traditional data (bed, bedpe, bigbed, wig, bigwig, etc.)
+│	│	├── lncrna_formats.json			# JSON Schema for lnc-RNA data (piggy-back on other formats, with special restrictions)
+│	│	├── crispr_formats.json			# JSON Schema for CRISPR data (.count.txt, .txt, piggyback on others, with special restrictions)
+│	│	├── hic_formats.json			# JSON Schema for C-like data (.hic, .cool, .mcool, etc.)
+│	│	├── tabular_formats.json		# JSON Schema for tabular data (tsv, csv, parquet, excel, feather, hdf5, phenotypes, classifications, etc.)
+│	│	├── preprocessing.yaml			# Normalization/Encoding Settings.
+│	│	└── postprocessing.yaml			# Associations/Graphs/(future) Imaging Settings.
+│	├── deep_learning/
+│	│	├── cab_base.yaml
+│	│	├── cab_schedules.yaml
+│	│	├── cab_optimizer.yaml
+│	│	├── train/
+│	│	├── test/
+│	│	└── model/
+│	├── rules/
+│	│	├── optimizer.yaml
+│	│	├── schedules.yaml
+│	│	├── genome.yaml
+│	│	├── wgs_wes.yaml
+│	│	├── chipseq.yaml
+│	│	├── rnaseq.yaml
+│	│	├── atacseq.yaml
+│	│	├── lncrna.yaml
+│	│	├── crispr.yaml
+│	│	├── hic.yaml
+│	│	├── cab.yaml
+│	│	└── callbacks.yaml
+│	└── pipelines/
+│		├── full_bloom.yaml
+│		├── hic_processing.yaml
+│		├── lnc_processing.yaml
+│		└── crispr_processing.yaml
+├── data/								# 📂 Internal test/demo datasets (tiny)
+│	├── raw/
+│	├── interim/
+│	├── processed/
+│	├── models/
+│	├── artifacts/
+│	└── README.md
+├── docs/								# 📚 Documentation (collapsed)
+│	├── build/
+│	├── org/
+│	├── paper/
+│	├── Makefile
+│	├── make.bat
+│	└── source/
+├── docker/
+│	├── Dockerfile
+│	└── entrypoint.sh
+├── examples/							# 📒 Jupyter notebooks for demo / prototyping
+│	├── notebooks/
+│	├── scripts/
+│	├── dev/
+│	├── cli_samples/
+│	└── gui_samples/
+├── setup/
+│	├── environment.yaml				# micromamba/conda for dev parity
+│	├── dev-requirements.txt			# pinned dev tools if not using uv/poetry
+│	└── hooks/
+│		└── post_checkout.sh			# optional repo bootstrap
+├── src/								# 🌱 Bloom's Source code
+│	└── bloom/
+└── tests/								# ✅ Unit and integration tests (pytest)
