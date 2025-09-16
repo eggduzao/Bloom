@@ -172,3 +172,7 @@ cython_debug/
 
 # Ignore legacy code
 legacy/
+
+# Logo
+_logo/
+
