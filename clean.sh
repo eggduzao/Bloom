@@ -1,52 +1,32 @@
 #!/bin/bash
 
-echo "✨ Cleaning up Python project clutter... ✨"
+# Message
+echo "Cleaning system-specific artifacts..."
 
-# Function to remove safely
-remove() {
-  if [ -e "$1" ]; then
-    echo "🧹 Removing $1"
-    rm -rf "$1"
-  fi
-}
+# Removendo os arquivos .DS_Store recursivamente.
+find . -name ".DS_Store" -type f -delete
 
-# Remove Python cache files and folders
+# Removendo qualquer outro arquivo de metadados do MAC (arquivos que começam com "._") recursivamente.
+find . -name "._*" -type f -delete
+
+# Removendo .Trashes and outros que, às vezes, o MAC gera, quando quer.
+find . -name ".Trashes" -type d -exec rm -rf {} +
+
+# Message
+echo "Cleaning Python build artifacts..."
+
+# Remove build directories
+rm -rf build/ dist/ *.egg-info/ .eggs/
+
+# Remove Python cache and compiled files
 find . -type d -name "__pycache__" -exec rm -rf {} +
-find . -type f -name "*.py[co]" -delete
-find . -type f -name "*.pyd" -delete
-
-# Remove egg-info, build artifacts
-remove "./build"
-remove "./dist"
-find . -type d -name "*.egg-info" -exec rm -rf {} +
-
-# Remove testing and typing caches
-remove "./.pytest_cache"
-remove "./.mypy_cache"
-remove "./.ruff_cache"
-
-# Remove Jupyter notebook checkpoints
-find . -type d -name ".ipynb_checkpoints" -exec rm -rf {} +
-
-# Remove Sphinx build artifacts
-remove "./docs/_build"
-find ./docs -type f -name "*.doctree" -delete
-find ./docs -type d -name ".doctrees" -exec rm -rf {} +
-
-# Remove OS cruft
-find . -type f -name ".DS_Store" -delete
-find . -type f -name "Thumbs.db" -delete
-find . -type f -name "._*" -delete
-
-# Removing ".Trashes" that MAC generates
-find . -type d -name ".Trashes" -exec rm -rf {} +
-
-# Remove backup/editor swap files
+find . -type f -name "*.pyc" -delete
+find . -type f -name "*.pyo" -delete
 find . -type f -name "*~" -delete
-find . -type f -name "*.swp" -delete
-find . -type f -name "*.bak" -delete
 
-# Optional: clean up compiled extensions (e.g., Cython)
-find . -type f -name "*.so" -delete
+# Remove test and tool caches
+rm -rf .pytest_cache/ .mypy_cache/ .tox/ .coverage .cache/
 
-echo "Everything is done under the sun."
+echo "Cleanup complete."
+
+
