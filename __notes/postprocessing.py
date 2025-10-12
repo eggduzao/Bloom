@@ -9,7 +9,6 @@ from __future__ import print_function
 from rgt.GenomicRegion import GenomicRegion
 from rgt.GenomicRegionSet import GenomicRegionSet
 import sys
-import re
 
 def merge_data(regions):
     for el in regions:
@@ -27,23 +26,20 @@ def merge_data(regions):
 
 
 def output(name, regions):
+    f = open(name + '-diffpeaks.bed', 'w')
     color = {'+': '255,0,0', '-': '0,255,0'}
-    output = []
-    
     for i, el in enumerate(regions):
         tmp = el.data.split(',')
-        #counts = ",".join(map(lambda x: re.sub("\D", "", x), tmp[:len(tmp)-1]))
-        main_sep = ':' #sep <counts> main_sep <counts> main_sep <pvalue>
-        int_sep = ';' #sep counts in <counts>
-        counts = ",".join(tmp).replace('], [', ';').replace('], ', int_sep).replace('([', '').replace(')', '').replace(', ', main_sep)
-        pvalue = float(tmp[len(tmp)-1].replace(")", "").strip())
+        c1 = int(tmp[0].replace("(", ""))
+        c2 = int(tmp[1])
+        logpvalue = float(tmp[2].replace(")", ""))
         
-        output.append("\t".join([el.chrom, el.initial, el.final, 'Peak'+str(i), 1000, el.orientation, el.initial, el.final, \
-              color[el.orientation], 0, counts]), pvalue)
+        print(el.chrom, el.initial, el.final, 'Peak'+str(i), 1000, el.orientation, el.initial, el.final, \
+              color[el.orientation], 0, str(c1)+','+str(c2)+','+str(logpvalue), sep='\t', file=f)
+    f.close()
     
-    return output
 
-def merge_delete(ext_size, merge, peak_list, pvalue_list):
+def merge_delete(ext_size, merge, peak_list, pvalue_list, name):
 #     peaks_gain = read_diffpeaks(path)
     
     regions_plus = GenomicRegionSet('regions') #pot. mergeable
@@ -87,8 +83,7 @@ def merge_delete(ext_size, merge, peak_list, pvalue_list):
     for el in regions_unmergable:
         results.add(el)
     results.sort()
-    
-    return results
+    output(name, results)
 
 if __name__ == '__main__':
     ext_size1 = int(sys.argv[1]) #100
