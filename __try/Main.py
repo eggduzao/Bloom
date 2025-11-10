@@ -1,355 +1,912 @@
-# Python Libraries
-from __future__ import print_function
-from __future__ import division
-import sys
+
+###################################################################################################
+# Libraries
+###################################################################################################
+
+# Python
 import os
-import argparse 
-import time, datetime, getpass, fnmatch
-import subprocess
-# Local Libraries
-# Distal Libraries
-from rgt.GenomicRegionSet import GenomicRegionSet
-from triplexTools import PromoterTest, RandomTest
-from rgt.SequenceSet import Sequence, SequenceSet
-from rgt.Util import SequenceType, Html, ConfigurationFile
+import sys
+from glob import glob
+import warnings
+warnings.filterwarnings("ignore")
 
-dir = os.getcwd()
+# Internal
+from .. Util import PassThroughOptionParser, ErrorHandler, MotifData, GenomeData, ImageData, Html
+from .. ExperimentalMatrix import ExperimentalMatrix
+from .. GeneSet import GeneSet
+from .. GenomicRegion import GenomicRegion
+from .. GenomicRegionSet import GenomicRegionSet
+from Motif import Motif, Thresholds
+from Match import match_single
+from Statistics import multiple_test_correction, get_fisher_dict
+from Util import Input, Result
+
+# External
+from pysam import Fastafile
+from fisher import pvalue
 
 """
-Triplex Domain Finder (TDF) provides statistical tests and plotting tools for triplex binding site analysis
+Contains functions to common motif analyses.
 
-Author: Joseph Kuo
+Dependencies:
+- python >= 2.7
+- numpy >= 1.4.0
+- scipy >= 0.7.0
+- biopython >= 1.64
+- pysam >= 0.7.5
+- fisher >= 0.1.4
+- MOODS >= 1.0.1
+- bedToBigBed and bigbedToBed scripts in $PATH (if the option is used)
+- bedTools (deprecate this option)
+
+Authors: Eduardo G. Gusmao.
 """
-
-##########################################################################
-##### UNIVERSAL FUNCTIONS ################################################
-##########################################################################
-
-def print2(summary, string):
-    """ Show the message on the console and also save in summary. """
-    print(string)
-    summary.append(string)
-    
-def output_summary(summary, directory, filename):
-    """Save the summary log file into the defined directory"""
-    pd = os.path.join(dir,directory)
-    try: os.stat(pd)
-    except: os.mkdir(pd)    
-    if summary:
-        with open(os.path.join(pd,filename),'w') as f:
-            print("********* RGT Triplex: Summary information *********", file=f)
-            for s in summary:
-                print(s, file=f)
-    
-def check_dir(path):
-    """Check the availability of the given directory and creat it"""
-    try: os.stat(path)
-    except: os.mkdir(path)
-
-def list_all_index(path):
-    """Creat an 'index.html' in the defined directory """
-    dirname = os.path.basename(path)
-    
-    link_d = {"List":"index.html"}
-    html = Html(name="Directory: "+dirname, links_dict=link_d, 
-                fig_dir=os.path.join(path,"style"), fig_rpath="./style", RGT_header=False, other_logo="TDF")
-    
-    html.add_heading("All experiments in: "+dirname+"/")
-    data_table = []
-    type_list = 'ssss'
-    col_size_list = [10, 10, 10]
-    c = 0
-    for root, dirnames, filenames in os.walk(path):
-        #roots = root.split('/')
-        for filename in fnmatch.filter(filenames, '*.html'):
-            if filename == 'index.html' and root.split('/')[-1] != dirname:
-                c += 1
-                if "_" in root.split('/')[-1]:
-                    tags = root.split('/')[-1].split("_")
-                    p1 = tags[0]
-                    p2 = tags[-1]
-                    data_table.append([str(c), '<a href="'+os.path.join(root.split('/')[-1], filename)+'">'+root.split('/')[-1]+"</a>",
-                                       p1, p2])
-                    header_list = ["No.", "Experiments", "Tag1", "Tag2"]
-                else:
-                    data_table.append([str(c), '<a href="'+os.path.join(root.split('/')[-1], filename)+'">'+root.split('/')[-1]+"</a>"])
-                    header_list = ["No.", "Experiments"]
-                #print(link_d[roots[-1]])
-    html.add_zebra_table(header_list, col_size_list, type_list, data_table, align=50, cell_align="left", sortable=True)
-    html.add_fixed_rank_sortable()
-    html.write(os.path.join(path,"index.html"))
 
 def main():
-    ##########################################################################
-    ##### PARAMETERS #########################################################
-    ##########################################################################
-    
-    parser = argparse.ArgumentParser(description='Triplex Domain Finder is a statistical framework \
-                                                  for detection of triple helix potential of \
-                                                  lncRNAs from genome-wide functional data. \
-                                                  Author: Chao-Chung Kuo\
-                                                  \nVersion: 0.1.1', 
-                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    
-    subparsers = parser.add_subparsers(help='sub-command help',dest='mode')
-    
-    ################### Promoter test ##########################################
+    """
+    Main function that redirects tool usage.
 
-    h_promotor = "Promoter test evaluates the association between the given lncRNA to the target promoters."
-    parser_promotertest = subparsers.add_parser('promotertest', help=h_promotor)
-    parser_promotertest.add_argument('-r', type=str, metavar='  ', help="Input file name for RNA sequence (in fasta format)")
-    parser_promotertest.add_argument('-rn', type=str, default=None, metavar='  ', help="Define the RNA name")
-    parser_promotertest.add_argument('-de', default=False, metavar='  ', help="Input file for defferentially expression gene list (gene symbols or Ensembl ID)")
-    parser_promotertest.add_argument('-bed', default=False, metavar='  ', help="Input BED file of the promoter regions of defferentially expression genes")
-    parser_promotertest.add_argument('-bg', default=False, metavar='  ', help="Input BED file of the promoter regions of background genes")
-    parser_promotertest.add_argument('-o', metavar='  ', help="Output directory name for all the results and temporary files")
-    
-    parser_promotertest.add_argument('-organism', metavar='  ', help='Define the organism (hg19 or mm9)')
-
-    parser_promotertest.add_argument('-pl', type=int, default=1000, metavar='  ', help="Define the promotor length (Default: 1000)")
-    
-    parser_promotertest.add_argument('-showdbs', action="store_true", help="Show the plots and statistics of DBS (DNA Binding sites)")
-    parser_promotertest.add_argument('-score', action="store_true", help="Load score column from input gene list of BED file for analysis.")
-    parser_promotertest.add_argument('-scoreh', action="store_true", help="Use the header of scores from the given gene list or BED file.")
-    parser_promotertest.add_argument('-a', type=int, default=0.05, metavar='  ', help="Define significance level for rejection null hypothesis (Default: 0.05)")
-    parser_promotertest.add_argument('-ccf', type=int, default=20, metavar='  ', help="Define the cut off value for promoter counts (Default: 20)")
-    parser_promotertest.add_argument('-rt', action="store_true", default=False, help="Remove temporary files (fa, txp...etc)")
-    parser_promotertest.add_argument('-log', action="store_true", default=False, help="Set the plots in log scale")
-    parser_promotertest.add_argument('-ac', type=str, default=False, metavar='  ', help="Input file for RNA accecibility ")
-    parser_promotertest.add_argument('-accf', type=float, default=500, metavar='  ', help="Define the cut off value for RNA accecibility")
-    parser_promotertest.add_argument('-obed', action="store_true", default=False, help="Output the BED files for DNA binding sites.")
-    parser_promotertest.add_argument('-showpa', action="store_true", default=False, help="Show parallel and antiparallel bindings in the plot separately.")
-    
-    parser_promotertest.add_argument('-l', type=int, default=15, metavar='  ', help="[Triplexator] Define the minimum length of triplex (Default: 15)")
-    parser_promotertest.add_argument('-e', type=int, default=20, metavar='  ', help="[Triplexator] Set the maximal error-rate in %% tolerated (Default: 20)")
-    parser_promotertest.add_argument('-c', type=int, default=2, metavar='  ', help="[Triplexator] Sets the tolerated number of consecutive errors with respect to the canonical triplex rules as such were found to greatly destabilize triplexes in vitro (Default: 2)")
-    parser_promotertest.add_argument('-fr', type=str, default="off", metavar='  ', help="[Triplexator] Activates the filtering of low complexity regions and repeats in the sequence data (Default: off)")
-    parser_promotertest.add_argument('-fm', type=int, default=0, metavar='  ', help="[Triplexator] Method to quickly discard non-hits (Default 0).'0' = greedy approach; '1' = q-gram filtering.")
-    parser_promotertest.add_argument('-of', type=int, default=1, metavar='  ', help="[Triplexator] Define output formats of Triplexator (Default: 1)")
-    parser_promotertest.add_argument('-mf', action="store_true", default=False, help="[Triplexator] Merge overlapping features into a cluster and report the spanning region.")
-    parser_promotertest.add_argument('-rm', action="store_true", default=False, help="[Triplexator] Set the multiprocessing")
-    
-    
-    ################### Genomic Region Test ##########################################
-    h_region = "Genomic region test evaluates the association between the given lncRNA to the target regions by randomization."
-    parser_randomtest = subparsers.add_parser('regiontest', help=h_region)
-    parser_randomtest.add_argument('-r', type=str, metavar='  ', help="Input file name for RNA sequence (in fasta format)")
-    parser_randomtest.add_argument('-rn', type=str, default=False, metavar='  ', help="Define the RNA name")
-    parser_randomtest.add_argument('-bed', metavar='  ', help="Input BED file for interested regions on DNA")
-    parser_randomtest.add_argument('-o', metavar='  ', help="Output directory name for all the results and temporary files")
-    
-    parser_randomtest.add_argument('-n', type=int, default=10000, metavar='  ', 
-                                   help="Number of times for randomization (Default: 10000)")
-
-    parser_randomtest.add_argument('-organism', metavar='  ', help='Define the organism (hg19 or mm9)')
- 
-    parser_randomtest.add_argument('-showdbs', action="store_true", help="Show the plots and statistics of DBS (DNA Binding sites)")
-    parser_randomtest.add_argument('-score', action="store_true", help="Load score column from input BED file")
-    parser_randomtest.add_argument('-a', type=int, default=0.05, metavar='  ', help="Define significance level for rejection null hypothesis (Default: 0.05)")
-    parser_randomtest.add_argument('-ccf', type=int, default=20, metavar='  ', help="Define the cut off value for DBS counts (Default: 20)")
-    parser_randomtest.add_argument('-rt', action="store_true", default=False, help="Remove temporary files (fa, txp...etc)")
-    parser_randomtest.add_argument('-log', action="store_true", default=False, help="Set the plots in log scale")
-    parser_randomtest.add_argument('-f', type=str, default=False, metavar='  ', help="Input BED file as mask in randomization")
-    parser_randomtest.add_argument('-ac', type=str, default=False, metavar='  ', help="Input file for RNA accecibility ")
-    parser_randomtest.add_argument('-accf', type=float, default=500, metavar='  ', help="Define the cut off value for RNA accecibility")
-    parser_randomtest.add_argument('-obed', action="store_true", default=False, help="Output the BED files for DNA binding sites.")
-    parser_randomtest.add_argument('-showpa', action="store_true", default=False, help="Show parallel and antiparallel bindings in the plot separately.")
-    
-    parser_randomtest.add_argument('-l', type=int, default=15, metavar='  ', help="[Triplexator] Define the minimum length of triplex (Default: 15)")
-    parser_randomtest.add_argument('-e', type=int, default=20, metavar='  ', help="[Triplexator] Set the maximal error-rate in %% tolerated (Default: 20)")
-    parser_randomtest.add_argument('-c', type=int, default=2, metavar='  ', help="[Triplexator] Sets the tolerated number of consecutive errors with respect to the canonical triplex rules as such were found to greatly destabilize triplexes in vitro (Default: 2)")
-    parser_randomtest.add_argument('-fr', type=str, default="off", metavar='  ', help="[Triplexator] Activates the filtering of low complexity regions and repeats in the sequence data (Default: off)")
-    parser_randomtest.add_argument('-fm', type=int, default=0, metavar='  ', help="[Triplexator] Method to quickly discard non-hits (Default 0).'0' = greedy approach; '1' = q-gram filtering.")
-    parser_randomtest.add_argument('-of', type=int, default=1, metavar='  ', help="[Triplexator] Define output formats of Triplexator (Default: 1)")
-    parser_randomtest.add_argument('-mf', action="store_true", default=False, help="[Triplexator] Merge overlapping features into a cluster and report the spanning region.")
-    parser_randomtest.add_argument('-rm', action="store_true", default=False, help="[Triplexator] Set the multiprocessing")
-    
-    ##########################################################################
-    parser_triplexator = subparsers.add_parser('triplexator', help="Setting Triplexator.")
-    parser_triplexator.add_argument('-path',type=str, metavar='  ', help='Define the path of Triplexator.')
-    ################### Parsing the arguments ################################
-    if len(sys.argv) == 1:
-        parser.print_help()
-        sys.exit(1)
-    elif len(sys.argv) == 2:  
-        # retrieve subparsers from parser
-        subparsers_actions = [action for action in parser._actions if isinstance(action, argparse._SubParsersAction)]
-        # there will probably only be one subparser_action,but better save than sorry
-        for subparsers_action in subparsers_actions:
-            # get all subparsers and print help
-            for choice, subparser in subparsers_action.choices.items():
-                if choice == sys.argv[1]:
-                    print("\nYou need more arguments.")
-                    print("\nSubparser '{}'".format(choice))        
-                    subparser.print_help()
-        sys.exit(1)
-    else:   
-        args = parser.parse_args()
-        cf = ConfigurationFile()
+    Keyword arguments: None
         
-        process = subprocess.Popen(["triplexator", "--help"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        # wait for the process to terminate
-        out, err = process.communicate()
-        errcode = process.returncode
-        if errcode == 0:
-            print("** Triplexator: OK")
-        else:
-            print("** Error: Triplexator cannot be found. Please export Triplexator path into $PATH")
-            print(err)
-            sys.exit(1)
+    Return: None
+    """
 
-        if not args.o: 
-            print("Please define the output diractory name. \n")
-            sys.exit(1)
-        if not args.organism: 
-            print("Please define the organism. (hg19 or mm9)")
-            sys.exit(1)
-        if not args.rn: 
-            print("Please define RNA sequence name.")
-            sys.exit(1)
+    ###################################################################################################
+    # Processing Input Arguments
+    ###################################################################################################
 
-        t0 = time.time()
-        # Normalised output path
-        args.o = os.path.normpath(os.path.join(dir,args.o))
-        check_dir(os.path.dirname(os.path.dirname(args.o)))
-        check_dir(os.path.dirname(args.o))
-        check_dir(args.o)
-        # Input parameters dictionary
-        summary = []
-        summary.append("Time: " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-        summary.append("User: " + getpass.getuser())
-        summary.append("\nCommand:\n\t$ " + " ".join(sys.argv))
-           
-    ################################################################################
-    ##### Promoter Test ############################################################
-    ################################################################################
-    if args.mode == 'promotertest':
-        if args.bed and not args.bg:
-            print("Please add background promoters in BED format. (-bg)")
-            sys.exit(1)
-        if args.scoreh and not args.score:
-            print("Score header (-scoreh) can only be used when scores (-score) are loaded.")
-            print("Please add '-score'.")
-            sys.exit(1)
+    # Parameters
+    current_version = "0.0.1"
+    usage_message = ("\n--------------------------------------------------\n"
+                     "The motif analysis program performs various motif-based analyses. "
+                     "In order to use these tools, please type: \n\n"
+                     "%prog [analysis type] [options]\n\n"
+                     "Where [analysis type] refers to the type of the motif analysis performed "
+                     "and [options] are the analysis-specific arguments.\n\n"
+                     "Bellow you can find all current available analysis types. "
+                     "To check the analyses specific options, please use:\n\n"
+                     "%prog [analysis type] -h\n\n"
+                     "For more information, please refer to our wiki:\n\n"
+                     "https://code.google.com/p/reg-gen/wiki/RegGen\n\n"
+                     "--------------------------------------------------\n\n"
+                     "Options:\n"
+                     "--version     show program's version number and exit.\n"
+                     "-h, --help    show this help message and exit.\n"
+                     "--matching    Performs motif matching analysis.\n"
+                     "--enrichment  Performs motif enrichment analysis.\n")
+    version_message = "Motif Analysis - Regulatory Analysis Toolbox (RGT). Version: "+str(current_version)
 
-        print2(summary, "\n"+"*************** Promoter Test ****************")
-        print2(summary, "*** Input RNA sequence: "+args.r)
-        print2(summary, "*** Output directory: "+os.path.basename(args.o))
+    # Processing Help/Version Options
+    if(len(sys.argv) <= 1 or sys.argv[1] == "-h" or sys.argv[1] == "--help"):
+        print(usage_message)
+        sys.exit(0)
+    elif(sys.argv[1] == "--version"):
+        print(version_message)
+        sys.exit(0)
 
-        args.r = os.path.normpath(os.path.join(dir,args.r))
+    # Initializing Error Handler
+    main_error_handler = ErrorHandler()
+
+    ###################################################################################################
+    # Redirecting to Specific Functions
+    ###################################################################################################
+
+    # Redirecting Loop
+    if(sys.argv[1] == "--matching"):
+        main_matching()
+    elif(sys.argv[1] == "--enrichment"):
+        main_enrichment()
+    else:
+        main_error_handler.throw_error("MOTIF_ANALYSIS_OPTION_ERROR")
+
+def main_matching():
+    """
+    Performs motif matching.
+
+    Authors: Eduardo G. Gusmao.
+    """
+
+    ###################################################################################################
+    # Processing Input Arguments
+    ###################################################################################################
+
+    # Initializing Error Handler
+    main_error_handler = ErrorHandler()
+
+    # Parameters
+    usage_message = "%prog --matching [options] <experiment_matrix>"
+
+    # Initializing Option Parser
+    parser = PassThroughOptionParser(usage = usage_message)
+
+    # Parameters Options
+    parser.add_option("--organism", dest = "organism", type = "string", metavar="STRING", default = "hg19",
+                      help = ("Organism considered on the analysis. Check our full documentation for all available "
+                              "options. All default files such as genomes will be based on the chosen organism "
+                              "and the data.config file."))
+    parser.add_option("--fpr", dest = "fpr", type = "float", metavar="FLOAT", default = 0.0001,
+                      help = ("False positive rate cutoff for motif matching."))
+    parser.add_option("--precision", dest = "precision", type = "int", metavar="INT", default = 10000,
+                      help = ("Score distribution precision for determining false positive rate cutoff."))
+    parser.add_option("--pseudocounts", dest = "pseudocounts", type = "float", metavar="FLOAT", default = 0.1,
+                      help = ("Pseudocounts to be added to raw counts of each PFM."))
+    parser.add_option("--rand-proportion", dest = "rand_proportion", type = "float", metavar="FLOAT", default = 10.0,
+                      help = ("If random coordinates need to be created (for further motif enrichment),"
+                              "then it will be created a number of coordinates that equals this"
+                              "parameter x the number of input regions (in case of multiple regions, the"
+                              "larger is considered). If zero (0) is passed, then no random coordinates are created."))
+    parser.add_option("--norm-threshold", dest = "norm_threshold", action = "store_true", default = False,
+                      help = ("If this option is used, the thresholds for all PWMs will be normalized by their length."
+                              "In this scheme, the threshold cutoff is evaluated in the regular way by the given fpr."
+                              "Then, all thresholds are divided by the lenght of the motif. The final threshold consists"
+                              "of the average between all normalized motif thresholds. This single threshold will be"
+                              "applied to all motifs."))
+
+    # Output Options
+    parser.add_option("--output-location", dest = "output_location", type = "string", metavar="PATH", default = os.getcwd(),
+                      help = ("Path where the output files will be written."))
+    parser.add_option("--bigbed", dest = "bigbed", action = "store_true", default = False,
+                      help = ("If this option is used, all bed files will be written as bigbed."))
+    parser.add_option("--normalize-bitscore", dest = "normalize_bitscore", action = "store_false", default = True,
+                      help = ("In order to print bigbed files the scores need to be normalized between 0 and 1000."
+                              "This option should be used if real bitscores should be printed in the resulting bed file."
+                              "In this case, a bigbed file will not be created."))
+
+    # Processing Options
+    options, arguments = parser.parse_args()
+
+    # Additional Parameters
+    matching_folder_name = "Match"
+    random_region_name = "random_regions"
+
+    ###################################################################################################
+    # Initializations
+    ###################################################################################################
+
+    # Output folder
+    matching_output_location = os.path.join(options.output_location,matching_folder_name)
+    try:
+        if(not os.path.isdir(matching_output_location)): os.makedirs(matching_output_location)
+    except Exception: main_error_handler.throw_error("MM_OUT_FOLDER_CREATION")
+
+    # Default genomic data
+    genome_data = GenomeData(options.organism)
+
+    # Default motif data
+    motif_data = MotifData()
+
+    ###################################################################################################
+    # Reading Input Matrix
+    ###################################################################################################
+
+    # Reading arguments
+    try:
+        input_matrix = arguments[0]
+        if(len(arguments) > 1): main_error_handler.throw_warning("MM_MANY_ARG")
+    except Exception: main_error_handler.throw_error("MM_NO_ARGUMENT")
+
+    # Create experimental matrix
+    try:
+        exp_matrix = ExperimentalMatrix()
+        exp_matrix.read(input_matrix)
+    except Exception: main_error_handler.throw_error("MM_WRONG_EXPMAT")
+
+    ###################################################################################################
+    # Reading Regions
+    ###################################################################################################
+
+    # Initialization
+    max_region_len = 0
+    max_region = None
+    input_regions = []
+
+    try:
+        exp_matrix_objects_dict = exp_matrix.objectsDict
+    except Exception: main_error_handler.throw_error("MM_WRONG_EXPMAT")
+
+    # Iterating on experimental matrix objects
+    for k in exp_matrix_objects_dict.keys():
+
+        curr_genomic_region = exp_matrix_objects_dict[k]
+
+        # If the object is a GenomicRegionSet
+        if(isinstance(curr_genomic_region,GenomicRegionSet)):
+
+            # Sorting input region
+            curr_genomic_region.sort()
+
+            # Append label and GenomicRegionSet
+            input_regions.append(curr_genomic_region)
+
+            # Verifying max_region_len for random region generation
+            curr_len = len(curr_genomic_region)
+            if(curr_len > max_region_len):
+                max_region_len = curr_len
+                max_region = exp_matrix_objects_dict[k]
+
+    ###################################################################################################
+    # Creating random region
+    ###################################################################################################
+
+    # Create random coordinates
+    rand_region = None
+    if(options.rand_proportion > 0):
+
+        # Create random coordinates and name it random_regions
+        rand_region = max_region.random_regions(options.organism, multiply_factor=options.rand_proportion, chrom_X=True)
+        rand_region.sort()
+        rand_region.name = random_region_name
+
+        # Put random regions in the end of the input regions
+        input_regions.append(rand_region)
+
+        # Writing random regions
+        output_file_name = os.path.join(matching_output_location, random_region_name)
+        rand_bed_file_name = output_file_name+".bed"
+        rand_region.write_bed(rand_bed_file_name)
+
+        # Verifying condition to write bb
+        if(options.bigbed):
+
+            # Fetching file with chromosome sizes
+            chrom_sizes_file = genome_data.get_chromosome_sizes()
+
+            # Converting to big bed
+            rand_bb_file_name = output_file_name+".bb"
+            try:
+                os.system(" ".join(["bedToBigBed", rand_bed_file_name, chrom_sizes_file, rand_bb_file_name, "-verbose=0"]))
+                os.remove(rand_bed_file_name)
+            except Exception: pass # WARNING
+
+    else: main_error_handler.throw_error("MM_WRONG_RANDPROP")
+
+    ###################################################################################################
+    # Creating PWMs
+    ###################################################################################################
+
+    # Initialization
+    motif_list = []
+
+    # Creating thresholds object
+    thresholds = Thresholds(motif_data)
+
+    # Fetching list with all motif file names
+    motif_file_names = []
+    for motif_repository in motif_data.get_pwm_list():
+        for motif_file_name in glob(os.path.join(motif_repository,"*.pwm")):
+            motif_file_names.append(motif_file_name)
+
+    # Iterating on grouped file name list
+    for motif_file_name in motif_file_names:
+
+        # Append motif motif_list
+        motif_list.append(Motif(motif_file_name, options.pseudocounts, options.precision, options.fpr, thresholds))
+
+    # Performing normalized threshold strategy if requested
+    if(options.norm_threshold):
+        threshold_list = [motif.threshold/motif.len for motif in motif_list]
+        unique_threshold = sum(threshold_list)/len(threshold_list)
+    else: unique_threshold = None
         
-        if args.de: args.de = os.path.normpath(os.path.join(dir,args.de))
-        if args.bed: args.bed = os.path.normpath(os.path.join(dir,args.bed))
-        if args.bg: args.bg = os.path.normpath(os.path.join(dir,args.bg))
 
-        # Get GenomicRegionSet from the given genes
-        print2(summary, "Step 1: Calculate the triplex forming sites on RNA and DNA.")
-        promoter = PromoterTest(gene_list_file=args.de, rna_name=args.rn, bed=args.bed, bg=args.bg, organism=args.organism, 
-                                promoterLength=args.pl, summary=summary, temp=dir,
-                                showdbs=args.showdbs, score=args.score, scoreh=args.scoreh)
-        promoter.search_triplex(rna=args.r, temp=args.o, l=args.l, e=args.e, remove_temp=args.rt,
-                                c=args.c, fr=args.fr, fm=args.fm, of=args.of, mf=args.mf)
-        t1 = time.time()
-        print2(summary, "\tRunning time is : " + str(datetime.timedelta(seconds=round(t1-t0))))
+    ###################################################################################################
+    # Motif Matching
+    ###################################################################################################
 
-        print2(summary, "Step 2: Calculate the frequency of DNA binding sites within the promotors.")
-        if args.obed: obedp = os.path.basename(args.o)
-        else: obedp = None
-        promoter.count_frequency(temp=args.o, remove_temp=args.rt, obedp=obedp, cutoff=args.ccf)
-        promoter.fisher_exact(alpha=args.a)
-        t2 = time.time()
-        print2(summary, "\tRunning time is : " + str(datetime.timedelta(seconds=round(t2-t1))))
+    # Creating genome file
+    genome_file = Fastafile(genome_data.get_genome())
 
-        print2(summary, "Step 3: Establishing promoter profile.")
-        promoter.promoter_profile()
-        t3 = time.time()
-        print2(summary, "\tRunning time is : " + str(datetime.timedelta(seconds=round(t3-t2))))
+    # Iterating on list of genomic regions
+    for genomic_region_set in input_regions:
 
-        print2(summary, "Step 4: Generate plot and output html files.")
-        promoter.plot_lines(txp=promoter.txp_de, rna=args.r, dirp=args.o, ac=args.ac, 
-                            cut_off=args.accf, log=args.log, showpa=args.showpa,
-                            sig_region=promoter.sig_region_promoter,
-                            ylabel="Number of target promoters with DBSs", 
-                            linelabel="No. promoters", filename="plot_promoter.png")
-        promoter.barplot(dirp=args.o, filename="bar_promoter.png", sig_region=promoter.sig_region_promoter)
-        if args.showdbs:
-            promoter.plot_lines(txp=promoter.txp_def, rna=args.r, dirp=args.o, ac=args.ac, 
-                                cut_off=args.accf, log=args.log, showpa=args.showpa,
-                                sig_region=promoter.sig_region_dbs,
-                                ylabel="Number of DBSs on target promoters", 
-                                linelabel="No. DBSs", filename="plot_dbss.png")
-            promoter.barplot(dirp=args.o, filename="bar_dbss.png", sig_region=promoter.sig_region_dbs, dbs=True)
-            
-        promoter.gen_html(directory=args.o, parameters=args, ccf=args.ccf, align=50, alpha=args.a)
-        promoter.gen_html_genes(directory=args.o, align=50, alpha=args.a, nonDE=False)
-        t4 = time.time()
-        print2(summary, "\tRunning time is : " + str(datetime.timedelta(seconds=round(t4-t3))))
-        print2(summary, "\nTotal running time is : " + str(datetime.timedelta(seconds=round(t4-t0))))
+        # Initializing output bed file
+        output_file_name = os.path.join(matching_output_location, genomic_region_set.name+"_mpbs")
+        bed_file_name = output_file_name+".bed"
+        output_file = open(bed_file_name,"w")
+        
+        # Iterating on genomic regions
+        for genomic_region in genomic_region_set.sequences:
+
+            # Reading sequence associated to genomic_region
+            sequence = str(genome_file.fetch(genomic_region.chrom, genomic_region.initial, genomic_region.final))
+
+            # Splitting the sequence in smaller sequences to remove the "N" regions
+            sequence_list = filter(None,sequence.split("N"))
+
+            # Perform motif matching for each motif in each sequence
+            for seq in sequence_list:
+                for motif in motif_list: match_single(motif, seq, genomic_region, output_file, unique_threshold, options.normalize_bitscore)
+
+        # Closing file
+        output_file.close()
+
+        # Verifying condition to write bb
+        if(options.bigbed and options.normalize_bitscore):
+
+            # Fetching file with chromosome sizes
+            chrom_sizes_file = genome_data.get_chromosome_sizes()
+
+            # Converting to big bed
+            sort_file_name = output_file_name+"_sort.bed"
+            bb_file_name = output_file_name+".bb"
+            os.system("sort -k1,1 -k2,2n "+bed_file_name+" > "+sort_file_name)
+            os.system(" ".join(["bedToBigBed", sort_file_name, chrom_sizes_file, bb_file_name, "-verbose=0"]))
+            os.remove(bed_file_name); os.remove(sort_file_name)
+
+def main_enrichment():
+    """
+    Performs motif enrichment.
+
+    Authors: Eduardo G. Gusmao.
+    """
+
+    ###################################################################################################
+    # Processing Input Arguments
+    ###################################################################################################
+
+    # Initializing Error Handler
+    main_error_handler = ErrorHandler()
+
+    # Parameters
+    usage_message = "%prog --enrichment [options] <experiment_matrix> <input_path>"
+
+    # Initializing Option Parser
+    parser = PassThroughOptionParser(usage = usage_message)
+
+    # Parameters Options
+    parser.add_option("--organism", dest = "organism", type = "string", metavar="STRING", default = "hg19",
+                      help = ("Organism considered on the analysis. Check our full documentation for all available "
+                              "options. All default files such as genomes will be based on the chosen organism "
+                              "and the data.config file."))
+    parser.add_option("--promoter-length", dest = "promoter_length", type = "int", metavar="INT", default = 1000,
+                      help = ("Length of the promoter region (in bp) considered on the creation of the regions-gene association."))
+    parser.add_option("--maximum-association-length", dest = "maximum_association_length", type = "int", metavar="INT", default = 50000,
+                      help = ("Maximum distance between a coordinate and a gene (in bp) in order for the former to "
+                              "be considered associated with the latter."))
+    parser.add_option("--multiple-test-alpha", dest = "multiple_test_alpha", type = "float", metavar="FLOAT", default = 0.05,
+                      help = ("Alpha value for multiple test."))
+    parser.add_option("--processes", dest = "processes", type = "int", metavar="INT", default = 1,
+                      help = ("Number of processes for multi-CPU based machines."))
+
+    # Output Options
+    parser.add_option("--output-location", dest = "output_location", type = "string", metavar="PATH", default = None,
+                      help = ("Path where the output files will be written. Default is the input PATH."))
+    parser.add_option("--print-thresh", dest = "print_thresh", type = "float", metavar="FLOAT", default = 0.05,
+                      help = ("Only MPBSs whose factor's enrichment corrected p-value are less than equal "
+                              "this option are print. Use 1.0 to print all MPBSs."))
+    parser.add_option("--bigbed", dest = "bigbed", action = "store_true", default = False,
+                      help = ("If this option is used, all bed files will be written as bigbed."))
+
+    # Processing Options
+    options, arguments = parser.parse_args()
+
+    # Additional Parameters
+    matching_folder_name = "Match"
+    random_region_name = "random_regions"
+    gene_column_name = "genegroup"
+    output_association_name = "coord_association"
+    output_mpbs_filtered = "mpbs"
+    output_mpbs_filtered_ev = "mpbs_ev"
+    output_mpbs_filtered_nev = "mpbs_nev"
+    output_stat_genetest = "genetest_statistics"
+    output_stat_randtest = "randtest_statistics"
+    ev_color = "0,130,0"
+    nev_color = "130,0,0"
+    results_header_text = "\t".join(["FACTOR","P-VALUE","CORR.P-VALUE","A","B","C","D","FREQ","BACK.FREQ.","GENES"])
+    html_header = ["FACTOR","MOTIF","P-VALUE","CORRECTED P-VALUE","A","B","C","D","FREQUENCY","BACKGROUND FREQUENCY","GO"]
+    html_type_list = "sissssssssl"
+    logo_width = 200
+    if("hg" in options.organism): gprofiler_link = "http://biit.cs.ut.ee/gprofiler/index.cgi?significant=1&sort_by_structure=1&ordered_query=0&organism=hsapiens&query="
+    else: gprofiler_link = "http://biit.cs.ut.ee/gprofiler/index.cgi?significant=1&sort_by_structure=1&ordered_query=0&organism=mmusculus&query="
+    html_col_size = [300,logo_width,100,100,50,50,50,50,100,100,50]
+
+    ###################################################################################################
+    # Initializations
+    ###################################################################################################
+
+    # Output folder
+    if(options.output_location): output_location = options.output_location # Output location was given
+    else: output_location = arguments[1] # Output location is the same as the match folder location
+    try:        
+        matrix_name_without_ext = ".".join(arguments[0].split(".")[:-1])
+        output_location_results = os.path.join(output_location,os.path.basename(matrix_name_without_ext))
+        if(not os.path.isdir(output_location_results)): os.makedirs(output_location_results)
+    except Exception: main_error_handler.throw_error("ME_OUT_FOLDER_CREATION")
+
+    # Default genomic data
+    genome_data = GenomeData(options.organism)
+
+    # Default motif data
+    motif_data = MotifData()
+
+    # Default image data
+    image_data = ImageData()
+
+    ###################################################################################################
+    # Reading Input Matrix
+    ###################################################################################################
+
+    # Reading arguments
+    try:
+        input_matrix = arguments[0]
+        input_location = arguments[1]
+        if(len(arguments) > 2): main_error_handler.throw_warning("ME_MANY_ARG")
+    except Exception: main_error_handler.throw_error("ME_FEW_ARG")
+
+    # Create experimental matrix
+    try:
+        exp_matrix = ExperimentalMatrix()
+        exp_matrix.read(input_matrix)
+    except Exception: main_error_handler.throw_error("ME_WRONG_EXPMAT")
+
+    ###################################################################################################
+    # Reading Regions & Gene Lists
+    ###################################################################################################
+
+    # Initializations
+    input_list = []
+
+    # Reading dictionary grouped by fields
+    flag_gene = True
+    try: exp_matrix_fields_dict = exp_matrix.fieldsDict[gene_column_name]
+    except Exception: flag_gene = False
+
+    # Reading dictionary of objects
+    try: exp_matrix_objects_dict = exp_matrix.objectsDict
+    except Exception: main_error_handler.throw_error("ME_WRONG_EXPMAT")
+
+    if(flag_gene): # Genelist and randomic analysis will be performed
+
+        # Iterating on experimental matrix fields
+        for g in exp_matrix_fields_dict.keys():
+
+            # Create input which will contain all regions associated with such gene group
+            curr_input = Input(None, [])
+
+            # This flag will be used to see if there are two gene files associated with the same gene label on genegroup column
+            flag_foundgeneset = False
+
+            # Iterating on experimental matrix objects
+            for k in exp_matrix_fields_dict[g]:
+
+                curr_object = exp_matrix_objects_dict[k]
+
+                # If the current object is a GenomicRegionSet
+                if(isinstance(curr_object,GenomicRegionSet)):
+
+                    # Sorting input region
+                    curr_object.sort()
+
+                    # Updating Input object
+                    curr_input.region_list.append(curr_object)
+
+                # If the current object is a GeneSet
+                if(isinstance(curr_object,GeneSet)):
+
+                    # Updating Input object
+                    curr_object.name = g # The name in gene_group column will be used. The 'name' column for genes are not used.
+                    if(not flag_foundgeneset):
+                        curr_input.gene_set = curr_object
+                        flag_foundgeneset = True
+                    else: main_error_handler.throw_warning("ME_MANY_GENESETS")
+                    
+            if(not flag_foundgeneset): main_error_handler.throw_warning("ME_FEW_GENESETS")
+
+            # Update input list
+            input_list.append(curr_input)
+
+    else: # Only randomic analysis will be performed
+
+        # Create single input which will contain all regions
+        single_input = Input(None, [])
+
+        # Iterating on experimental matrix objects
+        for k in exp_matrix_objects_dict.keys():
+
+            curr_object = exp_matrix_objects_dict[k]
+
+            # If the current object is a GenomicRegionSet
+            if(isinstance(curr_object,GenomicRegionSet)):
+
+                # Sorting input region
+                curr_object.sort()
+
+                # Updating Input object
+                single_input.region_list.append(curr_object)
+
+        # Updating input list with single input (only randomic analysis will be performed)
+        input_list = [single_input]
+
+    ###################################################################################################
+    # Fetching Motif List
+    ###################################################################################################
+
+    # Fetching list with all motif names
+    motif_names = []
+    for motif_repository in motif_data.get_pwm_list():
+        for motif_file_name in glob(os.path.join(motif_repository,"*.pwm")):
+            motif_names.append(".".join(os.path.basename(motif_file_name).split(".")[:-1]))
+    motif_names = sorted(motif_names)
+
+    # Grouping motif file names by the number of processes requested
+    if(options.processes <= 0): main_error_handler.throw_error("ME_LOW_NPROC")
+    elif(options.processes == 1): motif_names_grouped = [[e] for e in motif_names]
+    else: motif_names_grouped = map(None, *(iter(motif_names),) * options.processes)
+    motif_names_grouped = [[e2 for e2 in e1 if e2 is not None] for e1 in motif_names_grouped]
+
+    ###################################################################################################
+    # Random Statistics
+    ###################################################################################################
+
+    # Verifying random region file exists
+    random_region_glob = glob(os.path.join(input_location,matching_folder_name,random_region_name+".*"))
+    try: random_region_file_name = random_region_glob[0]
+    except Exception: main_error_handler.throw_error("ME_RAND_NOTFOUND")
+
+    # Verifying random region MPBS file exists
+    random_region_glob = glob(os.path.join(input_location,matching_folder_name,random_region_name+"_mpbs.*"))
+    try: random_mpbs_file_name = random_region_glob[0]
+    except Exception: pass # XXX TODO main_error_handler.throw_error("ME_RANDMPBS_NOTFOUND")
+
+    # Converting regions bigbed file
+    random_region_bed_name = ".".join(random_region_file_name.split(".")[:-1])+".bed"
+    if(random_region_file_name.split(".")[-1] == "bb"):
+        random_region_bed_name = os.path.join(output_location_results,random_region_name+".bed")
+        os.system(" ".join(["bigBedToBed", random_region_file_name, random_region_bed_name]))
+    elif(random_region_file_name.split(".")[-1] != "bed"): main_error_handler.throw_error("ME_RAND_NOT_BED_BB")
+
+    # Converting mpbs bigbed file
+    random_mpbs_bed_name = ".".join(random_mpbs_file_name.split(".")[:-1])+".bed"
+    if(random_mpbs_file_name.split(".")[-1] == "bb"):
+        random_mpbs_bed_name = os.path.join(output_location_results,random_region_name+"_mpbs.bed")
+        os.system(" ".join(["bigBedToBed", random_mpbs_file_name, random_mpbs_bed_name]))
+    elif(random_mpbs_file_name.split(".")[-1] != "bed"): pass # XXX TODO main_error_handler.throw_error("ME_RAND_NOT_BED_BB")
+
+    # Evaluating random statistics
+    rand_c_dict, rand_d_dict = get_fisher_dict(motif_names_grouped, random_region_bed_name, random_mpbs_bed_name, output_location_results,
+                                               return_geneset=False)
+
+    # Removing bed files if bb exist
+    if(random_region_file_name.split(".")[-1] == "bb"): os.remove(random_region_bed_name)
+    if(random_mpbs_file_name.split(".")[-1] == "bb"): os.remove(random_mpbs_bed_name)
     
-        output_summary(summary, args.o, "summary.txt")
-        list_all_index(path=os.path.dirname(args.o))
-        
-    ################################################################################
-    ##### Genomic Region Test ######################################################
-    ################################################################################
-    if args.mode == 'regiontest':
-        print2(summary, "\n"+"*************** Genomic Region Test ***************")
-        print2(summary, "*** Input RNA sequence: "+args.r)
-        print2(summary, "*** Input regions in BED: "+os.path.basename(args.bed))
-        print2(summary, "*** Number of randomization: "+str(args.n))
-        print2(summary, "*** Output directoey: "+os.path.basename(args.o))
-        
-        args.r = os.path.normpath(os.path.join(dir,args.r))
-        
-        print2(summary, "\nStep 1: Calculate the triplex forming sites on RNA and the given regions")
-        randomtest = RandomTest(rna_fasta=args.r, rna_name=args.rn, dna_region=args.bed, 
-                                organism=args.organism, showdbs=args.showdbs)
-        if args.obed: obed = os.path.basename(args.o)
-        else: obed=False
-        randomtest.target_dna(temp=args.o, remove_temp=args.rt, l=args.l, e=args.e, obed=obed,
-                              c=args.c, fr=args.fr, fm=args.fm, of=args.of, mf=args.mf, cutoff=args.ccf )
-        t1 = time.time()
-        print2(summary, "\tRunning time is : " + str(datetime.timedelta(seconds=round(t1-t0))))
+    ###################################################################################################
+    # Enrichment Statistics
+    ###################################################################################################
 
-        print2(summary, "Step 2: Randomization and counting number of binding sites")
-        randomtest.random_test(repeats=args.n, temp=args.o, remove_temp=args.rt, l=args.l, e=args.e,
-                               c=args.c, fr=args.fr, fm=args.fm, of=args.of, mf=args.mf, rm=args.rm,
-                               filter_bed=args.f, alpha=args.a)
-        t2 = time.time()
-        print2(summary, "\tRunning time is : " + str(datetime.timedelta(seconds=round(t2-t1))))
-        
-        print2(summary, "Step 3: Generating plot and output HTML")
-        randomtest.lineplot(txp=randomtest.txp, dirp=args.o, ac=args.ac, cut_off=args.accf, showpa=args.showpa,
-                            log=args.log, ylabel="Number of target regions with DBS", 
-                            sig_region=randomtest.data["region"]["sig_region"],
-                            linelabel="No. target regions", filename="lineplot_region.png")
-        
-        randomtest.boxplot(dir=args.o, matrix=randomtest.region_matrix, 
-                           sig_region=randomtest.data["region"]["sig_region"], 
-                           truecounts=[r[0] for r in randomtest.counts_tr.values()],
-                           sig_boolean=randomtest.data["region"]["sig_boolean"], 
-                           ylabel="Number of target regions with DBS",
-                           filename="boxplot_regions" )
-        if args.showdbs:
-            randomtest.lineplot(txp=randomtest.txpf, dirp=args.o, ac=args.ac, cut_off=args.accf, showpa=args.showpa,
-                                log=args.log, ylabel="Number of DBS on target regions",
-                                sig_region=randomtest.data["dbs"]["sig_region"], 
-                                linelabel="No. DBS", filename="lineplot_dbs.png")
-            
-            randomtest.boxplot(dir=args.o, matrix=randomtest.dbss_matrix, 
-                               sig_region=randomtest.data["dbs"]["sig_region"], 
-                               truecounts=randomtest.counts_dbs.values(),
-                               sig_boolean=randomtest.data["dbs"]["sig_boolean"], 
-                               ylabel="Number of DBS on target regions",
-                               filename="boxplot_dbs" )
+    # Creating link dictionary for HTML file
+    genetest_link_dict = dict()
+    randtest_link_dict = dict()
+    link_location = "file://"+os.path.abspath(output_location_results)
+    for curr_input in input_list:
+        for grs in curr_input.region_list:
+            if(curr_input.gene_set):
+                link_name = grs.name+" ("+curr_input.gene_set.name+")"
+                genetest_link_dict[link_name] = os.path.join(link_location,grs.name+"__"+curr_input.gene_set.name,output_stat_genetest+".html")
+                randtest_link_dict[link_name] = os.path.join(link_location,grs.name+"__"+curr_input.gene_set.name,output_stat_randtest+".html")
+            else: 
+                link_name = grs.name
+                randtest_link_dict[link_name] = os.path.join(link_location,link_name,output_stat_randtest+".html")
 
-        randomtest.gen_html(directory=args.o, parameters=args, align=50, alpha=args.a, 
-                            score=args.score)
-        t3 = time.time()
-        print2(summary, "\tRunning time is : " + str(datetime.timedelta(seconds=round(t3-t2))))
-        
-        print2(summary, "\nTotal running time is : " + str(datetime.timedelta(seconds=round(t3-t0))))
-    
-        output_summary(summary, args.o, "summary.txt")
-        list_all_index(path=os.path.dirname(args.o))
-        
+    # Iterating on each input object
+    for curr_input in input_list:
+
+        # Iterating on each input genomic region set
+        for grs in curr_input.region_list:
+
+            # Initialization
+            original_name = grs.name
+            to_remove_list = []
+
+            # Creating output folder
+            if(curr_input.gene_set): curr_output_folder_name = os.path.join(output_location_results,grs.name+"__"+curr_input.gene_set.name)
+            else: curr_output_folder_name = os.path.join(output_location_results,grs.name)
+            if(not os.path.isdir(curr_output_folder_name)): os.makedirs(curr_output_folder_name)
+
+            # Verifying if MPBS file exists
+            curr_mpbs_glob = glob(os.path.join(input_location,matching_folder_name,original_name+"_mpbs.*"))
+            try: curr_mpbs_file_name = curr_mpbs_glob[0]
+            except Exception: pass # TODO main_error_handler.throw_error("ME_RAND_NOTFOUND")
+
+            # Converting ev mpbs bigbed file
+            curr_mpbs_bed_name = ".".join(curr_mpbs_file_name.split(".")[:-1])+".bed"
+            if(curr_mpbs_file_name.split(".")[-1] == "bb"):
+                curr_mpbs_bed_name = os.path.join(curr_output_folder_name,original_name+"_mpbs.bed")
+                os.system(" ".join(["bigBedToBed", curr_mpbs_file_name, curr_mpbs_bed_name]))
+                to_remove_list.append(curr_mpbs_bed_name)
+            elif(curr_mpbs_file_name.split(".")[-1] != "bed"): pass # XXX TODO main_error_handler.throw_error("ME_RAND_NOT_BED_BB")
+
+            ###################################################################################################
+            # Gene Evidence Statistics
+            ################################################################################################### 
+
+            if(curr_input.gene_set):
+
+                # Performing association of input region with gene_set
+                grs = grs.gene_association(curr_input.gene_set, options.organism, options.promoter_length, options.maximum_association_length)
+
+                # Writing gene-coordinate association
+                output_file_name = os.path.join(curr_output_folder_name,output_association_name+".bed")
+                output_file = open(output_file_name,"w")
+                for gr in grs:
+                    if(gr.name == "."): curr_name = "."
+                    else:
+                        curr_gene_list = [e if e[0]!="." else e[1:] for e in gr.name.split(":")]
+                        curr_prox_list = gr.proximity.split(":")
+                        curr_name = ":".join([e[0]+"_"+e[1] for e in zip(curr_gene_list,curr_prox_list)])
+                    output_file.write("\t".join([str(e) for e in [gr.chrom,gr.initial,gr.final,curr_name]])+"\n")
+                output_file.close()
+                if(options.bigbed):
+                    chrom_sizes_file = genome_data.get_chromosome_sizes()
+                    bb_file_name = output_file_name+".bb"
+                    try:
+                        os.system(" ".join(["bedToBigBed", output_file_name, chrom_sizes_file, bb_file_name, "-verbose=0"]))
+                        os.remove(output_file_name)
+                    except Exception: pass # WARNING
+
+                # Writing ev and nev regions to temporary bed files in order to evaluate statistics
+                ev_regions_file_name = os.path.join(curr_output_folder_name, "ev_regions.bed")
+                nev_regions_file_name = os.path.join(curr_output_folder_name, "nev_regions.bed")
+                output_file_ev = open(ev_regions_file_name,"w")
+                output_file_nev = open(nev_regions_file_name,"w")
+                for gr in grs:
+                    if(len([e for e in gr.name.split(":") if e[0]!="."]) > 0):
+                        output_file_ev.write("\t".join([str(e) for e in [gr.chrom,gr.initial,gr.final,gr.name,gr.data,gr.orientation]])+"\n")
+                    else:
+                        output_file_nev.write("\t".join([str(e) for e in [gr.chrom,gr.initial,gr.final,gr.name,gr.data,gr.orientation]])+"\n")
+                output_file_ev.close()
+                output_file_nev.close()
+                to_remove_list.append(ev_regions_file_name)
+                to_remove_list.append(nev_regions_file_name)
+
+                # Calculating statistics
+                ev_mpbs_file_name_temp = os.path.join(curr_output_folder_name, output_mpbs_filtered_ev+"_temp.bed")
+                nev_mpbs_file_name_temp = os.path.join(curr_output_folder_name, output_mpbs_filtered_nev+"_temp.bed")
+                ev_mpbs_file = open(ev_mpbs_file_name_temp,"w")
+                nev_mpbs_file = open(nev_mpbs_file_name_temp,"w")
+                curr_a_dict, curr_b_dict, ev_genelist_dict = get_fisher_dict(motif_names_grouped, ev_regions_file_name, curr_mpbs_bed_name,
+                                                                             curr_output_folder_name, return_geneset=True,
+                                                                             output_mpbs_file=ev_mpbs_file, color=ev_color)
+                curr_c_dict, curr_d_dict, nev_genelist_dict = get_fisher_dict(motif_names_grouped, nev_regions_file_name, curr_mpbs_bed_name,
+                                                                              curr_output_folder_name, return_geneset=True,
+                                                                              output_mpbs_file=nev_mpbs_file, color=nev_color)
+                ev_mpbs_file.close()
+                nev_mpbs_file.close()
+                to_remove_list.append(ev_mpbs_file_name_temp)
+                to_remove_list.append(nev_mpbs_file_name_temp)
+
+                # Performing fisher test
+                result_list = []
+                for k in motif_names:
+                    r = Result()
+                    r.name = k; r.a = curr_a_dict[k]; r.b = curr_b_dict[k]; r.c = curr_c_dict[k]; r.d = curr_d_dict[k]
+                    r.percent = float(r.a)/float(r.a+r.b); r.back_percent = float(r.c)/float(r.c+r.d)
+                    r.genes = ev_genelist_dict[k]
+                    try:
+                        p = pvalue(r.a,r.b,r.c,r.d)
+                        r.p_value = p.right_tail
+                    except Exception: r.p_value = 1.0
+                    result_list.append(r)
+                
+                # Performing multiple test correction
+                multuple_corr_rej, multiple_corr_list = multiple_test_correction([e.p_value for e in result_list], 
+                                                        alpha=options.multiple_test_alpha, method='indep')
+                corr_pvalue_dict = dict() # Needed to filter the mpbs in a fast way
+                for i in range(0,len(multiple_corr_list)):
+                    result_list[i].corr_p_value = multiple_corr_list[i]
+                    corr_pvalue_dict[result_list[i].name] = result_list[i].corr_p_value
+
+                # Sorting result list
+                result_list = sorted(result_list, key=lambda x: x.name)
+                result_list = sorted(result_list, key=lambda x: x.percent, reverse=True)
+                result_list = sorted(result_list, key=lambda x: x.p_value)
+                result_list = sorted(result_list, key=lambda x: x.corr_p_value)
+
+                # Preparing results for printing
+                for r in result_list:
+                    r.p_value = "%.4e" % r.p_value
+                    r.corr_p_value = "%.4e" % r.corr_p_value
+                    r.percent = str(round(r.percent,4)*100)+"%"
+                    r.back_percent = str(round(r.back_percent,4)*100)+"%"
+
+                # Printing ev and nev mpbs
+                ev_mpbs_file = open(ev_mpbs_file_name_temp,"r")
+                nev_mpbs_file = open(nev_mpbs_file_name_temp,"r")
+                ev_mpbs_file_name_thresh = os.path.join(curr_output_folder_name, output_mpbs_filtered_ev+"_thresh.bed")
+                nev_mpbs_file_name_thresh = os.path.join(curr_output_folder_name, output_mpbs_filtered_nev+"_thresh.bed")
+                output_file_ev = open(ev_mpbs_file_name_thresh,"w")
+                output_file_nev = open(nev_mpbs_file_name_thresh,"w")
+                for line in ev_mpbs_file:
+                    ll = line.strip().split("\t")
+                    if(corr_pvalue_dict[ll[3]] > options.print_thresh): continue
+                    output_file_ev.write(line)
+                for line in nev_mpbs_file:
+                    ll = line.strip().split("\t")
+                    if(corr_pvalue_dict[ll[3]] > options.print_thresh): continue
+                    output_file_nev.write(line)
+                output_file_ev.close()
+                output_file_nev.close()
+                to_remove_list.append(ev_mpbs_file_name_thresh)
+                to_remove_list.append(nev_mpbs_file_name_thresh)
+
+                # Sorting ev and nev mpbs
+                output_file_name_ev_bed = os.path.join(curr_output_folder_name, output_mpbs_filtered_ev+".bed")
+                output_file_name_nev_bed = os.path.join(curr_output_folder_name, output_mpbs_filtered_nev+".bed")
+                os.system("sort -k1,1 -k2,2n "+ev_mpbs_file_name_thresh+" > "+output_file_name_ev_bed) # Sorting ev file
+                os.system("sort -k1,1 -k2,2n "+nev_mpbs_file_name_thresh+" > "+output_file_name_nev_bed) # Sorting nev file
+
+                # Converting ev and nev mpbs to bigbed
+                if(options.bigbed):
+                    chrom_sizes_file = genome_data.get_chromosome_sizes()
+                    output_file_name_ev_bb = os.path.join(curr_output_folder_name, output_mpbs_filtered_ev+".bb")
+                    output_file_name_nev_bb = os.path.join(curr_output_folder_name, output_mpbs_filtered_nev+".bb")
+                    try:
+                        os.system(" ".join(["bedToBigBed",output_file_name_ev_bed,chrom_sizes_file,output_file_name_ev_bb,"-verbose=0"]))
+                        os.system(" ".join(["bedToBigBed",output_file_name_nev_bed,chrom_sizes_file,output_file_name_nev_bb,"-verbose=0"]))
+                        to_remove_list.append(output_file_name_ev_bed)
+                        to_remove_list.append(output_file_name_nev_bed)
+                    except Exception: pass # WARNING
+
+                # Printing statistics text
+                output_file_name_stat_text = os.path.join(curr_output_folder_name, output_stat_genetest+".txt")
+                output_file = open(output_file_name_stat_text,"w")
+                output_file.write(results_header_text+"\n")
+                for r in result_list: output_file.write(str(r)+"\n")
+                output_file.close()
+
+                # Printing statistics html - Creating data table
+                data_table = []
+                for r in result_list:
+                    curr_motif_tuple = [image_data.get_default_motif_logo(), logo_width]
+                    for rep in motif_data.get_logo_list():
+                        logo_file_name = os.path.join(rep,r.name+".png")
+                        if(os.path.isfile(logo_file_name)):
+                            curr_motif_tuple = [logo_file_name, logo_width]
+                            break
+                    curr_gene_tuple = ["View",gprofiler_link+",".join(r.genes.genes)]
+                    data_table.append([r.name,curr_motif_tuple,str(r.p_value),str(r.corr_p_value),str(r.a),str(r.b),
+                                       str(r.c),str(r.d),str(r.percent),str(r.back_percent),curr_gene_tuple])
+
+                # Printing statistics html - Writing to HTML
+                output_file_name_html = os.path.join(curr_output_folder_name, output_stat_genetest+".html")
+                html = Html("Motif Enrichment Analysis", genetest_link_dict)
+                html.add_heading("Results for <b>"+original_name+"</b> region <b>Gene Test*</b> using genes from <b>"+curr_input.gene_set.name+"</b>", align = "center", bold=False)
+                html.add_heading("* This gene test considered regions associated to the gene list given against regions not associated to the gene list", align = "center", bold=False, size = 3)
+                html.add_zebra_table(html_header, html_col_size, html_type_list, data_table, align = "center")
+                html.write(output_file_name_html)         
+
+            else:
+
+                # Association still needs to be done with all genes in order to print gene list of random test
+                grs = grs.gene_association(None, options.organism, options.promoter_length, options.maximum_association_length)
+
+                # If there is no gene list, then the current evidence set consists of all coordinates
+                ev_regions_file_name = os.path.join(curr_output_folder_name, "ev_regions.bed")
+                output_file_ev = open(ev_regions_file_name,"w")
+                for gr in grs: output_file_ev.write("\t".join([str(e) for e in [gr.chrom,gr.initial,gr.final,gr.name,gr.data,gr.orientation]])+"\n")
+                output_file_ev.close()
+                to_remove_list.append(ev_regions_file_name)
+
+                # Calculating statistics
+                ev_mpbs_file_name_temp = os.path.join(curr_output_folder_name, output_mpbs_filtered_ev+"_temp.bed")
+                ev_mpbs_file = open(ev_mpbs_file_name_temp,"w")
+                curr_a_dict, curr_b_dict, ev_genelist_dict = get_fisher_dict(motif_names_grouped, ev_regions_file_name, curr_mpbs_bed_name,
+                                                                             curr_output_folder_name, return_geneset=True,
+                                                                             output_mpbs_file=ev_mpbs_file, color=ev_color)
+                ev_mpbs_file.close()
+                to_remove_list.append(ev_mpbs_file_name_temp)
+
+            ###################################################################################################
+            # Random Statistics
+            ###################################################################################################
+
+            # Performing fisher test
+            result_list = []
+            for k in motif_names:
+                r = Result()
+                r.name = k; r.a = curr_a_dict[k]; r.b = curr_b_dict[k]; r.c = rand_c_dict[k]; r.d = rand_d_dict[k]
+                r.percent = float(r.a)/float(r.a+r.b); r.back_percent = float(r.c)/float(r.c+r.d)
+                r.genes = ev_genelist_dict[k]
+                try:
+                    p = pvalue(r.a,r.b,r.c,r.d)
+                    r.p_value = p.right_tail
+                except Exception: r.p_value = 1.0
+                result_list.append(r)
+                
+            # Performing multiple test correction
+            multuple_corr_rej, multiple_corr_list = multiple_test_correction([e.p_value for e in result_list], 
+                                                    alpha=options.multiple_test_alpha, method='indep')
+            corr_pvalue_dict = dict() # Needed to filter the mpbs in a fast way
+            for i in range(0,len(multiple_corr_list)):
+                result_list[i].corr_p_value = multiple_corr_list[i]
+                corr_pvalue_dict[result_list[i].name] = result_list[i].corr_p_value
+
+            # Sorting result list
+            result_list = sorted(result_list, key=lambda x: x.name)
+            result_list = sorted(result_list, key=lambda x: x.percent, reverse=True)
+            result_list = sorted(result_list, key=lambda x: x.p_value)
+            result_list = sorted(result_list, key=lambda x: x.corr_p_value)
+
+            # Preparing results for printing
+            for r in result_list:
+                r.p_value = "%.4e" % r.p_value
+                r.corr_p_value = "%.4e" % r.corr_p_value
+                r.percent = str(round(r.percent,4)*100)+"%"
+                r.back_percent = str(round(r.back_percent,4)*100)+"%"
+
+            # Printing ev if it was not already print in geneset
+            if(not curr_input.gene_set):
+
+                # Printing ev and nev mpbs
+                ev_mpbs_file = open(ev_mpbs_file_name_temp,"r")
+                ev_mpbs_file_name_thresh = os.path.join(curr_output_folder_name, output_mpbs_filtered_ev+"_thresh.bed")
+                output_file_ev = open(ev_mpbs_file_name_thresh,"w")
+                for line in ev_mpbs_file:
+                    ll = line.strip().split("\t")
+                    if(corr_pvalue_dict[ll[3]] > options.print_thresh): continue
+                    output_file_ev.write(line)
+                output_file_ev.close()
+                to_remove_list.append(ev_mpbs_file_name_thresh)
+
+                # Sorting ev mpbs
+                output_file_name_ev_bed = os.path.join(curr_output_folder_name, output_mpbs_filtered_ev+".bed")
+                os.system("sort -k1,1 -k2,2n "+ev_mpbs_file_name_thresh+" > "+output_file_name_ev_bed) # Sorting ev file
+
+                # Converting ev and nev mpbs to bigbed
+                if(options.bigbed):
+                    chrom_sizes_file = genome_data.get_chromosome_sizes()
+                    output_file_name_ev_bb = os.path.join(curr_output_folder_name, output_mpbs_filtered_ev+".bb")
+                    try:
+                        os.system(" ".join(["bedToBigBed",output_file_name_ev_bed,chrom_sizes_file,output_file_name_ev_bb,"-verbose=0"]))
+                        to_remove_list.append(output_file_name_ev_bed)
+                    except Exception: pass # WARNING
+
+            # Printing statistics text
+            output_file_name_stat_text = os.path.join(curr_output_folder_name, output_stat_randtest+".txt")
+            output_file = open(output_file_name_stat_text,"w")
+            output_file.write(results_header_text+"\n")
+            for r in result_list: output_file.write(str(r)+"\n")
+            output_file.close()
+
+            # Printing statistics html - Creating data table
+            data_table = []
+            for r in result_list:
+                curr_motif_tuple = [image_data.get_default_motif_logo(), logo_width]
+                for rep in motif_data.get_logo_list():
+                    logo_file_name = os.path.join(rep,r.name+".png")
+                    if(os.path.isfile(logo_file_name)):
+                        curr_motif_tuple = [logo_file_name, logo_width]
+                        break
+                curr_gene_tuple = ["View",gprofiler_link+",".join(r.genes.genes)]
+                data_table.append([r.name,curr_motif_tuple,str(r.p_value),str(r.corr_p_value),str(r.a),str(r.b),
+                                   str(r.c),str(r.d),str(r.percent),str(r.back_percent),curr_gene_tuple])
+
+            # Printing statistics html
+            output_file_name_html = os.path.join(curr_output_folder_name, output_stat_randtest+".html")
+            html = Html("Motif Enrichment Analysis", randtest_link_dict)
+            if(curr_input.gene_set):
+                html.add_heading("Results for <b>"+original_name+"</b> region <b>Random Test*</b> using genes from <b>"+curr_input.gene_set.name+"</b>", align = "center", bold=False)
+                html.add_heading("* This random test considered regions associated to the gene list given against background (random) regions", align = "center", bold=False, size = 3)
+            else:
+                html.add_heading("Results for <b>"+original_name+"</b> region <b>Random Test*</b> using all input regions", align = "center", bold=False)
+                html.add_heading("* This random test considered all regions against background (random) regions", align = "center", bold=False, size = 3)
+
+            html.add_zebra_table(html_header, html_col_size, html_type_list, data_table, align = "center")
+            html.write(output_file_name_html)
+
+            # Removing files
+            for e in to_remove_list: os.remove(e)
+
+    ###################################################################################################
+    # Heatmap
+    ###################################################################################################
+
+    # TODO
+
+    ###################################################################################################
+    # Network
+    ###################################################################################################
+
+    # TODO
+
+
