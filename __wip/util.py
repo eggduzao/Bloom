@@ -1,37 +1,75 @@
+#################################################################################################
+# Auxiliary miscelaneous functions
+#################################################################################################
 
-###################################################################################################
-# Libraries
-###################################################################################################
+#################################################################################################
+##### LIBRARIES #################################################################################
+#################################################################################################
 
-# Python
 
-# Internal
+#################################################################################################
+##### FUNCTIONS #################################################################################
+#################################################################################################
 
-# External
+def instanceof(s,instance="int"):
+    """Verifies if a string is an instance of other primary type.
 
-###################################################################################################
-# Classes
-###################################################################################################
+    Keyword arguments:
+    s -- String.
+    instance -- the instance type. (default "int")
 
-class Input:
-    def __init__(self,gene_set,region_list):
-        self.gene_set = gene_set
-        self.region_list = region_list
+    Returns:
+    True if string s is an instance of the given type and False if it is not.
+    """
+    try:
+        if(instance == "int"): int(s)
+        elif(instance == "float"): float(s)
+        return True
+    except (TypeError, ValueError):
+        return False
 
-class Result:
-    def __init__(self):
-        self.name = "" # String
-        self.p_value = 0.0 # Float
-        self.corr_p_value = 0.0 # Float
-        self.a = 0 # Integer
-        self.b = 0 # Integer
-        self.c = 0 # Integer
-        self.d = 0 # Integer
-        self.percent = 0.0 # Float
-        self.back_percent = 0.0 # Float
-        self.genes = None # GeneSet
-    def __str__(self):
-        return "\t".join([str(e) for e in [self.name,self.p_value,self.corr_p_value,self.a,self.b,self.c,self.d,
-                                               self.percent,self.back_percent,",".join(self.genes.genes)]])
+def readList(fileName):
+    """Reads a file of items split by line break and returns them in a list.
+
+    Keyword arguments:
+    fileName -- The path + name of the file.
+
+    Returns:
+    fileList -- List of items.
+    """
+    fileList = []
+    inFile = open(fileName,"r")
+    for line in inFile: fileList.append(line.strip())
+    inFile.close()
+    return fileList
+
+def overlap(t1, t2):
+    """Checks if one interval contains any overlap with another interval.
+
+    Keyword arguments:
+    t1 -- First tuple.
+    t2 -- Second tuple.
+
+    Returns:
+    Returns -1 if i1 is before i2; 1 if i1 is after i2; and 0 if there is any overlap.
+    """
+    if(t1[1] <= t2[0]): return -1 # interval1 is before interval2
+    if(t2[1] <= t1[0]): return 1 # interval1 is after interval2
+    return 0 # interval1 overlaps interval2
+
+def readInputParameters(inputList):
+    """Reads input parameters and creates a dictionary of inputs.
+
+    Keyword arguments:
+    inputList -- sys.argv list of parameters.
+
+    Returns:
+    Returns dictionary of parameters.
+    """
+    paramDict = dict()
+    for e in inputList:
+        eSplit = e.split("=")
+        paramDict[eSplit[0]] = eSplit[1]
+    return paramDict
 
 
