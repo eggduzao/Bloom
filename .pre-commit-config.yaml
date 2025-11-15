@@ -1,0 +1,107 @@
+# ========================================================================
+# 🌸 STANDARD PRE-COMMIT CONFIG PLACEHOLDER 🌸
+# Location: Bloom/.pre-commit-config.yaml
+#
+# This file defines the pre-commit hooks framework configuration.
+# Everything is neutral — no checks will run or fail.
+# To activate a hook, just uncomment it.
+# ========================================================================
+
+# ------------------------------------------------------------------------------
+# 1. Minimal metadata block (required)
+# ------------------------------------------------------------------------------
+repos:
+  - repo: https://github.com/psf/black
+    rev: 24.10.0
+    hooks:
+      - id: black
+        language_version: python3.12
+  # --------------------------------------------------------------------------
+  # EXAMPLE: Core pre-commit hooks (formatting, trailing spaces, etc.)
+  # Uncomment below to use standard pre-commit hooks.
+  # --------------------------------------------------------------------------
+  # - repo: https://github.com/pre-commit/pre-commit-hooks
+  #   rev: v4.6.0  # Check https://github.com/pre-commit/pre-commit-hooks/releases
+  #   hooks:
+  #     - id: trailing-whitespace
+  #     - id: end-of-file-fixer
+  #     - id: check-yaml
+  #     - id: check-json
+  #     - id: check-toml
+  #     - id: check-added-large-files
+  #     - id: check-merge-conflict
+  #     - id: debug-statements
+
+  # --------------------------------------------------------------------------
+  # EXAMPLE: Black (Python formatter)
+  # --------------------------------------------------------------------------
+  # - repo: https://github.com/psf/black
+  #   rev: 24.3.0
+  #   hooks:
+  #     - id: black
+  #       language_version: python3
+
+  # --------------------------------------------------------------------------
+  # EXAMPLE: isort (import sorter)
+  # --------------------------------------------------------------------------
+  # - repo: https://github.com/PyCQA/isort
+  #   rev: 5.13.2
+  #   hooks:
+  #     - id: isort
+  #       args: ["--profile", "black"]
+
+  # --------------------------------------------------------------------------
+  # EXAMPLE: flake8 (linting)
+  # --------------------------------------------------------------------------
+  # - repo: https://github.com/pycqa/flake8
+  #   rev: 7.1.0
+  #   hooks:
+  #     - id: flake8
+  #       additional_dependencies: []
+  #       args: []
+
+  # --------------------------------------------------------------------------
+  # EXAMPLE: mypy (type checking)
+  # --------------------------------------------------------------------------
+  # - repo: https://github.com/pre-commit/mirrors-mypy
+  #   rev: v1.10.0
+  #   hooks:
+  #     - id: mypy
+  #       args: ["--ignore-missing-imports"]
+
+  # --------------------------------------------------------------------------
+  # EXAMPLE: Ruff (fast lint+format alternative)
+  # --------------------------------------------------------------------------
+  # - repo: https://github.com/charliermarsh/ruff-pre-commit
+  #   rev: v0.6.4
+  #   hooks:
+  #     - id: ruff
+  #       args: ["--fix"]
+
+  # --------------------------------------------------------------------------
+  # EXAMPLE: Custom local hook placeholder
+  # --------------------------------------------------------------------------
+  # - repo: local
+  #   hooks:
+  #     - id: placeholder
+  #       name: Neutral placeholder hook
+  #       entry: echo "No checks performed."
+  #       language: system
+  #       always_run: false
+  #       pass_filenames: false
+
+# ------------------------------------------------------------------------------
+# 2. Optional global settings (safe defaults)
+# ------------------------------------------------------------------------------
+# default_language_version:
+#   python: python3
+# fail_fast: false
+# minimum_pre_commit_version: "2.20.0"
+
+# ------------------------------------------------------------------------------
+# 3. Notes:
+#   - Nothing in this file will execute unless uncommented.
+#   - No hooks will trigger on commit, merge, or push.
+#   - To install later: `pre-commit install`
+#   - To run manually: `pre-commit run --all-files`
+# ------------------------------------------------------------------------------
