@@ -1,5 +1,7 @@
 #!/bin/bash
 
+
+
 # Message
 echo "Cleaning system-specific artifacts..."
 
