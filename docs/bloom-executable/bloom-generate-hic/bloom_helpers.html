@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Helper tools in bloom &mdash; bloom 0.9.26b1-beta documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="bloom config files" href="bloom_config.html" />
+    <link rel="prev" title="Individual pipeline steps" href="bloom_modular_steps.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> bloom
+          </a>
+              <div class="version">
+                0.9.26b1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started with bloom</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../bloom.html">bloom: command line tools</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../bloom_basic.html"> Overview and shared parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../compatibility.html"> Working with Cooler, Juicer, and text files</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../bloom_generate_hic.html"> Generate Hi-C matrices</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="bloom_auto.html"> bloom auto: Automated generation of Hi-C matrices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bloom_modular_steps.html"> Individual pipeline steps</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#"> Helper tools</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#bloom-from-txt-import-hic-from-text-file">bloom from-txt: import Hic from text file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#bloom-dump-export-hic-objects-to-text-file">bloom dump: export Hic objects to text file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#bloom-subset-create-hic-objects-by-subsetting">bloom subset: create Hic objects by subsetting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#bloom-downsample-downsample-hic-objects">bloom downsample: downsample Hic objects</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#bloom-fragments-in-silico-genome-digestion">bloom fragments: in silico genome digestion</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#bloom-sort-sam-sort-sam-files-by-name">bloom sort-sam: sort SAM files by name</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="bloom_config.html"> Configuration options</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../bloom_analyse_hic.html"> Analyse Hi-C matrices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../bloomplot.html">bloomplot: plotting from the command line</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/api.html">Python API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">bloom</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../bloom.html">bloom command line tools</a> &raquo;</li>
+          <li><a href="../bloom_generate_hic.html">Generate Hi-C matrices</a> &raquo;</li>
+      <li>Helper tools in bloom</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/bloom-executable/bloom-generate-hic/bloom_helpers.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="helper-tools-in-bloom">
+<span id="bloom-helpers"></span><h1>Helper tools in bloom<a class="headerlink" href="#helper-tools-in-bloom" title="Permalink to this heading"></a></h1>
+<p>bloom provides little helper tools that make working with Hi-C and associated data
+somewhat easier. These are not strictly necessary for matrix generation and analysis,
+but can often speed your analysis up or simply make it a little more convenient.</p>
+<section id="bloom-from-txt-import-hic-from-text-file">
+<span id="bloom-from-txt"></span><h2>bloom from-txt: import Hic from text file<a class="headerlink" href="#bloom-from-txt-import-hic-from-text-file" title="Permalink to this heading"></a></h2>
+<p>You can easily import Hi-C matrices from a compatible text file format, such as that from
+HiC-Pro, with <code class="docutils literal notranslate"><span class="pre">bloom</span> <span class="pre">to-txt</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">bloom</span> <span class="n">from</span><span class="o">-</span><span class="n">txt</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">tmp</span><span class="p">]</span> <span class="n">contacts</span> <span class="n">regions</span> <span class="n">output</span>
+</pre></div>
+</div>
+<section id="Positional Arguments">
+<h3>Positional Arguments<a class="headerlink" href="#Positional Arguments" title="Permalink to this heading"></a></h3>
+<dl class="option-list">
+<dt><kbd>contacts</kbd></dt>
+<dd><p>Contacts file in sparse matrix format, i.e. each row should contain &lt;bin1&gt;&lt;tab&gt;&lt;bin2&gt;&lt;tab&gt;&lt;weight&gt;.</p>
+</dd>
+<dt><kbd>regions</kbd></dt>
+<dd><p>Path to file with genomic regions, for example in BED format: &lt;chromosome&gt;&lt;tab&gt;&lt;start&gt;&lt;tab&gt;&lt;end&gt;. The BED can optionally contain the bin index, as corresponding to the index used in the contacts file.</p>
+</dd>
+<dt><kbd>output</kbd></dt>
+<dd><p>Output Hic file.</p>
+</dd>
+</dl>
+</section>
+<section id="Named Arguments">
+<h3>Named Arguments<a class="headerlink" href="#Named Arguments" title="Permalink to this heading"></a></h3>
+<dl class="option-list">
+<dt><kbd>-tmp, --work-in-tmp</kbd></dt>
+<dd><p>Work in temporary directory</p>
+</dd>
+</dl>
+</section>
+<p>The command requires two input files:</p>
+<ol class="arabic simple">
+<li><p>A sparse matrix with the tab-separated format <code class="docutils literal notranslate"><span class="pre">&lt;bin1&gt;&lt;tab&gt;&lt;bin2&gt;&lt;tab&gt;&lt;weight&gt;</span></code>:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">1</span>  <span class="mi">1</span>       <span class="mf">40.385642</span>
+<span class="mi">1</span>  <span class="mi">828</span>     <span class="mf">5.272852</span>
+<span class="mi">1</span>  <span class="mi">1264</span>    <span class="mf">5.205258</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><p>A regions file in BED format <code class="docutils literal notranslate"><span class="pre">&lt;chromosome&gt;&lt;tab&gt;&lt;start&gt;&lt;tab&gt;&lt;end&gt;[&lt;tab&gt;&lt;bin</span> <span class="pre">ID&gt;]</span></code>:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">chr1</span>       <span class="mi">0</span>       <span class="mi">1000000</span> <span class="mi">1</span>
+<span class="n">chr1</span>       <span class="mi">1000000</span> <span class="mi">2000000</span> <span class="mi">2</span>
+<span class="n">chr1</span>       <span class="mi">2000000</span> <span class="mi">3000000</span> <span class="mi">3</span>
+<span class="n">chr1</span>       <span class="mi">3000000</span> <span class="mi">4000000</span> <span class="mi">4</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">&lt;bin</span> <span class="pre">ID&gt;</span></code> field is optional, but if provided it must correspond to the bins used
+in the matrix file. If not provided, bin indices will be 0-based!</p>
+</div></blockquote>
+<p>The bloom example data contains some HiC-Pro example files that you can try this out on:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bloom</span> <span class="n">from</span><span class="o">-</span><span class="n">txt</span> <span class="n">hicpro</span><span class="o">/</span><span class="n">dixon_2M_1000000_iced</span><span class="o">.</span><span class="n">matrix</span> <span class="n">hicpro</span><span class="o">/</span><span class="n">dixon_2M_1000000_abs</span><span class="o">.</span><span class="n">bed</span> <span class="n">hicpro</span><span class="o">/</span><span class="n">dixon_2M_1000000_iced</span><span class="o">.</span><span class="n">hic</span>
+</pre></div>
+</div>
+</section>
+<section id="bloom-dump-export-hic-objects-to-text-file">
+<h2>bloom dump: export Hic objects to text file<a class="headerlink" href="#bloom-dump-export-hic-objects-to-text-file" title="Permalink to this heading"></a></h2>
+<p>You can easily export bloom Hic objects to a txt file using <code class="docutils literal notranslate"><span class="pre">bloom</span> <span class="pre">dump</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">bloom</span> <span class="n">dump</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">s</span> <span class="n">SUBSET</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">S</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">only</span><span class="o">-</span><span class="n">intra</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">e</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">l</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">u</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">tmp</span><span class="p">]</span> <span class="n">hic</span> <span class="p">[</span><span class="n">matrix</span><span class="p">]</span> <span class="p">[</span><span class="n">regions</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="Positional Arguments">
+<h3>Positional Arguments<a class="headerlink" href="#Positional Arguments" title="Permalink to this heading"></a></h3>
+<dl class="option-list">
+<dt><kbd>hic</kbd></dt>
+<dd><p>Hic file</p>
+</dd>
+<dt><kbd>matrix</kbd></dt>
+<dd><p>Output file for matrix entries. If not provided, will write to stdout.</p>
+</dd>
+<dt><kbd>regions</kbd></dt>
+<dd><p>Output file for Hic regions. If not provided, will write regions into matrix file.</p>
+</dd>
+</dl>
+</section>
+<section id="Named Arguments">
+<h3>Named Arguments<a class="headerlink" href="#Named Arguments" title="Permalink to this heading"></a></h3>
+<dl class="option-list">
+<dt><kbd>-s, --subset</kbd></dt>
+<dd><p>Only output this matrix subset. Format: &lt;chr&gt;[:&lt;start&gt;-&lt;end&gt;][–&lt;chr&gt;[:&lt;start&gt;&lt;end&gt;]], e.g.: “chr1–chr1” to extract only the chromosome 1 submatrix; “chr2:3400000-4200000” to extract contacts of this region on chromosome 2 to all other regions in the genome;</p>
+</dd>
+<dt><kbd>-S, --no-sparse</kbd></dt>
+<dd><p>Store full, square matrix instead of sparse format.</p>
+</dd>
+<dt><kbd>--only-intra</kbd></dt>
+<dd><p>Only dump intra-chromosomal data. Dumps everything by default.</p>
+</dd>
+<dt><kbd>-e, --observed-expected</kbd></dt>
+<dd><p>O/E transform matrix values.</p>
+</dd>
+<dt><kbd>-l, --log2</kbd></dt>
+<dd><p>Log2-transform matrix values. Useful for O/E matrices (-e option)</p>
+</dd>
+<dt><kbd>-u, --uncorrected</kbd></dt>
+<dd><p>Output uncorrected (not normalised) matrix values).</p>
+</dd>
+<dt><kbd>-tmp, --work-in-tmp</kbd></dt>
+<dd><p>Work in temporary directory</p>
+</dd>
+</dl>
+</section>
+<p>If you only pass the Hic object the <code class="docutils literal notranslate"><span class="pre">bloom</span> <span class="pre">dump</span></code>, it will write all Hi-C contacts to
+the command line in a tab-delimited format with the columns: chromosome1, start1, end1,
+chromosome2, start2, end2, weight (number of contacts). If you add a file path as
+second argument, the data will be written to that file. If you instead pass the Hic file
+and two output files, the first output file will have the matrix entries in sparse notation,
+and the second file will have the Hic regions/bins. You can use <code class="docutils literal notranslate"><span class="pre">-S</span></code> to export a full
+matrix instead of a sparse one, but be warned that these can be extremely large.</p>
+<p>If you are only interested in a specific sub-matrix, use the <code class="docutils literal notranslate"><span class="pre">-s</span></code> or <code class="docutils literal notranslate"><span class="pre">--subset</span></code> argument
+of the for &lt;chromosome&gt;:[&lt;start&gt;-&lt;end&gt;] to export all contacts made by this particular
+region across the whole genome. Use &lt;chr&gt;[:&lt;start&gt;-&lt;end&gt;]–&lt;chr&gt;[:&lt;start&gt;&lt;end&gt;] to export
+all contacts made between two regions. E.g. use chr1–chr1 to export the chromosome 1
+sub-matrix.</p>
+</section>
+<section id="bloom-subset-create-hic-objects-by-subsetting">
+<h2>bloom subset: create Hic objects by subsetting<a class="headerlink" href="#bloom-subset-create-hic-objects-by-subsetting" title="Permalink to this heading"></a></h2>
+<p>It is sometimes useful to work with smaller Hi-C objects, for example for speed reasons
+or to focus the analysis on a particular genomic region of interest. The <code class="docutils literal notranslate"><span class="pre">bloom</span> <span class="pre">subset</span></code>
+command makes it possible to create a Hic object that only contains regions and contacts
+between a user-specified genomic regions from an existing Hic object.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">bloom</span> <span class="n">subset</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="nb">input</span> <span class="n">output</span> <span class="n">regions</span> <span class="p">[</span><span class="n">regions</span> <span class="o">...</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="Positional Arguments">
+<h3>Positional Arguments<a class="headerlink" href="#Positional Arguments" title="Permalink to this heading"></a></h3>
+<dl class="option-list">
+<dt><kbd>input</kbd></dt>
+<dd><p>Input Hic file.</p>
+</dd>
+<dt><kbd>output</kbd></dt>
+<dd><p>Output Hic file.</p>
+</dd>
+<dt><kbd>regions</kbd></dt>
+<dd><p>List of regions that will be used in the output Hic object. All contacts between these regions will be in the output object. For example, “chr1 chr3” will result in a Hic object with all regions in chromosomes 1 and 3, plus all contacts within chromosome 1, all contacts within chromosome 3, and all contacts between chromosome 1 and 3. “chr1” will only contain regions and contactswithin chromosome 1.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="bloom-downsample-downsample-hic-objects">
+<h2>bloom downsample: downsample Hic objects<a class="headerlink" href="#bloom-downsample-downsample-hic-objects" title="Permalink to this heading"></a></h2>
+<p>Often Hi-C matrices have differing numbers of valid pairs, which can be a confounding factor
+in many analyses. Differences can stem from varying sequencing depths, different library
+qualities, or other experimental and computational factors. <code class="docutils literal notranslate"><span class="pre">bloom</span> <span class="pre">downsample</span></code> is a utility
+that downsamples Hic objects to a specific number of valid pairs.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">bloom</span> <span class="n">downsample</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">tmp</span><span class="p">]</span> <span class="n">hic</span> <span class="n">n</span> <span class="n">output</span>
+</pre></div>
+</div>
+<section id="Positional Arguments">
+<h3>Positional Arguments<a class="headerlink" href="#Positional Arguments" title="Permalink to this heading"></a></h3>
+<dl class="option-list">
+<dt><kbd>hic</kbd></dt>
+<dd><p>Hic object to be downsampled.</p>
+</dd>
+<dt><kbd>n</kbd></dt>
+<dd><p>Sample size or reference Hi-C object. If sample size is &lt; 1,will be interpreted as a fraction of valid pairs.</p>
+</dd>
+<dt><kbd>output</kbd></dt>
+<dd><p>Downsampled Hic output.</p>
+</dd>
+</dl>
+</section>
+<section id="Named Arguments">
+<h3>Named Arguments<a class="headerlink" href="#Named Arguments" title="Permalink to this heading"></a></h3>
+<dl class="option-list">
+<dt><kbd>-tmp, --work-in-tmp</kbd></dt>
+<dd><p>Work in temporary directory</p>
+</dd>
+</dl>
+</section>
+<p>By default, the sampling is done without replacement. This requires a fairly large amount
+of system memory. If you are having trouble with memory usage, use sampling with
+replacement (<code class="docutils literal notranslate"><span class="pre">--with-replacement</span></code>).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Sampling is done on uncorrected matrix values, so you may want to apply matrix
+balancing using <code class="docutils literal notranslate"><span class="pre">bloom</span> <span class="pre">hic</span> <span class="pre">-k</span></code> afterwards.</p>
+</div>
+</section>
+<section id="bloom-fragments-in-silico-genome-digestion">
+<h2>bloom fragments: in silico genome digestion<a class="headerlink" href="#bloom-fragments-in-silico-genome-digestion" title="Permalink to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">bloom</span> <span class="pre">pairs</span></code> and <code class="docutils literal notranslate"><span class="pre">bloom</span> <span class="pre">auto</span></code> commands accept FASTA files as <code class="docutils literal notranslate"><span class="pre">--genome</span></code> argument,
+and <code class="docutils literal notranslate"><span class="pre">bloom</span></code> conveniently calculates the restriction fragments for you using the
+restriction enzyme name specified with <code class="docutils literal notranslate"><span class="pre">--restriction-enzyme</span></code>. However, the in silico
+digestion can be time-consuming, and if you are processing multiple similar Hi-C libraries,
+you can use the <code class="docutils literal notranslate"><span class="pre">bloom</span> <span class="pre">fragments</span></code> utility to generate restriction fragments up front,
+and use the resulting BED file as input for the <code class="docutils literal notranslate"><span class="pre">--genome</span></code> argument.</p>
+<p>If you supply an integer as the second positional argument instead of a restriction enzyme
+name, <code class="docutils literal notranslate"><span class="pre">bloom</span> <span class="pre">fragments</span></code> will perform binning rather than in silico digestion and return
+a BED file with equally sized regions.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">bloom</span> <span class="n">fragments</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">c</span> <span class="n">CHROMOSOMES</span><span class="p">]</span> <span class="nb">input</span> <span class="n">re_or_bin_size</span> <span class="n">output</span>
+</pre></div>
+</div>
+<section id="Positional Arguments">
+<h3>Positional Arguments<a class="headerlink" href="#Positional Arguments" title="Permalink to this heading"></a></h3>
+<dl class="option-list">
+<dt><kbd>input</kbd></dt>
+<dd><p>Path to genome file (FASTA, folder with FASTA, hdf5 file), which will be used in conjunction with the type of restriction enzyme to calculate fragments directly.</p>
+</dd>
+<dt><kbd>re_or_bin_size</kbd></dt>
+<dd><p>Restriction enzyme name or bin size to divide genome into fragments. Restriction names can be any supported by Biopython, which obtains data from REBASE (<a class="reference external" href="http://rebase.neb.com/rebase/rebase.html">http://rebase.neb.com/rebase/rebase.html</a>). Use commas to separate multiple restriction enzymes, e.g. ‘HindIII,MboI’</p>
+</dd>
+<dt><kbd>output</kbd></dt>
+<dd><p>Output file with restriction fragments in BED format.</p>
+</dd>
+</dl>
+</section>
+<section id="Named Arguments">
+<h3>Named Arguments<a class="headerlink" href="#Named Arguments" title="Permalink to this heading"></a></h3>
+<dl class="option-list">
+<dt><kbd>-c, --chromosomes</kbd></dt>
+<dd><p>Comma-separated list of chromosomes to include in fragments BED file. Other chromosomes will be excluded. The order of chromosomes will be as stated in the list.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="bloom-sort-sam-sort-sam-files-by-name">
+<h2>bloom sort-sam: sort SAM files by name<a class="headerlink" href="#bloom-sort-sam-sort-sam-files-by-name" title="Permalink to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">bloom</span> <span class="pre">pairs</span></code> command expects SAM/BAM files as input that have been sorted by name
+(<code class="docutils literal notranslate"><span class="pre">bloom</span> <span class="pre">auto</span></code> automatically sorts files). You can use <code class="docutils literal notranslate"><span class="pre">samtools</span> <span class="pre">sort</span> <span class="pre">-n</span></code> to sort files,
+but <code class="docutils literal notranslate"><span class="pre">bloom</span> <span class="pre">sam-sort</span></code> will also do the sorting for you. it automatically chooses the fastest
+sorting implementation available and also provides the option to work in a temporary folder,
+which can speed the sorting up if you are working on a network volume.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">bloom</span> <span class="n">sort</span><span class="o">-</span><span class="n">sam</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">t</span> <span class="n">THREADS</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">tmp</span><span class="p">]</span> <span class="n">sam</span> <span class="p">[</span><span class="n">output</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="Positional Arguments">
+<h3>Positional Arguments<a class="headerlink" href="#Positional Arguments" title="Permalink to this heading"></a></h3>
+<dl class="option-list">
+<dt><kbd>sam</kbd></dt>
+<dd><p>Input SAM/BAM</p>
+</dd>
+<dt><kbd>output</kbd></dt>
+<dd><p>Output SAM/BAM. If not provided, will replace input file with sorted version after sorting.</p>
+</dd>
+</dl>
+</section>
+<section id="Named Arguments">
+<h3>Named Arguments<a class="headerlink" href="#Named Arguments" title="Permalink to this heading"></a></h3>
+<dl class="option-list">
+<dt><kbd>-t, --threads</kbd></dt>
+<dd><p>Number of sorting threads (only when sambamba is available). Default: 1</p>
+</dd>
+<dt><kbd>-tmp, --work-in-tmp</kbd></dt>
+<dd><p>Work in temporary directory</p>
+</dd>
+</dl>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="bloom_modular_steps.html" class="btn btn-neutral float-left" title="Individual pipeline steps" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="bloom_config.html" class="btn btn-neutral float-right" title="bloom config files" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Kai Kruse, Vaquerizas lab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

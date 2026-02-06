@@ -1,0 +1,127 @@
+#!/usr/bin/env python
+
+import os.path
+import sys
+from bloom.commands import bloom_commands as commands
+from bloom.tools.signal_handling import enable_signal_traps, disable_signal_traps
+from bloom.config import config
+
+import logging
+logger = logging.getLogger('')
+
+
+class Bloom(object):
+
+    def __init__(self):
+        parser = commands.bloom_parser()
+
+        flag_increments = {
+            '-l': 2, '--log-file': 2,
+            '-m': 2, '--email': 2, '--smtp-server': 2, '--smtp-username': 2,
+            '--smtp-password': 2, '--smtp-sender-address': 2,
+        }
+
+        option_ix = 1
+        while option_ix < len(sys.argv) and sys.argv[option_ix].startswith('-'):
+            if sys.argv[option_ix] in flag_increments:
+                option_ix += flag_increments[sys.argv[option_ix]]
+            else:
+                option_ix += 1
+
+        # parse_args defaults to [1:] for args, but you need to
+        # exclude the rest of the args too, or validation will fail
+        args = parser.parse_args(sys.argv[1:option_ix+1])
+
+        # configure logger
+        verbosity = args.verbosity
+        if verbosity == 1:
+            log_level = logging.WARN
+        elif verbosity == 2:
+            log_level = logging.INFO
+        elif verbosity > 2:
+            log_level = logging.DEBUG
+        else:
+            log_level = logging.INFO
+        logger.setLevel(log_level)
+
+        if not args.silent:
+            sh = logging.StreamHandler()
+            sh_formatter = logging.Formatter("%(asctime)s %(levelname)s %(message)s")
+            sh.setFormatter(sh_formatter)
+            sh.setLevel(log_level)
+            logger.addHandler(sh)
+        else:
+            nh = logging.NullHandler()
+            logger.addHandler(nh)
+
+        log_file = os.path.expanduser(args.log_file) if args.log_file is not None else None
+        if args.log_file is not None:
+            fh = logging.FileHandler(log_file, mode='a')
+            formatter = logging.Formatter("%(asctime)s %(levelname)s %(message)s")
+            fh.setFormatter(formatter)
+            fh.setLevel(log_level)
+            logger.addHandler(fh)
+
+        # get version info
+        if args.print_version:
+            import bloom
+            print(bloom.__version__)
+            exit()
+
+        if args.command is None or not hasattr(commands, args.command.replace("-", "_")):
+            print('Unrecognized command')
+            parser.print_help()
+            exit(1)
+
+        # echo parameters back to user
+        bloom_command = " ".join(sys.argv)
+
+        # use dispatch pattern to invoke method with same name
+        from datetime import datetime
+        start_time = datetime.now()
+        start_date = start_time.strftime('%d/%m/%Y %H:%M:%S')
+        try:
+            if config.raise_exception_on_trapped_signal:
+                enable_signal_traps()
+
+            import bloom
+            logger.info("bloom version: {}".format(bloom.__version__))
+            logger.debug("Running '{}'".format(bloom_command))
+
+            fixed_command = args.command.replace("-", "_")
+            command = getattr(commands, fixed_command)
+            command([sys.argv[0]] + sys.argv[option_ix:], log_level=log_level, verbosity=verbosity)
+            disable_signal_traps()
+        except Exception:
+            if args.email_to_address is not None:
+                logger.info("Command failed, sending email...")
+                from bloom.tools import emails
+                import traceback
+
+                exception_message = traceback.format_exc().replace("\n", "<br>")
+                message = "bloom command (start date: {}): " \
+                          "{}<br>failed with the following exception:<br>{}".format(start_date, bloom_command,
+                                                                                    exception_message)
+                subject = "{} ({}) failed".format(start_date, sys.argv[option_ix])
+                emails.send_email(args.email_to_address, message, subject, from_address=args.email_from_address,
+                                  server=args.smtp_server, credentials=(args.smtp_username, args.smtp_password))
+            raise
+
+        if args.email_to_address is not None:
+            logger.info("Command completed, sending email...")
+            from bloom.tools import emails
+            import traceback
+
+            message = "bloom command (start date: {}): " \
+                      "{}<br>executed successfully!".format(start_date, bloom_command)
+            subject = "{} ({}) completed".format(start_date, sys.argv[option_ix])
+            emails.send_email(args.email_to_address, message, subject, from_address=args.email_from_address,
+                              server=args.smtp_server, credentials=(args.smtp_username, args.smtp_password))
+
+        end_time = datetime.now()
+        # echo parameters back to user
+        logger.debug("Finished '{}' in {}".format(" ".join(sys.argv), end_time - start_time))
+
+
+if __name__ == '__main__':
+    Bloom()

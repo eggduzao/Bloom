@@ -1,0 +1,1693 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plotting API &mdash; bloom 0.9.26b1-beta documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="bloom Python tools modules" href="tools.html" />
+    <link rel="prev" title="Domains module" href="architecture/domains.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> bloom
+          </a>
+              <div class="version">
+                0.9.26b1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started with bloom</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../bloom.html">bloom: command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../bloomplot.html">bloomplot: plotting from the command line</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">Python API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../compatibility.html">Working with Juicer and Cooler files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../interfaces.html">Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../generate.html">Generate Hi-C matrices (API)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analyse.html">Analyse Hi-C matrices (API)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot.html">Plotting (API)</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../modules.html">Reference</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="init.html">init</a></li>
+<li class="toctree-l3"><a class="reference internal" href="map.html">map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="regions.html">regions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pairs.html">pairs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="matrix.html">matrix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hic.html">hic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="peaks.html">peaks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="compatibility.html">compatibility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html">architecture</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">plotting</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#index-of-plot-classes">Index of plot classes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-bloom.plotting">Description and examples</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tools.html">tools</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">bloom</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../api.html">bloom Python module</a> &raquo;</li>
+          <li><a href="../modules.html">bloom Python modules</a> &raquo;</li>
+      <li>Plotting API</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/api/modules/plotting.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="plotting-api">
+<span id="bloom-plotting"></span><h1>Plotting API<a class="headerlink" href="#plotting-api" title="Permalink to this heading"></a></h1>
+<p>Here is an overview of the plot types and functions available in the plotting API.</p>
+<section id="index-of-plot-classes">
+<h2>Index of plot classes<a class="headerlink" href="#index-of-plot-classes" title="Permalink to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bloom.plotting.GenomicFigure" title="bloom.plotting.GenomicFigure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GenomicFigure</span></code></a>(plots[, width, ticks_last, ...])</p></td>
+<td><p>GenomicFigure composed of one or more plots.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bloom.plotting.TriangularMatrixPlot" title="bloom.plotting.TriangularMatrixPlot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TriangularMatrixPlot</span></code></a>(hic_data[, max_dist, ...])</p></td>
+<td><p>A triangle Hi-C heatmap plot.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bloom.plotting.SquareMatrixPlot" title="bloom.plotting.SquareMatrixPlot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SquareMatrixPlot</span></code></a>(hic_data[, flip])</p></td>
+<td><p>Plot Hi-C map as a square matrix.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bloom.plotting.SplitMatrixPlot" title="bloom.plotting.SplitMatrixPlot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SplitMatrixPlot</span></code></a>(hic_top, hic_bottom[, ...])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bloom.plotting.LinePlot" title="bloom.plotting.LinePlot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LinePlot</span></code></a>(data[, fill, attribute, colors, ...])</p></td>
+<td><p>Plot data as line.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bloom.plotting.BigWigPlot" title="bloom.plotting.BigWigPlot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BigWigPlot</span></code></a>(bigwigs[, names, bin_size, fill, ...])</p></td>
+<td><p>Plot data from on or more BigWig or Bedgraph files.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bloom.plotting.GenePlot" title="bloom.plotting.GenePlot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GenePlot</span></code></a>(genes[, feature_types, ...])</p></td>
+<td><p>Plot genes including exon/intron structure from BED, GTF files or similar.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bloom.plotting.GenomicFeaturePlot" title="bloom.plotting.GenomicFeaturePlot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GenomicFeaturePlot</span></code></a>(regions[, feature_types, ...])</p></td>
+<td><p>Plot discrete genomic regions from BED, GTF files or similar.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bloom.plotting.HicComparisonPlot2D" title="bloom.plotting.HicComparisonPlot2D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HicComparisonPlot2D</span></code></a></p></td>
+<td><p>alias of <a class="reference internal" href="#bloom.plotting.SplitMatrixPlot" title="bloom.plotting.hic_plotter.SplitMatrixPlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">SplitMatrixPlot</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bloom.plotting.HicSlicePlot" title="bloom.plotting.HicSlicePlot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HicSlicePlot</span></code></a>(hic_data, slice_region[, ...])</p></td>
+<td><p>Draw Hi-C data as virtual 4C-plot.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bloom.plotting.Virtual4CPlot" title="bloom.plotting.Virtual4CPlot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Virtual4CPlot</span></code></a>(hic, viewpoint[, color, ...])</p></td>
+<td><p>Plot a 'virtual 4C' plot of the interactions of a specific genomic viewpoint as a line plot.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bloom.plotting.HicPeakPlot" title="bloom.plotting.HicPeakPlot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HicPeakPlot</span></code></a>(peaks[, radius, circle_props])</p></td>
+<td><p>Overlay peaks onto Hicplot or HicPlot2D.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bloom.plotting.VerticalSplitPlot" title="bloom.plotting.VerticalSplitPlot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VerticalSplitPlot</span></code></a></p></td>
+<td><p>alias of <a class="reference internal" href="#bloom.plotting.MirrorMatrixPlot" title="bloom.plotting.plotter.MirrorMatrixPlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">MirrorMatrixPlot</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bloom.plotting.GenomicVectorArrayPlot" title="bloom.plotting.GenomicVectorArrayPlot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GenomicVectorArrayPlot</span></code></a>(array[, parameters, ...])</p></td>
+<td><p>Plot matrix from a <code class="xref py py-class docutils literal notranslate"><span class="pre">MultiVectorArchitecturalRegionFeature</span></code> object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bloom.plotting.GenomicRegionsPlot" title="bloom.plotting.GenomicRegionsPlot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GenomicRegionsPlot</span></code></a>(regions[, attributes, ...])</p></td>
+<td><p>Plot scalar values from one or more <code class="xref py py-class docutils literal notranslate"><span class="pre">GenomicRegions</span></code> objects</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bloom.plotting.GenomicFeatureScorePlot" title="bloom.plotting.GenomicFeatureScorePlot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GenomicFeatureScorePlot</span></code></a>(regions[, ...])</p></td>
+<td><p>Plot discrete genomic regions from BED, GTF files or similar.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bloom.plotting.FeatureLayerPlot" title="bloom.plotting.FeatureLayerPlot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FeatureLayerPlot</span></code></a>(features[, ...])</p></td>
+<td><p>Plot genomic features in layers grouped by name/type..</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bloom.plotting.GenomicDataFramePlot" title="bloom.plotting.GenomicDataFramePlot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GenomicDataFramePlot</span></code></a>(genomic_data_frame[, ...])</p></td>
+<td><p>Plot data from a table.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bloom.plotting.HighlightAnnotation" title="bloom.plotting.HighlightAnnotation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HighlightAnnotation</span></code></a>(bed[, plot1, plot2, ...])</p></td>
+<td><p>Vertical lines or rectangles (shaded regions) which can be positioned at specific genomic coordinates from a BED file and can span multiple panels of the GenomicFigure.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bloom.plotting.SymmetricNorm" title="bloom.plotting.SymmetricNorm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SymmetricNorm</span></code></a>([vmin, vmax, percentile])</p></td>
+<td><p>Normalizes data for plotting on a divergent colormap.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bloom.plotting.LimitGroup" title="bloom.plotting.LimitGroup"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LimitGroup</span></code></a>([limit, sig])</p></td>
+<td><p>Can be used for synchronizing axis limits across multiple plots.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bloom.plotting.MirrorMatrixPlot" title="bloom.plotting.MirrorMatrixPlot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MirrorMatrixPlot</span></code></a>(top_plot, bottom_plot[, ...])</p></td>
+<td><p>Stack two plots on top of each other, bottom plot inverted.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bloom.plotting.distance_decay_plot" title="bloom.plotting.distance_decay_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">distance_decay_plot</span></code></a>(*matrices[, ax, ...])</p></td>
+<td><p>An distance decay (expected values) plot.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">aggregate_plot</span></code>(aggregate_matrix[, labels, ...])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">saddle_plot</span></code>(ab_enrichment_matrix, cutoffs[, ...])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bloom.plotting.pca_plot" title="bloom.plotting.pca_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pca_plot</span></code></a>(pca_res[, variance, eigenvectors, ...])</p></td>
+<td><p>Plot the results of a Hi-C PCA analysis from <a class="reference internal" href="architecture/comparisons.html#bloom.architecture.comparisons.hic_pca" title="bloom.architecture.comparisons.hic_pca"><code class="xref py py-func docutils literal notranslate"><span class="pre">hic_pca()</span></code></a>.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="module-bloom.plotting">
+<span id="description-and-examples"></span><h2>Description and examples<a class="headerlink" href="#module-bloom.plotting" title="Permalink to this heading"></a></h2>
+<p>Provide plotting functions for genomic data types.</p>
+<p>Many common data types used in genomics research are supported. Including, but
+not limited to, <code class="xref py py-class docutils literal notranslate"><span class="pre">Hi-C</span></code>,
+<a class="reference internal" href="#bloom.plotting.GenomicFeaturePlot" title="bloom.plotting.GenomicFeaturePlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">bed</span></code></a>,
+<a class="reference internal" href="#bloom.plotting.BigWigPlot" title="bloom.plotting.BigWigPlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">bigwig</span></code></a>
+and <a class="reference internal" href="#bloom.plotting.GenePlot" title="bloom.plotting.GenePlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">gene</span> <span class="pre">(GTF)</span></code></a> file visualization.
+The basic idea is that figures can be composed of multiple panels which are
+arranged vertically and share a common x-axis representing genomic coordinates.</p>
+<p>Each panel is created separately and then combined into a single figure.
+For example, when analyzing Hi-C data it is often interesting to correlate
+features in the Hi-C map with ChIP-seq tracks. In that case, one would first
+create a <code class="xref py py-class docutils literal notranslate"><span class="pre">HicPlot</span></code> object, which visualizes
+Hi-C data, and then a <a class="reference internal" href="#bloom.plotting.BigWigPlot" title="bloom.plotting.BigWigPlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">BigWigPlot</span></code></a> object, which
+can plot bigwig files that are used during ChIP-seq analysis. Finally, the two
+objects are used to create a <a class="reference internal" href="#bloom.plotting.GenomicFigure" title="bloom.plotting.GenomicFigure"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenomicFigure</span></code></a>.</p>
+<p class="rubric">Example</p>
+<p>bloom comes with a few example datasets that can be used to explore the basic
+functionalities of the plotting module. The paths in this example are relative
+to the top-level bloom directory where the setup.py file is located.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The paths to the example datasets can be accessed easily using the
+example_data dictionary:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">bloom</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">bloom</span><span class="o">.</span><span class="n">example_data</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Yields a dict with the user-specific path to the datasets:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;chip_bedgraph&#39;</span><span class="p">:</span> <span class="s1">&#39;/Users/example/bloom/bloom/test/data/test_plotting/CTCF_ChIP_FE_chr11_77-80Mb_mouse_embryo_fibroblasts.bedgraph.gz&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;chip_bigwig&#39;</span><span class="p">:</span> <span class="s1">&#39;/Users/example/bloom/bloom/test/data/test_plotting/CTCF_ChIP_FE_chr11_77-80Mb_mouse_embryo_fibroblasts.bigwig&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;chip_peak_bed&#39;</span><span class="p">:</span> <span class="s1">&#39;/Users/example/bloom/bloom/test/data/test_plotting/CTCF_ChIP_FE_chr11_77-80Mb_mouse_embryo_fibroblasts.peaks.bed.gz&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;gene_gtf&#39;</span><span class="p">:</span> <span class="s1">&#39;/Users/example/bloom/bloom/test/data/test_plotting/genes_mm10_chr11_77-80Mb.gtf.gz&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;hic&#39;</span><span class="p">:</span> <span class="s1">&#39;/Users/example/bloom/bloom/test/data/test_network/rao2014.chr11_77400000_78600000.hic&#39;</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>import bloom.plotting as bloomplot
+
+# Create Hic plot
+hplot = bloomplot.HicPlot(&quot;bloom/test/data/test_network/rao2014.chr11_77400000_78600000.hic&quot;)
+
+# Create plot showing some CTCF ChIP-seq data from ENCODE
+bplot = bloomplot.BigWigPlot(&quot;bloom/test/data/test_plotting/CTCF_ChIP_FE_chr11_77-80Mb_mouse_embryo_fibroblasts.bigwig&quot;,
+                         title=&quot;CTCF ChIP&quot;, ylabel=&quot;fold enrichment&quot;)
+
+# Create plot of all genes in the region. The squash option in combination
+# with the group_by option causes all exons of each gene to be merged.
+# This is useful if the number of alternative transcripts is overwhelming
+# the plot.
+gplot = bloomplot.GenePlot(&quot;bloom/test/data/test_plotting/genes_mm10_chr11_77-80Mb.gtf.gz&quot;,
+                       group_by=&quot;gene_name&quot;, squash=True, show_labels=False,
+                       title=&quot;mm10 genes&quot;)
+
+# The created plots are used to generate a figure by passing them as a list
+# to the GenomicFigure constructor. The order in which they are passed
+# determines the order of panels in the figure.
+gfig = bloomplot.GenomicFigure([hplot, bplot, gplot])
+
+# Plot a specific region of the genome
+fig, axes = gfig.plot(&quot;chr11:77400000-78600000&quot;)
+
+# Open plot in an interactive window
+fig.show()
+
+Example rendering of the above code saved using
+``fig.savefig(&quot;example.png&quot;, dpi=100)``.
+</pre></div>
+</div>
+<section id="editing-figure-and-axes">
+<h3>Editing figure and axes<a class="headerlink" href="#editing-figure-and-axes" title="Permalink to this heading"></a></h3>
+<p>The <a class="reference internal" href="#bloom.plotting.GenomicFigure.plot" title="bloom.plotting.GenomicFigure.plot"><code class="xref py py-meth docutils literal notranslate"><span class="pre">GenomicFigure.plot()</span></code></a>
+function returns standard matplotlib Figure and a list of Axes instances that
+can be further adjusted using standard matplotlib methods. The matplotlib axes
+instance associated with each plot is also accesible from the “ax” property of
+each plot.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The Axes instances of the plot should only be edited after
+<a class="reference internal" href="#bloom.plotting.GenomicFigure.plot" title="bloom.plotting.GenomicFigure.plot"><code class="xref py py-meth docutils literal notranslate"><span class="pre">GenomicFigure.plot()</span></code></a>
+has been called. Otherwise any changes that were made may be overwritten
+when the plot() method is called.</p>
+</div>
+<p>For example, to add a bit of annotating text at a specific location in the
+BigWigPlot, the example above can be edited as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">gfig</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s2">&quot;chr11:77400000-78600000&quot;</span><span class="p">)</span>
+<span class="n">bplot</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">77850000</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="s2">&quot;Interesting peak!&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The coordinates in the Axes are data coordinates, the x-axis is genomic
+coordinates on the current chromosome and the y-axis in this case the
+fold-enrichment of the bigwig track.</p>
+</section>
+<section id="basic-plot-types-and-options">
+<h3>Basic Plot types and options<a class="headerlink" href="#basic-plot-types-and-options" title="Permalink to this heading"></a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>An explanation of each plot class and the parameters that it supports can be
+accessed by suffixing a question mark (in Ipython/Jupyter) or calling the
+help() function:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>import bloom.plotting as bloomplot
+bloomplot.BigWigPlot? # Ipython/Jupyter
+help(bloomplot.BigWigPlot) # standard python
+</pre></div>
+</div>
+</div>
+<p>A few basic parameters such as a title and the aspect ratio are available for
+all plot classes. The aspect ratio parameter is a floating point number between
+0 and 1 that determines the height of the plot. A value of 1 results in a square
+plot, .5 represents a plot that is half as high as it is wide.</p>
+<p>The <a class="reference internal" href="#bloom.plotting.GenomicFigure" title="bloom.plotting.GenomicFigure"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenomicFigure</span></code></a> provides a few convenience
+parameters. Setting <code class="docutils literal notranslate"><span class="pre">ticks_last=True</span></code> for example removes tick labels from all
+panels but the last one which makes the overall plot more compact.</p>
+<section id="independent-x-axis-and-inverting-x-axis">
+<h4>Independent x-axis and inverting x-axis<a class="headerlink" href="#independent-x-axis-and-inverting-x-axis" title="Permalink to this heading"></a></h4>
+<p>By default, the x-axis of all plots in a figure are linked, meaning that all
+plots display exactly the same region. In some situations in can be helpful
+to plot a multiple regions, such as when features in syntenic regions across
+multiple species need to be compared. Since syntenic regions can be on the +
+strand in some species and on the - strande, sometimes the x-axis also needs to
+be inverted to maintain correct orientation.</p>
+<p>In this situation the <code class="docutils literal notranslate"><span class="pre">independent-x</span></code> option should be set in the
+<a class="reference internal" href="#bloom.plotting.GenomicFigure" title="bloom.plotting.GenomicFigure"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenomicFigure</span></code></a>. As a result, the
+<a class="reference internal" href="#bloom.plotting.GenomicFigure.plot" title="bloom.plotting.GenomicFigure.plot"><code class="xref py py-meth docutils literal notranslate"><span class="pre">GenomicFigure.plot()</span></code></a> method
+no longer expects a single region as argument, but a list of regions equal to
+the number of plots in the figure. We can modify the example above to illustrate
+this point:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">gfig</span> <span class="o">=</span> <span class="n">bloomplot</span><span class="o">.</span><span class="n">GenomicFigure</span><span class="p">([</span><span class="n">hplot</span><span class="p">,</span> <span class="n">bplot</span><span class="p">,</span> <span class="n">gplot</span><span class="p">],</span> <span class="n">independent_x</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">gfig</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s2">&quot;chr11:77400000-78600000&quot;</span><span class="p">,</span> <span class="s2">&quot;chr11:77500000-78600000&quot;</span><span class="p">,</span>
+                       <span class="s2">&quot;chr11:77200000-78600000&quot;</span><span class="p">])</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="synchronize-y-axis-limits-for-multiple-datasets">
+<h4>Synchronize y-axis limits for multiple datasets<a class="headerlink" href="#synchronize-y-axis-limits-for-multiple-datasets" title="Permalink to this heading"></a></h4>
+<p>Sometimes it can be useful to synchronize y-axis limits across multiple datasets
+in order to compare their signals. Many plot types support plotting multiple
+datasets in the same panel, making comparisons easy:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">bplot</span> <span class="o">=</span> <span class="n">bloomplot</span><span class="o">.</span><span class="n">BigWigPlot</span><span class="p">([</span><span class="s2">&quot;dataset1.bigwig&quot;</span><span class="p">,</span> <span class="s2">&quot;dataset2.bigwig&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Alternatively it is possible to synchronize y-axis limits across panels using
+<a class="reference internal" href="#bloom.plotting.LimitGroup" title="bloom.plotting.LimitGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">LimitGroup</span></code></a> instances. In this example the y-axis limits
+are shared between bplot1 and bplot2 and seperately between bplot3 and bplot4:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ygroup</span> <span class="o">=</span> <span class="n">bloomplot</span><span class="o">.</span><span class="n">LimitGroup</span><span class="p">()</span>
+<span class="n">ygroup2</span> <span class="o">=</span> <span class="n">bloomplot</span><span class="o">.</span><span class="n">LimitGroup</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="n">bplot1</span> <span class="o">=</span> <span class="n">bloomplot</span><span class="o">.</span><span class="n">BigWigPlot</span><span class="p">(</span><span class="s2">&quot;dataset1.bigwig&quot;</span><span class="p">,</span> <span class="n">ylim</span><span class="o">=</span><span class="n">ygroup</span><span class="p">)</span>
+<span class="n">bplot2</span> <span class="o">=</span> <span class="n">bloomplot</span><span class="o">.</span><span class="n">BigWigPlot</span><span class="p">(</span><span class="s2">&quot;dataset2.bigwig&quot;</span><span class="p">,</span> <span class="n">ylim</span><span class="o">=</span><span class="n">ygroup</span><span class="p">)</span>
+<span class="n">bplot3</span> <span class="o">=</span> <span class="n">bloomplot</span><span class="o">.</span><span class="n">BigWigPlot</span><span class="p">(</span><span class="s2">&quot;dataset3.bigwig&quot;</span><span class="p">,</span> <span class="n">ylim</span><span class="o">=</span><span class="n">ygroup2</span><span class="p">)</span>
+<span class="n">bplot4</span> <span class="o">=</span> <span class="n">bloomplot</span><span class="o">.</span><span class="n">BigWigPlot</span><span class="p">(</span><span class="s2">&quot;dataset4.bigwig&quot;</span><span class="p">,</span> <span class="n">ylim</span><span class="o">=</span><span class="n">ygroup2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>It is also possible to constrain the y-axis limits. Passing <code class="docutils literal notranslate"><span class="pre">limit=(None,</span> <span class="pre">10)</span></code>
+to the constructor constrains the upper limit to a maximum of 10 while leaving
+the lower limit unconstrained.</p>
+</section>
+</section>
+<section id="programmatic-plotting-using-loops">
+<h3>Programmatic plotting using loops<a class="headerlink" href="#programmatic-plotting-using-loops" title="Permalink to this heading"></a></h3>
+<p>bloom plotting is ideally suited for programmatic generation of many plots or
+dynamic assembly of multiple datasets in a single figure. In this example three
+Hi-C datasets are visualized in a single figure:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">bloom.plotting</span> <span class="k">as</span> <span class="nn">bloomplot</span>
+<span class="n">hic_datasets</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;my_data1.hic&quot;</span><span class="p">,</span> <span class="s2">&quot;my_data2.hic&quot;</span><span class="p">,</span> <span class="n">my_data3</span><span class="o">.</span><span class="n">hic</span><span class="s2">&quot;]</span>
+<span class="n">hic_plots</span> <span class="o">=</span> <span class="p">[</span><span class="n">bloomplot</span><span class="o">.</span><span class="n">HicPlot</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">max_dist</span><span class="o">=</span><span class="mi">500000</span><span class="p">)</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">hic_datasets</span><span class="p">]</span>
+<span class="n">gfig</span> <span class="o">=</span> <span class="n">bloomplot</span><span class="o">.</span><span class="n">GenomicFigure</span><span class="p">(</span><span class="n">hic_plots</span><span class="p">)</span>
+<span class="n">regions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;chr11:77400000-78600000&quot;</span><span class="p">,</span> <span class="s2">&quot;chr11:1100000-13600000&quot;</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">regions</span><span class="p">:</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">gfig</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;plot_region_</span><span class="si">{}</span><span class="s2">.png&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)))</span>
+</pre></div>
+</div>
+</section>
+<dl class="py data">
+<dt class="sig sig-object py" id="bloom.plotting.example_data">
+<span class="sig-prename descclassname"><span class="pre">bloom.plotting.</span></span><span class="sig-name descname"><span class="pre">example_data</span></span><a class="headerlink" href="#bloom.plotting.example_data" title="Permalink to this definition"></a></dt>
+<dd><p>dict with user-specific paths to example data included in bloom.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="bloom.plotting.style_ticks_whitegrid">
+<span class="sig-prename descclassname"><span class="pre">bloom.plotting.</span></span><span class="sig-name descname"><span class="pre">style_ticks_whitegrid</span></span><a class="headerlink" href="#bloom.plotting.style_ticks_whitegrid" title="Permalink to this definition"></a></dt>
+<dd><p>Seaborn style that can be passed to <code class="docutils literal notranslate"><span class="pre">axes_style</span></code> attribute
+of plots. Draws a grid of lines on the plot.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bloom.plotting.BigWigPlot">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bloom.plotting.</span></span><span class="sig-name descname"><span class="pre">BigWigPlot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bigwigs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bin_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.BigWigPlot" title="Permalink to this definition"></a></dt>
+<dd><p>Plot data from on or more BigWig or Bedgraph files. <em>Deprecated, use LinePlot instead</em>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.plotting.BigWigPlot.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bigwigs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bin_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.BigWigPlot.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bigwigs</strong> – Path or list of paths to bigwig or bedgraph files</p></li>
+<li><p><strong>names</strong> – List of names for each bigwig. Used as label in the legend.</p></li>
+<li><p><strong>bin_size</strong> – Bin BigWig values using fixed size bins of the given size.
+If None, will plot values as they are in the BigWig file</p></li>
+<li><p><strong>fill</strong> – Fill space between x-axis and data line. Default: True</p></li>
+<li><p><strong>plot_kwargs</strong> – Dictionary of additional keyword arguments passed to the plot function</p></li>
+<li><p><strong>style</strong> (<em>str</em>) – ‘step’ Draw values in a step-wise manner for each bin
+‘mid’ Draw values connecting mid-points of bins</p></li>
+<li><p><strong>tupleylim</strong> – Set y-axis limits as tuple. Can leave upper or lower
+limit undetermined by setting None, e.g. (2.5, None).
+Alternatively, a <a class="reference internal" href="#bloom.plotting.LimitGroup" title="bloom.plotting.helpers.LimitGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">LimitGroup</span></code></a> instance can
+be passed to synchronize limits across multiple plots.
+Default: Automatically determined by data limits</p></li>
+<li><p><strong>yscale</strong> (<em>str</em>) – Scale of y-axis. Is passed to Matplotlib set_yscale,
+so any valid argument (“linear”, “log”, etc.) works
+Default: “linear”</p></li>
+<li><p><strong>condensed</strong> (<em>bool</em>) – Only show maximum y-axis tick.
+Default: False</p></li>
+<li><p><strong>n_yticks</strong> (<em>int</em>) – Number of y-axis ticks. If only the maximum
+tick should be displayed set condensed to True.
+Default: 3</p></li>
+<li><p><strong>n_ticks</strong> (<em>int</em>) – Number of major x-axis genome coordinate ticks</p></li>
+<li><p><strong>n_minor_ticks</strong> (<em>int</em>) – Number of minor ticks per major tick</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Title drawn on top of the figure panel.</p></li>
+<li><p><strong>aspect</strong> (<em>float</em>) – Aspect ratio of the plot, height/width.
+So 0.5 means half as high as wide.
+Default: Plot type specific sensible value</p></li>
+<li><p><strong>axes_style</strong> – Set styling of the axes, can be anything
+that seaborn supports. See
+<a class="reference external" href="http://seaborn.pydata.org/tutorial/aesthetics.html#styling-figures-with-axes-style-and-set-style">http://seaborn.pydata.org/tutorial/aesthetics.html#styling-figures-with-axes-style-and-set-style</a></p></li>
+<li><p><strong>ylabel</strong> (<em>str</em>) – Label for y-axis. Default: None</p></li>
+<li><p><strong>draw_ticks</strong> (<em>bool</em>) – Draw tickmarks. Default: True</p></li>
+<li><p><strong>draw_major_ticks</strong> (<em>bool</em>) – Draw major tickmarks. Default: True</p></li>
+<li><p><strong>draw_minor_ticks</strong> (<em>bool</em>) – Draw minor tickmarks. Default: True</p></li>
+<li><p><strong>draw_tick_labels</strong> (<em>bool</em>) – Draw tick labels. Default: True</p></li>
+<li><p><strong>draw_x_axis</strong> (<em>bool</em>) – If False, remove genome x-axis completely.
+Default: True</p></li>
+<li><p><strong>draw_tick_legend</strong> (<em>bool</em>) – Draw legend for the tick distances. Default: True</p></li>
+<li><p><strong>padding</strong> (<em>float</em>) – Padding in inches to the next plot. Default: None,
+automatically calculated.</p></li>
+<li><p><strong>extra_padding</strong> (<em>float</em>) – Add or subtract the specified inches from
+the automatically calculated padding from
+this panel to the next.</p></li>
+<li><p><strong>fix_chromosome</strong> (<em>bool</em>) – If True modify chromosome identifiers for this plot,
+removing or adding ‘chr’ as necessary. Default: False</p></li>
+<li><p><strong>invert_x</strong> (<em>bool</em>) – Invert x-axis. Default=False
+Caution: This only works reliably when <code class="docutils literal notranslate"><span class="pre">independent_x=True</span></code>
+in the GenomicFigure instance, since x-axis of all plots
+are linked otherwise.</p></li>
+<li><p><strong>ax</strong> (<em>Axes</em>) – Matplotlib axes instance that the plot will be drawn on.
+Only necessary if you don’t intend to use a
+<a class="reference internal" href="#bloom.plotting.GenomicFigure" title="bloom.plotting.plotter.GenomicFigure"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenomicFigure</span></code></a> to draw the
+plot. Default: None</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bloom.plotting.FeatureLayerPlot">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bloom.plotting.</span></span><span class="sig-name descname"><span class="pre">FeatureLayerPlot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">features</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gff_grouping_attribute</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">element_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'strand'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">((1,</span> <span class="pre">'orangered'),</span> <span class="pre">(-1,</span> <span class="pre">'darkturquoise'))</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shadow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shadow_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.005</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collapse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.FeatureLayerPlot" title="Permalink to this definition"></a></dt>
+<dd><p>Plot genomic features in layers grouped by name/type.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">B1</span>         <span class="o">-</span>   <span class="o">-</span>      <span class="o">-</span>
+<span class="n">B2</span>      <span class="o">-</span>   <span class="o">-</span>     <span class="o">-</span> <span class="o">-</span>   <span class="o">-</span>
+<span class="n">L1</span>       <span class="o">---</span>   <span class="o">---</span>     <span class="o">--</span>
+    <span class="n">_____________________</span>
+    <span class="mi">0</span>    <span class="mi">10</span>    <span class="mi">20</span>    <span class="mi">30</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.plotting.FeatureLayerPlot.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">features</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gff_grouping_attribute</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">element_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'strand'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">((1,</span> <span class="pre">'orangered'),</span> <span class="pre">(-1,</span> <span class="pre">'darkturquoise'))</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shadow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shadow_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.005</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collapse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.FeatureLayerPlot.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>features</strong> – Any input that pybedtools can parse. Can be a path to a
+GTF/BED file. If BED, elements will be grouped by name,
+if GFF will be grouped by feature type</p></li>
+<li><p><strong>gff_grouping_attribute</strong> – By default, GFF entries are grouped by feature type,
+change this to any attribute using this parameter</p></li>
+<li><p><strong>element_height</strong> – Height of an individual element in the plot. A row’s height
+is 1.0, so you should choose a value smaller than that.</p></li>
+<li><p><strong>color_by</strong> – element attribute to color the element by. Currently, only categorical
+values are supported.</p></li>
+<li><p><strong>colors</strong> – List of (attribute, color) pairs to color elements according to some attribute</p></li>
+<li><p><strong>shadow</strong> – Draws a translucent box under each element the is min_element_width wide.
+Useful if the size of elements is very small compared to plotting region</p></li>
+<li><p><strong>shadow_width</strong> – Width of the shadow of an element in fraction of plotting region.
+Some very small features won’t be visible in this plot unless
+you increase this parameter</p></li>
+<li><p><strong>collapse</strong> – Collapse all rows onto a single one (ignore grouping)</p></li>
+<li><p><strong>n_ticks</strong> (<em>int</em>) – Number of major x-axis genome coordinate ticks</p></li>
+<li><p><strong>n_minor_ticks</strong> (<em>int</em>) – Number of minor ticks per major tick</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Title drawn on top of the figure panel.</p></li>
+<li><p><strong>aspect</strong> (<em>float</em>) – Aspect ratio of the plot, height/width.
+So 0.5 means half as high as wide.
+Default: Plot type specific sensible value</p></li>
+<li><p><strong>axes_style</strong> – Set styling of the axes, can be anything
+that seaborn supports. See
+<a class="reference external" href="http://seaborn.pydata.org/tutorial/aesthetics.html#styling-figures-with-axes-style-and-set-style">http://seaborn.pydata.org/tutorial/aesthetics.html#styling-figures-with-axes-style-and-set-style</a></p></li>
+<li><p><strong>ylabel</strong> (<em>str</em>) – Label for y-axis. Default: None</p></li>
+<li><p><strong>draw_ticks</strong> (<em>bool</em>) – Draw tickmarks. Default: True</p></li>
+<li><p><strong>draw_major_ticks</strong> (<em>bool</em>) – Draw major tickmarks. Default: True</p></li>
+<li><p><strong>draw_minor_ticks</strong> (<em>bool</em>) – Draw minor tickmarks. Default: True</p></li>
+<li><p><strong>draw_tick_labels</strong> (<em>bool</em>) – Draw tick labels. Default: True</p></li>
+<li><p><strong>draw_x_axis</strong> (<em>bool</em>) – If False, remove genome x-axis completely.
+Default: True</p></li>
+<li><p><strong>draw_tick_legend</strong> (<em>bool</em>) – Draw legend for the tick distances. Default: True</p></li>
+<li><p><strong>padding</strong> (<em>float</em>) – Padding in inches to the next plot. Default: None,
+automatically calculated.</p></li>
+<li><p><strong>extra_padding</strong> (<em>float</em>) – Add or subtract the specified inches from
+the automatically calculated padding from
+this panel to the next.</p></li>
+<li><p><strong>fix_chromosome</strong> (<em>bool</em>) – If True modify chromosome identifiers for this plot,
+removing or adding ‘chr’ as necessary. Default: False</p></li>
+<li><p><strong>invert_x</strong> (<em>bool</em>) – Invert x-axis. Default=False
+Caution: This only works reliably when <code class="docutils literal notranslate"><span class="pre">independent_x=True</span></code>
+in the GenomicFigure instance, since x-axis of all plots
+are linked otherwise.</p></li>
+<li><p><strong>ax</strong> (<em>Axes</em>) – Matplotlib axes instance that the plot will be drawn on.
+Only necessary if you don’t intend to use a
+<a class="reference internal" href="#bloom.plotting.GenomicFigure" title="bloom.plotting.plotter.GenomicFigure"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenomicFigure</span></code></a> to draw the
+plot. Default: None</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bloom.plotting.GenePlot">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bloom.plotting.</span></span><span class="sig-name descname"><span class="pre">GenePlot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">genes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('exon',)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_neutral</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gray'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_forward</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'orangered'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_reverse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'darkturquoise'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'name'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">font_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrow_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_arrows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'transcript_id'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collapse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">squash</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_gene_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lookahead</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2000000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score_colormap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'RdBu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_text_offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_marker_step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.03</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_labels_outside_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.GenePlot" title="Permalink to this definition"></a></dt>
+<dd><p>Plot genes including exon/intron structure from BED, GTF files or similar.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.plotting.GenePlot.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">genes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('exon',)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_neutral</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gray'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_forward</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'orangered'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_reverse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'darkturquoise'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'name'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">font_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrow_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_arrows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'transcript_id'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collapse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">squash</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_gene_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lookahead</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2000000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score_colormap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'RdBu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_text_offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_marker_step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.03</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_labels_outside_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.GenePlot.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>genes</strong> – Any input that pybedtools can parse. Can be a path to a
+GTF/BED file</p></li>
+<li><p><strong>feature_types</strong> – If the input file is a GTF, only draw certain feature types (3rd column)
+If False, draw all features on a common track
+If None, automatically draw different feature types on separate tracks
+If a list, draw only the feature types in the list on separate tracks,
+don’t draw the rest.</p></li>
+<li><p><strong>label_field</strong> – Field of input file for labelling transcripts/genes. Default: name</p></li>
+<li><p><strong>collapse</strong> – Draw all transcripts on a single row. Everything will overlap. Default: False</p></li>
+<li><p><strong>squash</strong> – Squash all exons belonging to a single grouping unit (merging overlapping exons).
+Useful especially when setting group_by=”gene_id” or “gene_symbol”.
+Genes will still draw on separate rows, if necessary. Default: False</p></li>
+<li><p><strong>n_ticks</strong> (<em>int</em>) – Number of major x-axis genome coordinate ticks</p></li>
+<li><p><strong>n_minor_ticks</strong> (<em>int</em>) – Number of minor ticks per major tick</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Title drawn on top of the figure panel.</p></li>
+<li><p><strong>aspect</strong> (<em>float</em>) – Aspect ratio of the plot, height/width.
+So 0.5 means half as high as wide.
+Default: Plot type specific sensible value</p></li>
+<li><p><strong>axes_style</strong> – Set styling of the axes, can be anything
+that seaborn supports. See
+<a class="reference external" href="http://seaborn.pydata.org/tutorial/aesthetics.html#styling-figures-with-axes-style-and-set-style">http://seaborn.pydata.org/tutorial/aesthetics.html#styling-figures-with-axes-style-and-set-style</a></p></li>
+<li><p><strong>ylabel</strong> (<em>str</em>) – Label for y-axis. Default: None</p></li>
+<li><p><strong>draw_ticks</strong> (<em>bool</em>) – Draw tickmarks. Default: True</p></li>
+<li><p><strong>draw_major_ticks</strong> (<em>bool</em>) – Draw major tickmarks. Default: True</p></li>
+<li><p><strong>draw_minor_ticks</strong> (<em>bool</em>) – Draw minor tickmarks. Default: True</p></li>
+<li><p><strong>draw_tick_labels</strong> (<em>bool</em>) – Draw tick labels. Default: True</p></li>
+<li><p><strong>draw_x_axis</strong> (<em>bool</em>) – If False, remove genome x-axis completely.
+Default: True</p></li>
+<li><p><strong>draw_tick_legend</strong> (<em>bool</em>) – Draw legend for the tick distances. Default: True</p></li>
+<li><p><strong>padding</strong> (<em>float</em>) – Padding in inches to the next plot. Default: None,
+automatically calculated.</p></li>
+<li><p><strong>extra_padding</strong> (<em>float</em>) – Add or subtract the specified inches from
+the automatically calculated padding from
+this panel to the next.</p></li>
+<li><p><strong>fix_chromosome</strong> (<em>bool</em>) – If True modify chromosome identifiers for this plot,
+removing or adding ‘chr’ as necessary. Default: False</p></li>
+<li><p><strong>invert_x</strong> (<em>bool</em>) – Invert x-axis. Default=False
+Caution: This only works reliably when <code class="docutils literal notranslate"><span class="pre">independent_x=True</span></code>
+in the GenomicFigure instance, since x-axis of all plots
+are linked otherwise.</p></li>
+<li><p><strong>ax</strong> (<em>Axes</em>) – Matplotlib axes instance that the plot will be drawn on.
+Only necessary if you don’t intend to use a
+<a class="reference internal" href="#bloom.plotting.GenomicFigure" title="bloom.plotting.plotter.GenomicFigure"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenomicFigure</span></code></a> to draw the
+plot. Default: None</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bloom.plotting.GenomicDataFramePlot">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bloom.plotting.</span></span><span class="sig-name descname"><span class="pre">GenomicDataFramePlot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">genomic_data_frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.GenomicDataFramePlot" title="Permalink to this definition"></a></dt>
+<dd><p>Plot data from a table.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.plotting.GenomicDataFramePlot.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">genomic_data_frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.GenomicDataFramePlot.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>genomic_data_frame</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">GenomicDataFrame</span></code></p></li>
+<li><p><strong>names</strong> – List of column names to plot (on the same axis)</p></li>
+<li><p><strong>plot_kwargs</strong> – Dictionary of additional keyword arguments passed to the plot function</p></li>
+<li><p><strong>style</strong> (<em>str</em>) – ‘step’ Draw values in a step-wise manner for each bin
+‘mid’ Draw values connecting mid-points of bins</p></li>
+<li><p><strong>tupleylim</strong> – Set y-axis limits as tuple. Can leave upper or lower
+limit undetermined by setting None, e.g. (2.5, None).
+Alternatively, a <a class="reference internal" href="#bloom.plotting.LimitGroup" title="bloom.plotting.helpers.LimitGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">LimitGroup</span></code></a> instance can
+be passed to synchronize limits across multiple plots.
+Default: Automatically determined by data limits</p></li>
+<li><p><strong>yscale</strong> (<em>str</em>) – Scale of y-axis. Is passed to Matplotlib set_yscale,
+so any valid argument (“linear”, “log”, etc.) works
+Default: “linear”</p></li>
+<li><p><strong>condensed</strong> (<em>bool</em>) – Only show maximum y-axis tick.
+Default: False</p></li>
+<li><p><strong>n_yticks</strong> (<em>int</em>) – Number of y-axis ticks. If only the maximum
+tick should be displayed set condensed to True.
+Default: 3</p></li>
+<li><p><strong>n_ticks</strong> (<em>int</em>) – Number of major x-axis genome coordinate ticks</p></li>
+<li><p><strong>n_minor_ticks</strong> (<em>int</em>) – Number of minor ticks per major tick</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Title drawn on top of the figure panel.</p></li>
+<li><p><strong>aspect</strong> (<em>float</em>) – Aspect ratio of the plot, height/width.
+So 0.5 means half as high as wide.
+Default: Plot type specific sensible value</p></li>
+<li><p><strong>axes_style</strong> – Set styling of the axes, can be anything
+that seaborn supports. See
+<a class="reference external" href="http://seaborn.pydata.org/tutorial/aesthetics.html#styling-figures-with-axes-style-and-set-style">http://seaborn.pydata.org/tutorial/aesthetics.html#styling-figures-with-axes-style-and-set-style</a></p></li>
+<li><p><strong>ylabel</strong> (<em>str</em>) – Label for y-axis. Default: None</p></li>
+<li><p><strong>draw_ticks</strong> (<em>bool</em>) – Draw tickmarks. Default: True</p></li>
+<li><p><strong>draw_major_ticks</strong> (<em>bool</em>) – Draw major tickmarks. Default: True</p></li>
+<li><p><strong>draw_minor_ticks</strong> (<em>bool</em>) – Draw minor tickmarks. Default: True</p></li>
+<li><p><strong>draw_tick_labels</strong> (<em>bool</em>) – Draw tick labels. Default: True</p></li>
+<li><p><strong>draw_x_axis</strong> (<em>bool</em>) – If False, remove genome x-axis completely.
+Default: True</p></li>
+<li><p><strong>draw_tick_legend</strong> (<em>bool</em>) – Draw legend for the tick distances. Default: True</p></li>
+<li><p><strong>padding</strong> (<em>float</em>) – Padding in inches to the next plot. Default: None,
+automatically calculated.</p></li>
+<li><p><strong>extra_padding</strong> (<em>float</em>) – Add or subtract the specified inches from
+the automatically calculated padding from
+this panel to the next.</p></li>
+<li><p><strong>fix_chromosome</strong> (<em>bool</em>) – If True modify chromosome identifiers for this plot,
+removing or adding ‘chr’ as necessary. Default: False</p></li>
+<li><p><strong>invert_x</strong> (<em>bool</em>) – Invert x-axis. Default=False
+Caution: This only works reliably when <code class="docutils literal notranslate"><span class="pre">independent_x=True</span></code>
+in the GenomicFigure instance, since x-axis of all plots
+are linked otherwise.</p></li>
+<li><p><strong>ax</strong> (<em>Axes</em>) – Matplotlib axes instance that the plot will be drawn on.
+Only necessary if you don’t intend to use a
+<a class="reference internal" href="#bloom.plotting.GenomicFigure" title="bloom.plotting.plotter.GenomicFigure"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenomicFigure</span></code></a> to draw the
+plot. Default: None</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bloom.plotting.GenomicFeaturePlot">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bloom.plotting.</span></span><span class="sig-name descname"><span class="pre">GenomicFeaturePlot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">regions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gene_symbol'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'black'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.GenomicFeaturePlot" title="Permalink to this definition"></a></dt>
+<dd><p>Plot discrete genomic regions from BED, GTF files or similar.
+Just draws a black box where the feature is located.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.plotting.GenomicFeaturePlot.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">regions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gene_symbol'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'black'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.GenomicFeaturePlot.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>regions</strong> – Any input that pybedtools can parse. Can be a path to a
+GTF/BED file or a list of tuples [(2L, 500, 1000), (3R, 400, 600), …]</p></li>
+<li><p><strong>feature_types</strong> – If the input file is a GTF, only draw certain feature types (3rd column)
+If False, draw all features on a common track
+If None, automatically draw different feature types on separate tracks
+If a list, draw only the feature types in the list on separate tracks,
+don’t draw the rest.</p></li>
+<li><p><strong>label_field</strong> – Use this field as a label for each feature drawn.
+Can be an integer to select a specific column or the name of an attribute
+in the GTF file. If None or False no label is drawn. E.g. 2 for the second
+column or “score” for the score attribute.</p></li>
+<li><p><strong>label_func</strong> – Alternatively, label can be generated by calling this function which
+takes pybedtools.Interval als argument and returns label string</p></li>
+<li><p><strong>n_ticks</strong> (<em>int</em>) – Number of major x-axis genome coordinate ticks</p></li>
+<li><p><strong>n_minor_ticks</strong> (<em>int</em>) – Number of minor ticks per major tick</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Title drawn on top of the figure panel.</p></li>
+<li><p><strong>aspect</strong> (<em>float</em>) – Aspect ratio of the plot, height/width.
+So 0.5 means half as high as wide.
+Default: Plot type specific sensible value</p></li>
+<li><p><strong>axes_style</strong> – Set styling of the axes, can be anything
+that seaborn supports. See
+<a class="reference external" href="http://seaborn.pydata.org/tutorial/aesthetics.html#styling-figures-with-axes-style-and-set-style">http://seaborn.pydata.org/tutorial/aesthetics.html#styling-figures-with-axes-style-and-set-style</a></p></li>
+<li><p><strong>ylabel</strong> (<em>str</em>) – Label for y-axis. Default: None</p></li>
+<li><p><strong>draw_ticks</strong> (<em>bool</em>) – Draw tickmarks. Default: True</p></li>
+<li><p><strong>draw_major_ticks</strong> (<em>bool</em>) – Draw major tickmarks. Default: True</p></li>
+<li><p><strong>draw_minor_ticks</strong> (<em>bool</em>) – Draw minor tickmarks. Default: True</p></li>
+<li><p><strong>draw_tick_labels</strong> (<em>bool</em>) – Draw tick labels. Default: True</p></li>
+<li><p><strong>draw_x_axis</strong> (<em>bool</em>) – If False, remove genome x-axis completely.
+Default: True</p></li>
+<li><p><strong>draw_tick_legend</strong> (<em>bool</em>) – Draw legend for the tick distances. Default: True</p></li>
+<li><p><strong>padding</strong> (<em>float</em>) – Padding in inches to the next plot. Default: None,
+automatically calculated.</p></li>
+<li><p><strong>extra_padding</strong> (<em>float</em>) – Add or subtract the specified inches from
+the automatically calculated padding from
+this panel to the next.</p></li>
+<li><p><strong>fix_chromosome</strong> (<em>bool</em>) – If True modify chromosome identifiers for this plot,
+removing or adding ‘chr’ as necessary. Default: False</p></li>
+<li><p><strong>invert_x</strong> (<em>bool</em>) – Invert x-axis. Default=False
+Caution: This only works reliably when <code class="docutils literal notranslate"><span class="pre">independent_x=True</span></code>
+in the GenomicFigure instance, since x-axis of all plots
+are linked otherwise.</p></li>
+<li><p><strong>ax</strong> (<em>Axes</em>) – Matplotlib axes instance that the plot will be drawn on.
+Only necessary if you don’t intend to use a
+<a class="reference internal" href="#bloom.plotting.GenomicFigure" title="bloom.plotting.plotter.GenomicFigure"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenomicFigure</span></code></a> to draw the
+plot. Default: None</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bloom.plotting.GenomicFeatureScorePlot">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bloom.plotting.</span></span><span class="sig-name descname"><span class="pre">GenomicFeatureScorePlot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">regions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'score'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_neutral</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'grey'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_forward</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'red'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_reverse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'blue'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotation_field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.GenomicFeatureScorePlot" title="Permalink to this definition"></a></dt>
+<dd><p>Plot discrete genomic regions from BED, GTF files or similar.</p>
+<p>Regions will be plotted as bars with the height equal to the score provided in the file.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.plotting.GenomicFeatureScorePlot.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">regions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'score'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_neutral</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'grey'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_forward</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'red'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_reverse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'blue'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotation_field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.GenomicFeatureScorePlot.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>regions</strong> – Any input that pybedtools can parse. Can be a path to a
+GTF/BED file or a list of tuples [(2L, 500, 1000), (3R, 400, 600), …]</p></li>
+<li><p><strong>attribute</strong> – Field in the fiel which is plotted as score. Can be integer or attribute name
+(if it is a GTF/GFF file)</p></li>
+<li><p><strong>feature_types</strong> – If the input file is a GTF, only draw certain feature types (3rd column)
+If False, draw all features on a common track
+If None, automatically draw different feature types on separate tracks
+If a list, draw only the feature types in the list on separate tracks,
+don’t draw the rest.</p></li>
+<li><p><strong>n_ticks</strong> (<em>int</em>) – Number of major x-axis genome coordinate ticks</p></li>
+<li><p><strong>n_minor_ticks</strong> (<em>int</em>) – Number of minor ticks per major tick</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Title drawn on top of the figure panel.</p></li>
+<li><p><strong>aspect</strong> (<em>float</em>) – Aspect ratio of the plot, height/width.
+So 0.5 means half as high as wide.
+Default: Plot type specific sensible value</p></li>
+<li><p><strong>axes_style</strong> – Set styling of the axes, can be anything
+that seaborn supports. See
+<a class="reference external" href="http://seaborn.pydata.org/tutorial/aesthetics.html#styling-figures-with-axes-style-and-set-style">http://seaborn.pydata.org/tutorial/aesthetics.html#styling-figures-with-axes-style-and-set-style</a></p></li>
+<li><p><strong>ylabel</strong> (<em>str</em>) – Label for y-axis. Default: None</p></li>
+<li><p><strong>draw_ticks</strong> (<em>bool</em>) – Draw tickmarks. Default: True</p></li>
+<li><p><strong>draw_major_ticks</strong> (<em>bool</em>) – Draw major tickmarks. Default: True</p></li>
+<li><p><strong>draw_minor_ticks</strong> (<em>bool</em>) – Draw minor tickmarks. Default: True</p></li>
+<li><p><strong>draw_tick_labels</strong> (<em>bool</em>) – Draw tick labels. Default: True</p></li>
+<li><p><strong>draw_x_axis</strong> (<em>bool</em>) – If False, remove genome x-axis completely.
+Default: True</p></li>
+<li><p><strong>draw_tick_legend</strong> (<em>bool</em>) – Draw legend for the tick distances. Default: True</p></li>
+<li><p><strong>padding</strong> (<em>float</em>) – Padding in inches to the next plot. Default: None,
+automatically calculated.</p></li>
+<li><p><strong>extra_padding</strong> (<em>float</em>) – Add or subtract the specified inches from
+the automatically calculated padding from
+this panel to the next.</p></li>
+<li><p><strong>fix_chromosome</strong> (<em>bool</em>) – If True modify chromosome identifiers for this plot,
+removing or adding ‘chr’ as necessary. Default: False</p></li>
+<li><p><strong>invert_x</strong> (<em>bool</em>) – Invert x-axis. Default=False
+Caution: This only works reliably when <code class="docutils literal notranslate"><span class="pre">independent_x=True</span></code>
+in the GenomicFigure instance, since x-axis of all plots
+are linked otherwise.</p></li>
+<li><p><strong>ax</strong> (<em>Axes</em>) – Matplotlib axes instance that the plot will be drawn on.
+Only necessary if you don’t intend to use a
+<a class="reference internal" href="#bloom.plotting.GenomicFigure" title="bloom.plotting.plotter.GenomicFigure"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenomicFigure</span></code></a> to draw the
+plot. Default: None</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bloom.plotting.GenomicFigure">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bloom.plotting.</span></span><span class="sig-name descname"><span class="pre">GenomicFigure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plots</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ticks_last</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cax_padding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cax_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig_padding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.5,</span> <span class="pre">0.5,</span> <span class="pre">1.0,</span> <span class="pre">1.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">independent_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.GenomicFigure" title="Permalink to this definition"></a></dt>
+<dd><p>GenomicFigure composed of one or more plots.
+All plots are arranged in a single column, their genomic coordinates aligned.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.plotting.GenomicFigure.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plots</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ticks_last</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cax_padding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cax_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig_padding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.5,</span> <span class="pre">0.5,</span> <span class="pre">1.0,</span> <span class="pre">1.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">independent_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.GenomicFigure.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>plots</strong> (<em>list</em>) – List of plot instances each will form a separate panel in the figure.
+Should inherit from <code class="xref py py-class docutils literal notranslate"><span class="pre">BasePlotter</span></code> or
+<code class="xref py py-class docutils literal notranslate"><span class="pre">BaseAnnotation</span></code></p></li>
+<li><p><strong>width</strong> (<em>float</em>) – Width of the plots in inches. Height is automatically determined
+from the specified aspect ratios of the Plots.
+Default: 5.</p></li>
+<li><p><strong>ticks_last</strong> (<em>bool</em>) – Only draw genomic coordinate tick labels on last (bottom) plot</p></li>
+<li><p><strong>invert_x</strong> (<em>bool</em>) – Invert x-axis for on all plots. Default: False</p></li>
+<li><p><strong>cax_padding</strong> (<em>float</em>) – Distance between plots and the colorbar in inches. Default: 0.3</p></li>
+<li><p><strong>cax_width</strong> (<em>float</em>) – Width of colorbar in inches. Default: 0.5</p></li>
+<li><p><strong>fig_padding</strong> (<em>tuple</em><em>(</em><em>float</em><em>, </em><em>float</em><em>, </em><em>float</em><em>, </em><em>float</em><em>)</em>) – Distance between the edges of the plots and the figure borders
+in inches (bottom, top, left, right). Default: (.5, .5, .5, .5)</p></li>
+<li><p><strong>independent_x</strong> (<em>bool</em>) – When plotting, supply separate coordinates for each plot
+in the figure. Default: False</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.plotting.GenomicFigure.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">region</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.GenomicFigure.plot" title="Permalink to this definition"></a></dt>
+<dd><p>Make a plot of the specified region.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>region</strong> (<em>string</em><em> or </em><em>GenomicRegion</em>) – A string describing a region “2L:10000000-12000000” or
+a <code class="xref py py-class docutils literal notranslate"><span class="pre">GenomicRegion</span></code>.
+If <code class="docutils literal notranslate"><span class="pre">independent_x</span></code> was set, a list of regions
+equal to the length of plots + the length of
+annotations (if present) must be supplied.
+The order of the regions here must be the same
+as the order in which the plots were supplied to
+the GenomicFigure constructor.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A matplotlib Figure instance and a list of figure axes</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bloom.plotting.GenomicRegionsPlot">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bloom.plotting.</span></span><span class="sig-name descname"><span class="pre">GenomicRegionsPlot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">regions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attributes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linestyles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.GenomicRegionsPlot" title="Permalink to this definition"></a></dt>
+<dd><p>Plot scalar values from one or more <code class="xref py py-class docutils literal notranslate"><span class="pre">GenomicRegions</span></code> objects</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.plotting.GenomicRegionsPlot.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">regions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attributes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linestyles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.GenomicRegionsPlot.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>regions</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">GenomicRegions</span></code></p></li>
+<li><p><strong>attributes</strong> – Only draw attributes from the track objects
+which match this description.
+Should be a list of names. Supports wildcard matching
+and regex.</p></li>
+<li><p><strong>names</strong> – Supply list of names for each track.</p></li>
+<li><p><strong>legend</strong> – Draw legend. Default: True</p></li>
+<li><p><strong>style</strong> (<em>str</em>) – ‘step’ Draw values in a step-wise manner for each bin
+‘mid’ Draw values connecting mid-points of bins</p></li>
+<li><p><strong>tupleylim</strong> – Set y-axis limits as tuple. Can leave upper or lower
+limit undetermined by setting None, e.g. (2.5, None).
+Alternatively, a <a class="reference internal" href="#bloom.plotting.LimitGroup" title="bloom.plotting.helpers.LimitGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">LimitGroup</span></code></a> instance can
+be passed to synchronize limits across multiple plots.
+Default: Automatically determined by data limits</p></li>
+<li><p><strong>yscale</strong> (<em>str</em>) – Scale of y-axis. Is passed to Matplotlib set_yscale,
+so any valid argument (“linear”, “log”, etc.) works
+Default: “linear”</p></li>
+<li><p><strong>condensed</strong> (<em>bool</em>) – Only show maximum y-axis tick.
+Default: False</p></li>
+<li><p><strong>n_yticks</strong> (<em>int</em>) – Number of y-axis ticks. If only the maximum
+tick should be displayed set condensed to True.
+Default: 3</p></li>
+<li><p><strong>n_ticks</strong> (<em>int</em>) – Number of major x-axis genome coordinate ticks</p></li>
+<li><p><strong>n_minor_ticks</strong> (<em>int</em>) – Number of minor ticks per major tick</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Title drawn on top of the figure panel.</p></li>
+<li><p><strong>aspect</strong> (<em>float</em>) – Aspect ratio of the plot, height/width.
+So 0.5 means half as high as wide.
+Default: Plot type specific sensible value</p></li>
+<li><p><strong>axes_style</strong> – Set styling of the axes, can be anything
+that seaborn supports. See
+<a class="reference external" href="http://seaborn.pydata.org/tutorial/aesthetics.html#styling-figures-with-axes-style-and-set-style">http://seaborn.pydata.org/tutorial/aesthetics.html#styling-figures-with-axes-style-and-set-style</a></p></li>
+<li><p><strong>ylabel</strong> (<em>str</em>) – Label for y-axis. Default: None</p></li>
+<li><p><strong>draw_ticks</strong> (<em>bool</em>) – Draw tickmarks. Default: True</p></li>
+<li><p><strong>draw_major_ticks</strong> (<em>bool</em>) – Draw major tickmarks. Default: True</p></li>
+<li><p><strong>draw_minor_ticks</strong> (<em>bool</em>) – Draw minor tickmarks. Default: True</p></li>
+<li><p><strong>draw_tick_labels</strong> (<em>bool</em>) – Draw tick labels. Default: True</p></li>
+<li><p><strong>draw_x_axis</strong> (<em>bool</em>) – If False, remove genome x-axis completely.
+Default: True</p></li>
+<li><p><strong>draw_tick_legend</strong> (<em>bool</em>) – Draw legend for the tick distances. Default: True</p></li>
+<li><p><strong>padding</strong> (<em>float</em>) – Padding in inches to the next plot. Default: None,
+automatically calculated.</p></li>
+<li><p><strong>extra_padding</strong> (<em>float</em>) – Add or subtract the specified inches from
+the automatically calculated padding from
+this panel to the next.</p></li>
+<li><p><strong>fix_chromosome</strong> (<em>bool</em>) – If True modify chromosome identifiers for this plot,
+removing or adding ‘chr’ as necessary. Default: False</p></li>
+<li><p><strong>invert_x</strong> (<em>bool</em>) – Invert x-axis. Default=False
+Caution: This only works reliably when <code class="docutils literal notranslate"><span class="pre">independent_x=True</span></code>
+in the GenomicFigure instance, since x-axis of all plots
+are linked otherwise.</p></li>
+<li><p><strong>ax</strong> (<em>Axes</em>) – Matplotlib axes instance that the plot will be drawn on.
+Only necessary if you don’t intend to use a
+<a class="reference internal" href="#bloom.plotting.GenomicFigure" title="bloom.plotting.plotter.GenomicFigure"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenomicFigure</span></code></a> to draw the
+plot. Default: None</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bloom.plotting.GenomicVectorArrayPlot">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bloom.plotting.</span></span><span class="sig-name descname"><span class="pre">GenomicVectorArrayPlot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_coords</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'linear'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">genomic_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.GenomicVectorArrayPlot" title="Permalink to this definition"></a></dt>
+<dd><p>Plot matrix from a <code class="xref py py-class docutils literal notranslate"><span class="pre">MultiVectorArchitecturalRegionFeature</span></code> object.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.plotting.GenomicVectorArrayPlot.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_coords</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'linear'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">genomic_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.GenomicVectorArrayPlot.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>array</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">MultiVectorArchitecturalRegionFeature</span></code></p></li>
+<li><p><strong>keys</strong> – keys for which vectors to use for array. None indicates all vectors will be used.</p></li>
+<li><p><strong>y_coords</strong> – Matrices in the <code class="xref py py-class docutils literal notranslate"><span class="pre">GenomicTrack</span></code> object are
+unitless. Can provide the coordinates for the
+y-direction here. Matrix has shape (X, Y) must
+have shape Y or Y + 1</p></li>
+<li><p><strong>y_scale</strong> – Set scale of the y-axis, is passed to Matplotlib set_yscale, so any
+valid argument (“linear”, “log”, etc.) works</p></li>
+<li><p><strong>plot_kwargs</strong> – Keyword-arguments passed on to pcolormesh</p></li>
+<li><p><strong>colormap</strong> – Can be the name of a colormap or a Matplotlib colormap instance</p></li>
+<li><p><strong>norm</strong> – Can be “lin”, “log” or any Matplotlib Normalization instance</p></li>
+<li><p><strong>vmin</strong> (<em>float</em>) – Clip interactions below this value</p></li>
+<li><p><strong>vmax</strong> (<em>float</em>) – Clip interactions above this value</p></li>
+<li><p><strong>show_colorbar</strong> (<em>bool</em>) – Draw a colorbar. Default: True</p></li>
+<li><p><strong>blend_zero</strong> (<em>bool</em>) – If True then zero count bins will be drawn using replacement_color</p></li>
+<li><p><strong>replacement_color</strong> (<em>str</em>) – If None use the lowest color in the colormap, otherwise
+use the specified color. Can be any valid matplotlib
+color name or specification.</p></li>
+<li><p><strong>unmappable_color</strong> – Draw unmappable bins using this color. Defaults to
+light gray (“.9”)</p></li>
+<li><p><strong>illegal_color</strong> – Draw non-finite (NaN, +inf, -inf) bins using this color. Defaults to
+None (no special color).</p></li>
+<li><p><strong>colorbar_symmetry</strong> (<em>float</em>) – Set to enforce that the colorbar is symmetric around
+this value. Default: None</p></li>
+<li><p><strong>n_ticks</strong> (<em>int</em>) – Number of major x-axis genome coordinate ticks</p></li>
+<li><p><strong>n_minor_ticks</strong> (<em>int</em>) – Number of minor ticks per major tick</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Title drawn on top of the figure panel.</p></li>
+<li><p><strong>aspect</strong> (<em>float</em>) – Aspect ratio of the plot, height/width.
+So 0.5 means half as high as wide.
+Default: Plot type specific sensible value</p></li>
+<li><p><strong>axes_style</strong> – Set styling of the axes, can be anything
+that seaborn supports. See
+<a class="reference external" href="http://seaborn.pydata.org/tutorial/aesthetics.html#styling-figures-with-axes-style-and-set-style">http://seaborn.pydata.org/tutorial/aesthetics.html#styling-figures-with-axes-style-and-set-style</a></p></li>
+<li><p><strong>ylabel</strong> (<em>str</em>) – Label for y-axis. Default: None</p></li>
+<li><p><strong>draw_ticks</strong> (<em>bool</em>) – Draw tickmarks. Default: True</p></li>
+<li><p><strong>draw_major_ticks</strong> (<em>bool</em>) – Draw major tickmarks. Default: True</p></li>
+<li><p><strong>draw_minor_ticks</strong> (<em>bool</em>) – Draw minor tickmarks. Default: True</p></li>
+<li><p><strong>draw_tick_labels</strong> (<em>bool</em>) – Draw tick labels. Default: True</p></li>
+<li><p><strong>draw_x_axis</strong> (<em>bool</em>) – If False, remove genome x-axis completely.
+Default: True</p></li>
+<li><p><strong>draw_tick_legend</strong> (<em>bool</em>) – Draw legend for the tick distances. Default: True</p></li>
+<li><p><strong>padding</strong> (<em>float</em>) – Padding in inches to the next plot. Default: None,
+automatically calculated.</p></li>
+<li><p><strong>extra_padding</strong> (<em>float</em>) – Add or subtract the specified inches from
+the automatically calculated padding from
+this panel to the next.</p></li>
+<li><p><strong>fix_chromosome</strong> (<em>bool</em>) – If True modify chromosome identifiers for this plot,
+removing or adding ‘chr’ as necessary. Default: False</p></li>
+<li><p><strong>invert_x</strong> (<em>bool</em>) – Invert x-axis. Default=False
+Caution: This only works reliably when <code class="docutils literal notranslate"><span class="pre">independent_x=True</span></code>
+in the GenomicFigure instance, since x-axis of all plots
+are linked otherwise.</p></li>
+<li><p><strong>ax</strong> (<em>Axes</em>) – Matplotlib axes instance that the plot will be drawn on.
+Only necessary if you don’t intend to use a
+<a class="reference internal" href="#bloom.plotting.GenomicFigure" title="bloom.plotting.plotter.GenomicFigure"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenomicFigure</span></code></a> to draw the
+plot. Default: None</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="bloom.plotting.HicComparisonPlot2D">
+<span class="sig-prename descclassname"><span class="pre">bloom.plotting.</span></span><span class="sig-name descname"><span class="pre">HicComparisonPlot2D</span></span><a class="headerlink" href="#bloom.plotting.HicComparisonPlot2D" title="Permalink to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#bloom.plotting.SplitMatrixPlot" title="bloom.plotting.hic_plotter.SplitMatrixPlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">SplitMatrixPlot</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bloom.plotting.HicPeakPlot">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bloom.plotting.</span></span><span class="sig-name descname"><span class="pre">HicPeakPlot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">peaks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">circle_props</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.HicPeakPlot" title="Permalink to this definition"></a></dt>
+<dd><p>Overlay peaks onto Hicplot or HicPlot2D. Accepts
+<code class="xref py py-class docutils literal notranslate"><span class="pre">PeakInfo</span></code>.
+Add to HicPlot or HicPlot2D using add_overlay method.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.plotting.HicPeakPlot.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">peaks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">circle_props</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.HicPeakPlot.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>peaks</strong> – bloom peaks instance</p></li>
+<li><p><strong>radius</strong> – Radius in bp for plotted circles.
+If not specified (default), use the radius of the
+peak itself. This is often too small to see,
+providing a value like 50000 helps. Default: None</p></li>
+<li><p><strong>circe_props</strong> – Dictionary with properties for the plotted circles
+for the matplotlib.patches.Circle constructor.
+Default: Black edges, no fill, linewidth 3 pt</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bloom.plotting.HicSlicePlot">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bloom.plotting.</span></span><span class="sig-name descname"><span class="pre">HicSlicePlot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hic_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slice_region</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffering_strategy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'relative'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffering_arg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.HicSlicePlot" title="Permalink to this definition"></a></dt>
+<dd><p>Draw Hi-C data as virtual 4C-plot. All interactions that
+involve the slice region are shown.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.plotting.HicSlicePlot.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hic_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slice_region</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffering_strategy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'relative'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffering_arg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.HicSlicePlot.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hic_data</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">Hic</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">RegionMatrix</span></code>. Can be list of
+multiple Hi-C datasets.</p></li>
+<li><p><strong>slice_region</strong> – String (“2L:1000000-1500000”) or <code class="xref py py-class docutils literal notranslate"><span class="pre">GenomicRegion</span></code>.
+All interactions involving this region are shown.</p></li>
+<li><p><strong>names</strong> – If multiple Hi-C datasets are provided, can pass a list of names.
+Are used as names in the legend of the plot.</p></li>
+<li><p><strong>buffering_strategy</strong> – A valid buffering strategy for class:<cite>~BufferedMatrix</cite></p></li>
+<li><p><strong>buffering_arg</strong> – Adjust range of buffering for class:<cite>~BufferedMatrix</cite></p></li>
+<li><p><strong>style</strong> (<em>str</em>) – ‘step’ Draw values in a step-wise manner for each bin
+‘mid’ Draw values connecting mid-points of bins</p></li>
+<li><p><strong>tupleylim</strong> – Set y-axis limits as tuple. Can leave upper or lower
+limit undetermined by setting None, e.g. (2.5, None).
+Alternatively, a <a class="reference internal" href="#bloom.plotting.LimitGroup" title="bloom.plotting.helpers.LimitGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">LimitGroup</span></code></a> instance can
+be passed to synchronize limits across multiple plots.
+Default: Automatically determined by data limits</p></li>
+<li><p><strong>yscale</strong> (<em>str</em>) – Scale of y-axis. Is passed to Matplotlib set_yscale,
+so any valid argument (“linear”, “log”, etc.) works
+Default: “linear”</p></li>
+<li><p><strong>condensed</strong> (<em>bool</em>) – Only show maximum y-axis tick.
+Default: False</p></li>
+<li><p><strong>n_yticks</strong> (<em>int</em>) – Number of y-axis ticks. If only the maximum
+tick should be displayed set condensed to True.
+Default: 3</p></li>
+<li><p><strong>n_ticks</strong> (<em>int</em>) – Number of major x-axis genome coordinate ticks</p></li>
+<li><p><strong>n_minor_ticks</strong> (<em>int</em>) – Number of minor ticks per major tick</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Title drawn on top of the figure panel.</p></li>
+<li><p><strong>aspect</strong> (<em>float</em>) – Aspect ratio of the plot, height/width.
+So 0.5 means half as high as wide.
+Default: Plot type specific sensible value</p></li>
+<li><p><strong>axes_style</strong> – Set styling of the axes, can be anything
+that seaborn supports. See
+<a class="reference external" href="http://seaborn.pydata.org/tutorial/aesthetics.html#styling-figures-with-axes-style-and-set-style">http://seaborn.pydata.org/tutorial/aesthetics.html#styling-figures-with-axes-style-and-set-style</a></p></li>
+<li><p><strong>ylabel</strong> (<em>str</em>) – Label for y-axis. Default: None</p></li>
+<li><p><strong>draw_ticks</strong> (<em>bool</em>) – Draw tickmarks. Default: True</p></li>
+<li><p><strong>draw_major_ticks</strong> (<em>bool</em>) – Draw major tickmarks. Default: True</p></li>
+<li><p><strong>draw_minor_ticks</strong> (<em>bool</em>) – Draw minor tickmarks. Default: True</p></li>
+<li><p><strong>draw_tick_labels</strong> (<em>bool</em>) – Draw tick labels. Default: True</p></li>
+<li><p><strong>draw_x_axis</strong> (<em>bool</em>) – If False, remove genome x-axis completely.
+Default: True</p></li>
+<li><p><strong>draw_tick_legend</strong> (<em>bool</em>) – Draw legend for the tick distances. Default: True</p></li>
+<li><p><strong>padding</strong> (<em>float</em>) – Padding in inches to the next plot. Default: None,
+automatically calculated.</p></li>
+<li><p><strong>extra_padding</strong> (<em>float</em>) – Add or subtract the specified inches from
+the automatically calculated padding from
+this panel to the next.</p></li>
+<li><p><strong>fix_chromosome</strong> (<em>bool</em>) – If True modify chromosome identifiers for this plot,
+removing or adding ‘chr’ as necessary. Default: False</p></li>
+<li><p><strong>invert_x</strong> (<em>bool</em>) – Invert x-axis. Default=False
+Caution: This only works reliably when <code class="docutils literal notranslate"><span class="pre">independent_x=True</span></code>
+in the GenomicFigure instance, since x-axis of all plots
+are linked otherwise.</p></li>
+<li><p><strong>ax</strong> (<em>Axes</em>) – Matplotlib axes instance that the plot will be drawn on.
+Only necessary if you don’t intend to use a
+<a class="reference internal" href="#bloom.plotting.GenomicFigure" title="bloom.plotting.plotter.GenomicFigure"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenomicFigure</span></code></a> to draw the
+plot. Default: None</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bloom.plotting.HighlightAnnotation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bloom.plotting.</span></span><span class="sig-name descname"><span class="pre">HighlightAnnotation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.HighlightAnnotation" title="Permalink to this definition"></a></dt>
+<dd><p>Vertical lines or rectangles (shaded regions) which can be
+positioned at specific genomic coordinates from a BED file
+and can span multiple panels of the GenomicFigure.</p>
+<p>Useful for highlighting specific regions across multiple
+panels of figures.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.plotting.HighlightAnnotation.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.HighlightAnnotation.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bed</strong> (<em>string</em><em> or </em><em>pybedtool.BedTool</em>) – Anything pybedtools can parse. Path to BED-file
+GTF-file, or a list of tuples [(chr, start, end), …]
+If features are 1bp long, lines are drawn. If they
+are &gt; 1bp rectangles are drawn. Their appearance
+can be controlled using the plot_kwargs.</p></li>
+<li><p><strong>plot1</strong> – First plot where line should start. Default: First</p></li>
+<li><p><strong>plot2</strong> – Second plot where line should end. Default: Last</p></li>
+<li><p><strong>plot_kwargs</strong> – Dictionary of properties which are passed
+to matplotlib.lines.Line2D or
+matplotlib.patches.Rectangle constructor</p></li>
+<li><p><strong>fix_chromosome</strong> (<em>bool</em>) – If True modify chromosome identifiers for this plot,
+removing or adding ‘chr’ as necessary. Default: False</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bloom.plotting.LimitGroup">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bloom.plotting.</span></span><span class="sig-name descname"><span class="pre">LimitGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.LimitGroup" title="Permalink to this definition"></a></dt>
+<dd><p>Can be used for synchronizing axis limits across multiple
+plots. Pass the same instance of this class to all plots
+that should have synchronized axis limits.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.plotting.LimitGroup.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.LimitGroup.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>limit</strong> – tuple (vmin, vmax) to set absolute limits
+for axis. Final limits will be chosen
+within this absolute limit. Pass None
+for vmin or vmax to set no limit.
+Default: (None, None)</p></li>
+<li><p><strong>sig</strong> – Round limits to sig significant digits.
+If None, don’t round.
+Default: 2</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bloom.plotting.LinePlot">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bloom.plotting.</span></span><span class="sig-name descname"><span class="pre">LinePlot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'score'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend_location</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'best'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.LinePlot" title="Permalink to this definition"></a></dt>
+<dd><p>Plot data as line. Data must be <code class="xref py py-class docutils literal notranslate"><span class="pre">RegionBased</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.plotting.LinePlot.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'score'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend_location</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'best'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.LinePlot.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – Data or list of data. Or dictionary, where keys represent
+data labels. Data can be paths to files on the disk or anything
+that pybedtools can parse [(chr, start, end, score), …].
+If a list of data or dict is provided multiple lines are drawn.
+Examples:
+data=[“x.bigwig”, [(“chr11”, 40, 50, 1.8), (“chr11”, 50, 70, 4.3)]]
+data=[“y.bedgraph”, “z.bigwig”]
+data={“x_chip”: “x.bedgraph”, “y_chip”: “y.bigwig”}</p></li>
+<li><p><strong>labels</strong> – List of labels for each data file. Used as label in the legend.
+Ignored if labels are specified in data dictionary.</p></li>
+<li><p><strong>bin_size</strong> – Bin values using fixed size bins of the given size.
+If None, will plot values as they are in the data.</p></li>
+<li><p><strong>fill</strong> – Fill space between x-axis and data line. Default: True</p></li>
+<li><p><strong>plot_kwargs</strong> – Dictionary of additional keyword arguments passed to the plot function</p></li>
+<li><p><strong>data</strong> – Data or list of data. Or dictionary, where keys represent
+data labels. Data can be paths to files on the disk or anthing
+that pybedtools can parse [(chr, start, end, score), …].
+If a list of data or dict is provided multiple lines are drawn.
+Examples:
+data=[“x.bigwig”, [(“chr11”, 40, 50, 1.8), (“chr11”, 50, 70, 4.3)]]
+data=[“y.bedgraph”, “z.bigwig”]
+data={“x_chip”: “x.bedgraph”, “y_chip”: “y.bigwig”}</p></li>
+<li><p><strong>labels</strong> – List of labels for each data file. Used as label in the legend.
+Ignored if labels are specified in data dictionary.</p></li>
+<li><p><strong>bin_size</strong> – Bin values using fixed size bins of the given size.
+If None, will plot values as they are in the data.</p></li>
+<li><p><strong>fill</strong> – Fill space between x-axis and data line. Default: True</p></li>
+<li><p><strong>plot_kwargs</strong> – Dictionary of additional keyword arguments passed to the plot function</p></li>
+<li><p><strong>style</strong> (<em>str</em>) – ‘step’ Draw values in a step-wise manner for each bin
+‘mid’ Draw values connecting mid-points of bins</p></li>
+<li><p><strong>tupleylim</strong> – Set y-axis limits as tuple. Can leave upper or lower
+limit undetermined by setting None, e.g. (2.5, None).
+Alternatively, a <a class="reference internal" href="#bloom.plotting.LimitGroup" title="bloom.plotting.helpers.LimitGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">LimitGroup</span></code></a> instance can
+be passed to synchronize limits across multiple plots.
+Default: Automatically determined by data limits</p></li>
+<li><p><strong>yscale</strong> (<em>str</em>) – Scale of y-axis. Is passed to Matplotlib set_yscale,
+so any valid argument (“linear”, “log”, etc.) works
+Default: “linear”</p></li>
+<li><p><strong>condensed</strong> (<em>bool</em>) – Only show maximum y-axis tick.
+Default: False</p></li>
+<li><p><strong>n_yticks</strong> (<em>int</em>) – Number of y-axis ticks. If only the maximum
+tick should be displayed set condensed to True.
+Default: 3</p></li>
+<li><p><strong>n_ticks</strong> (<em>int</em>) – Number of major x-axis genome coordinate ticks</p></li>
+<li><p><strong>n_minor_ticks</strong> (<em>int</em>) – Number of minor ticks per major tick</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Title drawn on top of the figure panel.</p></li>
+<li><p><strong>aspect</strong> (<em>float</em>) – Aspect ratio of the plot, height/width.
+So 0.5 means half as high as wide.
+Default: Plot type specific sensible value</p></li>
+<li><p><strong>axes_style</strong> – Set styling of the axes, can be anything
+that seaborn supports. See
+<a class="reference external" href="http://seaborn.pydata.org/tutorial/aesthetics.html#styling-figures-with-axes-style-and-set-style">http://seaborn.pydata.org/tutorial/aesthetics.html#styling-figures-with-axes-style-and-set-style</a></p></li>
+<li><p><strong>ylabel</strong> (<em>str</em>) – Label for y-axis. Default: None</p></li>
+<li><p><strong>draw_ticks</strong> (<em>bool</em>) – Draw tickmarks. Default: True</p></li>
+<li><p><strong>draw_major_ticks</strong> (<em>bool</em>) – Draw major tickmarks. Default: True</p></li>
+<li><p><strong>draw_minor_ticks</strong> (<em>bool</em>) – Draw minor tickmarks. Default: True</p></li>
+<li><p><strong>draw_tick_labels</strong> (<em>bool</em>) – Draw tick labels. Default: True</p></li>
+<li><p><strong>draw_x_axis</strong> (<em>bool</em>) – If False, remove genome x-axis completely.
+Default: True</p></li>
+<li><p><strong>draw_tick_legend</strong> (<em>bool</em>) – Draw legend for the tick distances. Default: True</p></li>
+<li><p><strong>padding</strong> (<em>float</em>) – Padding in inches to the next plot. Default: None,
+automatically calculated.</p></li>
+<li><p><strong>extra_padding</strong> (<em>float</em>) – Add or subtract the specified inches from
+the automatically calculated padding from
+this panel to the next.</p></li>
+<li><p><strong>fix_chromosome</strong> (<em>bool</em>) – If True modify chromosome identifiers for this plot,
+removing or adding ‘chr’ as necessary. Default: False</p></li>
+<li><p><strong>invert_x</strong> (<em>bool</em>) – Invert x-axis. Default=False
+Caution: This only works reliably when <code class="docutils literal notranslate"><span class="pre">independent_x=True</span></code>
+in the GenomicFigure instance, since x-axis of all plots
+are linked otherwise.</p></li>
+<li><p><strong>ax</strong> (<em>Axes</em>) – Matplotlib axes instance that the plot will be drawn on.
+Only necessary if you don’t intend to use a
+<a class="reference internal" href="#bloom.plotting.GenomicFigure" title="bloom.plotting.plotter.GenomicFigure"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenomicFigure</span></code></a> to draw the
+plot. Default: None</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bloom.plotting.MirrorMatrixPlot">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bloom.plotting.</span></span><span class="sig-name descname"><span class="pre">MirrorMatrixPlot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top_plot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bottom_plot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cax_gap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.MirrorMatrixPlot" title="Permalink to this definition"></a></dt>
+<dd><p>Stack two plots on top of each other, bottom plot inverted.
+Especially suited to stacking two Hic plots (triangles) on top
+of each other.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.plotting.MirrorMatrixPlot.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top_plot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bottom_plot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cax_gap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.MirrorMatrixPlot.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>top_plot</strong> – Plot instance on top</p></li>
+<li><p><strong>bottom_plot</strong> – Plot instance on bottom</p></li>
+<li><p><strong>gap</strong> – Gap between plots in inches</p></li>
+<li><p><strong>cax_gap</strong> – Gap between colorbars in inches</p></li>
+<li><p><strong>n_ticks</strong> (<em>int</em>) – Number of major x-axis genome coordinate ticks</p></li>
+<li><p><strong>n_minor_ticks</strong> (<em>int</em>) – Number of minor ticks per major tick</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Title drawn on top of the figure panel.</p></li>
+<li><p><strong>aspect</strong> (<em>float</em>) – Aspect ratio of the plot, height/width.
+So 0.5 means half as high as wide.
+Default: Plot type specific sensible value</p></li>
+<li><p><strong>axes_style</strong> – Set styling of the axes, can be anything
+that seaborn supports. See
+<a class="reference external" href="http://seaborn.pydata.org/tutorial/aesthetics.html#styling-figures-with-axes-style-and-set-style">http://seaborn.pydata.org/tutorial/aesthetics.html#styling-figures-with-axes-style-and-set-style</a></p></li>
+<li><p><strong>ylabel</strong> (<em>str</em>) – Label for y-axis. Default: None</p></li>
+<li><p><strong>draw_ticks</strong> (<em>bool</em>) – Draw tickmarks. Default: True</p></li>
+<li><p><strong>draw_major_ticks</strong> (<em>bool</em>) – Draw major tickmarks. Default: True</p></li>
+<li><p><strong>draw_minor_ticks</strong> (<em>bool</em>) – Draw minor tickmarks. Default: True</p></li>
+<li><p><strong>draw_tick_labels</strong> (<em>bool</em>) – Draw tick labels. Default: True</p></li>
+<li><p><strong>draw_x_axis</strong> (<em>bool</em>) – If False, remove genome x-axis completely.
+Default: True</p></li>
+<li><p><strong>draw_tick_legend</strong> (<em>bool</em>) – Draw legend for the tick distances. Default: True</p></li>
+<li><p><strong>padding</strong> (<em>float</em>) – Padding in inches to the next plot. Default: None,
+automatically calculated.</p></li>
+<li><p><strong>extra_padding</strong> (<em>float</em>) – Add or subtract the specified inches from
+the automatically calculated padding from
+this panel to the next.</p></li>
+<li><p><strong>fix_chromosome</strong> (<em>bool</em>) – If True modify chromosome identifiers for this plot,
+removing or adding ‘chr’ as necessary. Default: False</p></li>
+<li><p><strong>invert_x</strong> (<em>bool</em>) – Invert x-axis. Default=False
+Caution: This only works reliably when <code class="docutils literal notranslate"><span class="pre">independent_x=True</span></code>
+in the GenomicFigure instance, since x-axis of all plots
+are linked otherwise.</p></li>
+<li><p><strong>ax</strong> (<em>Axes</em>) – Matplotlib axes instance that the plot will be drawn on.
+Only necessary if you don’t intend to use a
+<a class="reference internal" href="#bloom.plotting.GenomicFigure" title="bloom.plotting.plotter.GenomicFigure"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenomicFigure</span></code></a> to draw the
+plot. Default: None</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bloom.plotting.SplitMatrixPlot">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bloom.plotting.</span></span><span class="sig-name descname"><span class="pre">SplitMatrixPlot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hic_top</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hic_bottom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_matrices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth_sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matrix_norm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.SplitMatrixPlot" title="Permalink to this definition"></a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="bloom.plotting.SplitMatrixPlot.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hic_top</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hic_bottom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_matrices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth_sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matrix_norm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.SplitMatrixPlot.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flip</strong> – Transpose matrix before plotting</p></li>
+<li><p><strong>hic_data</strong> – Path to Hi-C data on disk or
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Hic</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">RegionMatrix</span></code></p></li>
+<li><p><strong>adjust_range</strong> – Draw a slider to adjust vmin/vmax interactively. Default: False</p></li>
+<li><p><strong>buffering_strategy</strong> – A valid buffering strategy for <code class="xref py py-class docutils literal notranslate"><span class="pre">BufferedMatrix</span></code></p></li>
+<li><p><strong>buffering_arg</strong> – Adjust range of buffering for <code class="xref py py-class docutils literal notranslate"><span class="pre">BufferedMatrix</span></code></p></li>
+<li><p><strong>colormap</strong> – Can be the name of a colormap or a Matplotlib colormap instance</p></li>
+<li><p><strong>norm</strong> – Can be “lin”, “log” or any Matplotlib Normalization instance</p></li>
+<li><p><strong>vmin</strong> (<em>float</em>) – Clip interactions below this value</p></li>
+<li><p><strong>vmax</strong> (<em>float</em>) – Clip interactions above this value</p></li>
+<li><p><strong>show_colorbar</strong> (<em>bool</em>) – Draw a colorbar. Default: True</p></li>
+<li><p><strong>blend_zero</strong> (<em>bool</em>) – If True then zero count bins will be drawn using replacement_color</p></li>
+<li><p><strong>replacement_color</strong> (<em>str</em>) – If None use the lowest color in the colormap, otherwise
+use the specified color. Can be any valid matplotlib
+color name or specification.</p></li>
+<li><p><strong>unmappable_color</strong> – Draw unmappable bins using this color. Defaults to
+light gray (“.9”)</p></li>
+<li><p><strong>illegal_color</strong> – Draw non-finite (NaN, +inf, -inf) bins using this color. Defaults to
+None (no special color).</p></li>
+<li><p><strong>colorbar_symmetry</strong> (<em>float</em>) – Set to enforce that the colorbar is symmetric around
+this value. Default: None</p></li>
+<li><p><strong>n_ticks</strong> (<em>int</em>) – Number of major ticks</p></li>
+<li><p><strong>n_minor_ticks</strong> (<em>int</em>) – Number of minor ticks per major tick</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Title drawn on top of the figure panel.</p></li>
+<li><p><strong>aspect</strong> (<em>float</em>) – Aspect ratio of the plot, height/width.
+So 0.5 means half as high as wide.
+Default: Plot type specific sensible value</p></li>
+<li><p><strong>axes_style</strong> – Set styling of the axes, can be anything
+that seaborn supports. See
+<a class="reference external" href="http://seaborn.pydata.org/tutorial/aesthetics.html#styling-figures-with-axes-style-and-set-style">http://seaborn.pydata.org/tutorial/aesthetics.html#styling-figures-with-axes-style-and-set-style</a></p></li>
+<li><p><strong>ylabel</strong> (<em>str</em>) – Label for y-axis. Default: None</p></li>
+<li><p><strong>draw_ticks</strong> (<em>bool</em>) – Draw tickmarks. Default: True</p></li>
+<li><p><strong>draw_major_ticks</strong> (<em>bool</em>) – Draw major tickmarks. Default: True</p></li>
+<li><p><strong>draw_minor_ticks</strong> (<em>bool</em>) – Draw minor tickmarks. Default: True</p></li>
+<li><p><strong>draw_tick_labels</strong> (<em>bool</em>) – Draw tick labels. Default: True</p></li>
+<li><p><strong>draw_x_axis</strong> (<em>bool</em>) – If False, remove genome x-axis completely.
+Default: True</p></li>
+<li><p><strong>draw_tick_legend</strong> (<em>bool</em>) – Draw legend for the tick distances. Default: True</p></li>
+<li><p><strong>padding</strong> (<em>float</em>) – Padding in inches to the next plot. Default: None,
+automatically calculated.</p></li>
+<li><p><strong>extra_padding</strong> (<em>float</em>) – Add or subtract the specified inches from
+the automatically calculated padding from
+this panel to the next.</p></li>
+<li><p><strong>fix_chromosome</strong> (<em>bool</em>) – If True modify chromosome identifiers for this plot,
+removing or adding ‘chr’ as necessary. Default: False</p></li>
+<li><p><strong>invert_x</strong> (<em>bool</em>) – Invert x-axis. Default=False
+Caution: This only works reliably when <code class="docutils literal notranslate"><span class="pre">independent_x=True</span></code>
+in the GenomicFigure instance, since x-axis of all plots
+are linked otherwise.</p></li>
+<li><p><strong>ax</strong> (<em>Axes</em>) – Matplotlib axes instance that the plot will be drawn on.
+Only necessary if you don’t intend to use a
+<a class="reference internal" href="#bloom.plotting.GenomicFigure" title="bloom.plotting.plotter.GenomicFigure"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenomicFigure</span></code></a> to draw the
+plot. Default: None</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bloom.plotting.SquareMatrixPlot">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bloom.plotting.</span></span><span class="sig-name descname"><span class="pre">SquareMatrixPlot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hic_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.SquareMatrixPlot" title="Permalink to this definition"></a></dt>
+<dd><p>Plot Hi-C map as a square matrix.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.plotting.SquareMatrixPlot.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hic_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.SquareMatrixPlot.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flip</strong> – Transpose matrix before plotting</p></li>
+<li><p><strong>hic_data</strong> – Path to Hi-C data on disk or
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Hic</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">RegionMatrix</span></code></p></li>
+<li><p><strong>adjust_range</strong> – Draw a slider to adjust vmin/vmax interactively. Default: False</p></li>
+<li><p><strong>buffering_strategy</strong> – A valid buffering strategy for <code class="xref py py-class docutils literal notranslate"><span class="pre">BufferedMatrix</span></code></p></li>
+<li><p><strong>buffering_arg</strong> – Adjust range of buffering for <code class="xref py py-class docutils literal notranslate"><span class="pre">BufferedMatrix</span></code></p></li>
+<li><p><strong>colormap</strong> – Can be the name of a colormap or a Matplotlib colormap instance</p></li>
+<li><p><strong>norm</strong> – Can be “lin”, “log” or any Matplotlib Normalization instance</p></li>
+<li><p><strong>vmin</strong> (<em>float</em>) – Clip interactions below this value</p></li>
+<li><p><strong>vmax</strong> (<em>float</em>) – Clip interactions above this value</p></li>
+<li><p><strong>show_colorbar</strong> (<em>bool</em>) – Draw a colorbar. Default: True</p></li>
+<li><p><strong>blend_zero</strong> (<em>bool</em>) – If True then zero count bins will be drawn using replacement_color</p></li>
+<li><p><strong>replacement_color</strong> (<em>str</em>) – If None use the lowest color in the colormap, otherwise
+use the specified color. Can be any valid matplotlib
+color name or specification.</p></li>
+<li><p><strong>unmappable_color</strong> – Draw unmappable bins using this color. Defaults to
+light gray (“.9”)</p></li>
+<li><p><strong>illegal_color</strong> – Draw non-finite (NaN, +inf, -inf) bins using this color. Defaults to
+None (no special color).</p></li>
+<li><p><strong>colorbar_symmetry</strong> (<em>float</em>) – Set to enforce that the colorbar is symmetric around
+this value. Default: None</p></li>
+<li><p><strong>n_ticks</strong> (<em>int</em>) – Number of major ticks</p></li>
+<li><p><strong>n_minor_ticks</strong> (<em>int</em>) – Number of minor ticks per major tick</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Title drawn on top of the figure panel.</p></li>
+<li><p><strong>aspect</strong> (<em>float</em>) – Aspect ratio of the plot, height/width.
+So 0.5 means half as high as wide.
+Default: Plot type specific sensible value</p></li>
+<li><p><strong>axes_style</strong> – Set styling of the axes, can be anything
+that seaborn supports. See
+<a class="reference external" href="http://seaborn.pydata.org/tutorial/aesthetics.html#styling-figures-with-axes-style-and-set-style">http://seaborn.pydata.org/tutorial/aesthetics.html#styling-figures-with-axes-style-and-set-style</a></p></li>
+<li><p><strong>ylabel</strong> (<em>str</em>) – Label for y-axis. Default: None</p></li>
+<li><p><strong>draw_ticks</strong> (<em>bool</em>) – Draw tickmarks. Default: True</p></li>
+<li><p><strong>draw_major_ticks</strong> (<em>bool</em>) – Draw major tickmarks. Default: True</p></li>
+<li><p><strong>draw_minor_ticks</strong> (<em>bool</em>) – Draw minor tickmarks. Default: True</p></li>
+<li><p><strong>draw_tick_labels</strong> (<em>bool</em>) – Draw tick labels. Default: True</p></li>
+<li><p><strong>draw_x_axis</strong> (<em>bool</em>) – If False, remove genome x-axis completely.
+Default: True</p></li>
+<li><p><strong>draw_tick_legend</strong> (<em>bool</em>) – Draw legend for the tick distances. Default: True</p></li>
+<li><p><strong>padding</strong> (<em>float</em>) – Padding in inches to the next plot. Default: None,
+automatically calculated.</p></li>
+<li><p><strong>extra_padding</strong> (<em>float</em>) – Add or subtract the specified inches from
+the automatically calculated padding from
+this panel to the next.</p></li>
+<li><p><strong>fix_chromosome</strong> (<em>bool</em>) – If True modify chromosome identifiers for this plot,
+removing or adding ‘chr’ as necessary. Default: False</p></li>
+<li><p><strong>invert_x</strong> (<em>bool</em>) – Invert x-axis. Default=False
+Caution: This only works reliably when <code class="docutils literal notranslate"><span class="pre">independent_x=True</span></code>
+in the GenomicFigure instance, since x-axis of all plots
+are linked otherwise.</p></li>
+<li><p><strong>ax</strong> (<em>Axes</em>) – Matplotlib axes instance that the plot will be drawn on.
+Only necessary if you don’t intend to use a
+<a class="reference internal" href="#bloom.plotting.GenomicFigure" title="bloom.plotting.plotter.GenomicFigure"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenomicFigure</span></code></a> to draw the
+plot. Default: None</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bloom.plotting.SymmetricNorm">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bloom.plotting.</span></span><span class="sig-name descname"><span class="pre">SymmetricNorm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.SymmetricNorm" title="Permalink to this definition"></a></dt>
+<dd><p>Normalizes data for plotting on a divergent colormap.
+Automatically chooses vmin and vmax so that the colormap is
+centered at zero.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.plotting.SymmetricNorm.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.SymmetricNorm.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vmin</strong> – Choose vmin manually</p></li>
+<li><p><strong>vmax</strong> – Choose vmax manually</p></li>
+<li><p><strong>percentile</strong> – Instead of taking the minmum or maximum to
+automatically determine vmin/vmax, take the
+percentile.
+eg. with 5, vmin is 5%-ile, vmax 95%-ile</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.plotting.SymmetricNorm.autoscale">
+<span class="sig-name descname"><span class="pre">autoscale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.SymmetricNorm.autoscale" title="Permalink to this definition"></a></dt>
+<dd><p>Set <em>vmin</em>, <em>vmax</em> to min, max of <em>A</em>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.plotting.SymmetricNorm.autoscale_None">
+<span class="sig-name descname"><span class="pre">autoscale_None</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.SymmetricNorm.autoscale_None" title="Permalink to this definition"></a></dt>
+<dd><p>If vmin or vmax are not set, use the min/max of <em>A</em> to set them.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bloom.plotting.TriangularMatrixPlot">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bloom.plotting.</span></span><span class="sig-name descname"><span class="pre">TriangularMatrixPlot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hic_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_dist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proportional</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rasterized</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.TriangularMatrixPlot" title="Permalink to this definition"></a></dt>
+<dd><p>A triangle Hi-C heatmap plot.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.plotting.TriangularMatrixPlot.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hic_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_dist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proportional</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rasterized</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.TriangularMatrixPlot.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>max_dist</strong> – Only draw interactions up to this distance</p></li>
+<li><p><strong>proportional</strong> – Automatically determine aspect ratio of plot
+so that x- and y-axis are proportional. Default: True</p></li>
+<li><p><strong>rasterized</strong> – Draw map as image (True) or vector graphic (False).
+Default: True</p></li>
+<li><p><strong>hic_data</strong> – Path to Hi-C data on disk or
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Hic</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">RegionMatrix</span></code></p></li>
+<li><p><strong>adjust_range</strong> – Draw a slider to adjust vmin/vmax interactively. Default: False</p></li>
+<li><p><strong>buffering_strategy</strong> – A valid buffering strategy for <code class="xref py py-class docutils literal notranslate"><span class="pre">BufferedMatrix</span></code></p></li>
+<li><p><strong>buffering_arg</strong> – Adjust range of buffering for <code class="xref py py-class docutils literal notranslate"><span class="pre">BufferedMatrix</span></code></p></li>
+<li><p><strong>colormap</strong> – Can be the name of a colormap or a Matplotlib colormap instance</p></li>
+<li><p><strong>norm</strong> – Can be “lin”, “log” or any Matplotlib Normalization instance</p></li>
+<li><p><strong>vmin</strong> (<em>float</em>) – Clip interactions below this value</p></li>
+<li><p><strong>vmax</strong> (<em>float</em>) – Clip interactions above this value</p></li>
+<li><p><strong>show_colorbar</strong> (<em>bool</em>) – Draw a colorbar. Default: True</p></li>
+<li><p><strong>blend_zero</strong> (<em>bool</em>) – If True then zero count bins will be drawn using replacement_color</p></li>
+<li><p><strong>replacement_color</strong> (<em>str</em>) – If None use the lowest color in the colormap, otherwise
+use the specified color. Can be any valid matplotlib
+color name or specification.</p></li>
+<li><p><strong>unmappable_color</strong> – Draw unmappable bins using this color. Defaults to
+light gray (“.9”)</p></li>
+<li><p><strong>illegal_color</strong> – Draw non-finite (NaN, +inf, -inf) bins using this color. Defaults to
+None (no special color).</p></li>
+<li><p><strong>colorbar_symmetry</strong> (<em>float</em>) – Set to enforce that the colorbar is symmetric around
+this value. Default: None</p></li>
+<li><p><strong>n_ticks</strong> (<em>int</em>) – Number of major x-axis genome coordinate ticks</p></li>
+<li><p><strong>n_minor_ticks</strong> (<em>int</em>) – Number of minor ticks per major tick</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Title drawn on top of the figure panel.</p></li>
+<li><p><strong>aspect</strong> (<em>float</em>) – Aspect ratio of the plot, height/width.
+So 0.5 means half as high as wide.
+Default: Plot type specific sensible value</p></li>
+<li><p><strong>axes_style</strong> – Set styling of the axes, can be anything
+that seaborn supports. See
+<a class="reference external" href="http://seaborn.pydata.org/tutorial/aesthetics.html#styling-figures-with-axes-style-and-set-style">http://seaborn.pydata.org/tutorial/aesthetics.html#styling-figures-with-axes-style-and-set-style</a></p></li>
+<li><p><strong>ylabel</strong> (<em>str</em>) – Label for y-axis. Default: None</p></li>
+<li><p><strong>draw_ticks</strong> (<em>bool</em>) – Draw tickmarks. Default: True</p></li>
+<li><p><strong>draw_major_ticks</strong> (<em>bool</em>) – Draw major tickmarks. Default: True</p></li>
+<li><p><strong>draw_minor_ticks</strong> (<em>bool</em>) – Draw minor tickmarks. Default: True</p></li>
+<li><p><strong>draw_tick_labels</strong> (<em>bool</em>) – Draw tick labels. Default: True</p></li>
+<li><p><strong>draw_x_axis</strong> (<em>bool</em>) – If False, remove genome x-axis completely.
+Default: True</p></li>
+<li><p><strong>draw_tick_legend</strong> (<em>bool</em>) – Draw legend for the tick distances. Default: True</p></li>
+<li><p><strong>padding</strong> (<em>float</em>) – Padding in inches to the next plot. Default: None,
+automatically calculated.</p></li>
+<li><p><strong>extra_padding</strong> (<em>float</em>) – Add or subtract the specified inches from
+the automatically calculated padding from
+this panel to the next.</p></li>
+<li><p><strong>fix_chromosome</strong> (<em>bool</em>) – If True modify chromosome identifiers for this plot,
+removing or adding ‘chr’ as necessary. Default: False</p></li>
+<li><p><strong>invert_x</strong> (<em>bool</em>) – Invert x-axis. Default=False
+Caution: This only works reliably when <code class="docutils literal notranslate"><span class="pre">independent_x=True</span></code>
+in the GenomicFigure instance, since x-axis of all plots
+are linked otherwise.</p></li>
+<li><p><strong>ax</strong> (<em>Axes</em>) – Matplotlib axes instance that the plot will be drawn on.
+Only necessary if you don’t intend to use a
+<a class="reference internal" href="#bloom.plotting.GenomicFigure" title="bloom.plotting.plotter.GenomicFigure"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenomicFigure</span></code></a> to draw the
+plot. Default: None</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="bloom.plotting.VerticalSplitPlot">
+<span class="sig-prename descclassname"><span class="pre">bloom.plotting.</span></span><span class="sig-name descname"><span class="pre">VerticalSplitPlot</span></span><a class="headerlink" href="#bloom.plotting.VerticalSplitPlot" title="Permalink to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#bloom.plotting.MirrorMatrixPlot" title="bloom.plotting.plotter.MirrorMatrixPlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">MirrorMatrixPlot</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bloom.plotting.Virtual4CPlot">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bloom.plotting.</span></span><span class="sig-name descname"><span class="pre">Virtual4CPlot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">viewpoint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'blue'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_valid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excluded_filters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.Virtual4CPlot" title="Permalink to this definition"></a></dt>
+<dd><p>Plot a ‘virtual 4C’ plot of the interactions of a specific genomic viewpoint as a
+line plot. Extracts interactions from regions which overlap the viewpoint and
+plots the mean of these interactions.</p>
+<p>This plot is an alternative to the <a class="reference internal" href="#bloom.plotting.HicSlicePlot" title="bloom.plotting.HicSlicePlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">HicSlicePlot</span></code></a> with
+slightly different usage.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.plotting.Virtual4CPlot.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">viewpoint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'blue'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_valid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excluded_filters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.Virtual4CPlot.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hic</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">Hic</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">RegionMatrix</span></code>.</p></li>
+<li><p><strong>viewpoint</strong> – Viewpoint to use for virtual 4C. String, e.g.
+“2L:1000000-1500000” or <code class="xref py py-class docutils literal notranslate"><span class="pre">GenomicRegion</span></code>.</p></li>
+<li><p><strong>color</strong> – Line colour to use for plotting. Default: blue.</p></li>
+<li><p><strong>alpha</strong> – Transparency to use for plotting. Default: 1.0.</p></li>
+<li><p><strong>norm</strong> – Use normalised values from Hi-C matrix. Default: True.</p></li>
+<li><p><strong>oe</strong> – Use observed/expected values. Default: False.</p></li>
+<li><p><strong>mask</strong> – Use values from masked Hi-C matrix. Default: True.</p></li>
+<li><p><strong>check_valid</strong> – Parameter for Hi-C matrix extraction. Default: True.</p></li>
+<li><p><strong>excluded_filters</strong> – Parameter for Hi-C matrix extraction. Default: 0.</p></li>
+<li><p><strong>n_ticks</strong> (<em>int</em>) – Number of major x-axis genome coordinate ticks</p></li>
+<li><p><strong>n_minor_ticks</strong> (<em>int</em>) – Number of minor ticks per major tick</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Title drawn on top of the figure panel.</p></li>
+<li><p><strong>aspect</strong> (<em>float</em>) – Aspect ratio of the plot, height/width.
+So 0.5 means half as high as wide.
+Default: Plot type specific sensible value</p></li>
+<li><p><strong>axes_style</strong> – Set styling of the axes, can be anything
+that seaborn supports. See
+<a class="reference external" href="http://seaborn.pydata.org/tutorial/aesthetics.html#styling-figures-with-axes-style-and-set-style">http://seaborn.pydata.org/tutorial/aesthetics.html#styling-figures-with-axes-style-and-set-style</a></p></li>
+<li><p><strong>ylabel</strong> (<em>str</em>) – Label for y-axis. Default: None</p></li>
+<li><p><strong>draw_ticks</strong> (<em>bool</em>) – Draw tickmarks. Default: True</p></li>
+<li><p><strong>draw_major_ticks</strong> (<em>bool</em>) – Draw major tickmarks. Default: True</p></li>
+<li><p><strong>draw_minor_ticks</strong> (<em>bool</em>) – Draw minor tickmarks. Default: True</p></li>
+<li><p><strong>draw_tick_labels</strong> (<em>bool</em>) – Draw tick labels. Default: True</p></li>
+<li><p><strong>draw_x_axis</strong> (<em>bool</em>) – If False, remove genome x-axis completely.
+Default: True</p></li>
+<li><p><strong>draw_tick_legend</strong> (<em>bool</em>) – Draw legend for the tick distances. Default: True</p></li>
+<li><p><strong>padding</strong> (<em>float</em>) – Padding in inches to the next plot. Default: None,
+automatically calculated.</p></li>
+<li><p><strong>extra_padding</strong> (<em>float</em>) – Add or subtract the specified inches from
+the automatically calculated padding from
+this panel to the next.</p></li>
+<li><p><strong>fix_chromosome</strong> (<em>bool</em>) – If True modify chromosome identifiers for this plot,
+removing or adding ‘chr’ as necessary. Default: False</p></li>
+<li><p><strong>invert_x</strong> (<em>bool</em>) – Invert x-axis. Default=False
+Caution: This only works reliably when <code class="docutils literal notranslate"><span class="pre">independent_x=True</span></code>
+in the GenomicFigure instance, since x-axis of all plots
+are linked otherwise.</p></li>
+<li><p><strong>ax</strong> (<em>Axes</em>) – Matplotlib axes instance that the plot will be drawn on.
+Only necessary if you don’t intend to use a
+<a class="reference internal" href="#bloom.plotting.GenomicFigure" title="bloom.plotting.plotter.GenomicFigure"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenomicFigure</span></code></a> to draw the
+plot. Default: None</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bloom.plotting.distance_decay_plot">
+<span class="sig-prename descclassname"><span class="pre">bloom.plotting.</span></span><span class="sig-name descname"><span class="pre">distance_decay_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">matrices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chromosome</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.distance_decay_plot" title="Permalink to this definition"></a></dt>
+<dd><p>An distance decay (expected values) plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>matrices</strong> – Hi-C objects to be plotted</p></li>
+<li><p><strong>ax</strong> – Optional matplotlib ax object for the plot.
+If not specified, will use <code class="docutils literal notranslate"><span class="pre">plt.gca()</span></code></p></li>
+<li><p><strong>chromosome</strong> – Optional, but recommended for the default
+chromosome-normalised matrices. The name of a chromosome to plot</p></li>
+<li><p><strong>labels</strong> – Optional labels when providing multiple objects.
+Will replace default labels in the legend. Must be the
+same number as matrix objects</p></li>
+<li><p><strong>tight</strong> – If True, uses tight figure layout. Disable for grid-based plotting.</p></li>
+<li><p><strong>kwargs</strong> – Parameters passed on to <code class="docutils literal notranslate"><span class="pre">ax.plot</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>ax</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bloom.plotting.pca_plot">
+<span class="sig-prename descclassname"><span class="pre">bloom.plotting.</span></span><span class="sig-name descname"><span class="pre">pca_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pca_res</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eigenvectors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.plotting.pca_plot" title="Permalink to this definition"></a></dt>
+<dd><p>Plot the results of a Hi-C PCA analysis from <a class="reference internal" href="architecture/comparisons.html#bloom.architecture.comparisons.hic_pca" title="bloom.architecture.comparisons.hic_pca"><code class="xref py py-func docutils literal notranslate"><span class="pre">hic_pca()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pca_res</strong> – The PCA result from <a class="reference internal" href="architecture/comparisons.html#bloom.architecture.comparisons.hic_pca" title="bloom.architecture.comparisons.hic_pca"><code class="xref py py-func docutils literal notranslate"><span class="pre">hic_pca()</span></code></a></p></li>
+<li><p><strong>variance</strong> – A vector specifying the explained variance of each EV in the PCA or
+the PCA object from <a class="reference internal" href="architecture/comparisons.html#bloom.architecture.comparisons.hic_pca" title="bloom.architecture.comparisons.hic_pca"><code class="xref py py-func docutils literal notranslate"><span class="pre">hic_pca()</span></code></a>.
+Optional, used to display the explained variance along the axes.</p></li>
+<li><p><strong>eigenvectors</strong> – Tuple of length two specifying which eigenvectors (EVs) to plot.
+0-based, (0, 1) by default for the first to EVs.</p></li>
+<li><p><strong>markers</strong> – List of marker definitions from matplotlib (e.g. [“o”, “*”, “s”]).
+Must be same length as number of samples in PCA.</p></li>
+<li><p><strong>colors</strong> – List of colour definitions from matplotlib.
+Must be same length as number of samples in PCA.</p></li>
+<li><p><strong>names</strong> – Sample names for plot legend. Must be same length as number of
+samples in PCA.</p></li>
+<li><p><strong>ax</strong> – Optional matplotlib axes object to plot into. Otherwise uses <code class="docutils literal notranslate"><span class="pre">plt.gca()</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>figure, ax</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="architecture/domains.html" class="btn btn-neutral float-left" title="Domains module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tools.html" class="btn btn-neutral float-right" title="bloom Python tools modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Kai Kruse, Vaquerizas lab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

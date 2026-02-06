@@ -1,0 +1,63 @@
+# start snippet triangular basic
+bloomplot chr18:6mb-10mb -p triangular output/hic/binned/bloom_example_50kb.hic
+# end snippet triangular basic
+bloomplot -o ../docsrc/bloomplot-executable/images/bloomplot_triangular_example.png chr18:6mb-10mb -p triangular output/hic/binned/bloom_example_50kb.hic
+
+# start snippet triangular truncated
+bloomplot chr18:6mb-10mb -p triangular -m 2mb -vmax 0.05 output/hic/binned/bloom_example_50kb.hic
+# end snippet triangular truncated
+bloomplot -o ../docsrc/bloomplot-executable/images/bloomplot_triangular_example_truncated.png chr18:6mb-10mb -p triangular -m 2mb -vmax 0.05 output/hic/binned/bloom_example_50kb.hic
+
+# start snippet triangular range
+bloomplot chr18:6mb-10mb -p triangular -r output/hic/binned/bloom_example_50kb.hic
+# end snippet triangular range
+bloomplot -o ../docsrc/bloomplot-executable/images/bloomplot_triangular_example_range.png chr18:6mb-10mb -p triangular -r output/hic/binned/bloom_example_50kb.hic
+
+# start snippet triangular vminvmax
+bloomplot chr18:6mb-10mb -p triangular -vmin 0 -vmax 0.03 output/hic/binned/bloom_example_50kb.hic
+# end snippet triangular vminvmax
+bloomplot -o ../docsrc/bloomplot-executable/images/bloomplot_triangular_example_vminvmax.png chr18:6mb-10mb -p triangular -vmin 0 -vmax 0.03 output/hic/binned/bloom_example_50kb.hic
+
+# start snippet triangular log
+bloomplot chr18:6mb-10mb -p triangular -l -vmax 0.05 output/hic/binned/bloom_example_50kb.hic
+# end snippet triangular log
+bloomplot -o ../docsrc/bloomplot-executable/images/bloomplot_triangular_example_log.png chr18:6mb-10mb -p triangular -l -vmax 0.05 output/hic/binned/bloom_example_50kb.hic
+
+# start snippet triangular colormap
+bloomplot chr18:6mb-10mb -p triangular -c Greens -vmax 0.05 output/hic/binned/bloom_example_50kb.hic
+# end snippet triangular colormap
+bloomplot -o ../docsrc/bloomplot-executable/images/bloomplot_triangular_example_colormap.png chr18:6mb-10mb -p triangular -c Greens -vmax 0.05 output/hic/binned/bloom_example_50kb.hic
+
+
+# start snippet triangular nonorm
+bloomplot chr18:6mb-10mb -p triangular -u -vmax 30 output/hic/binned/bloom_example_50kb.hic
+# end snippet triangular nonorm
+bloomplot -o ../docsrc/bloomplot-executable/images/bloomplot_triangular_example_nonorm.png chr18:6mb-10mb -p triangular -u -vmax 30 output/hic/binned/bloom_example_50kb.hic
+
+# start snippet triangular oe
+bloomplot chr18:6mb-10mb -p triangular -e -vmin -3 -vmax 3 output/hic/binned/bloom_example_50kb.hic
+# end snippet triangular oe
+bloomplot -o ../docsrc/bloomplot-executable/images/bloomplot_triangular_example_oe.png chr18:6mb-10mb -p triangular -e -vmin -3 -vmax 3 output/hic/binned/bloom_example_50kb.hic
+
+
+# start snippet square basic
+bloomplot chr18:6mb-10mb -p square -vmax 0.05 output/hic/binned/bloom_example_50kb.hic
+# end snippet square basic
+bloomplot -o ../docsrc/bloomplot-executable/images/bloomplot_square_example.png chr18:6mb-10mb -p square -vmax 0.05 output/hic/binned/bloom_example_50kb.hic
+
+# start snippet square flip
+bloomplot chr18:6mb-10mb -p square -f output/hic/binned/bloom_example_50kb.hic
+# end snippet square flip
+bloomplot -o ../docsrc/bloomplot-executable/images/bloomplot_square_example_flip.png chr18:6mb-10mb -p square -f output/hic/binned/bloom_example_50kb.hic
+
+# start snippet mirror basic
+bloomplot chr18:6mb-10mb -p mirror -d 3mb output/hic/binned/bloom_example_50kb.hic output/hic/binned/bloom_example_100kb.hic
+# end snippet mirror basic
+bloomplot -o ../docsrc/bloomplot-executable/images/bloomplot_square_example_mirror.png chr18:6mb-10mb -p mirror -d 3mb output/hic/binned/bloom_example_50kb.hic output/hic/binned/bloom_example_100kb.hic
+
+# start snippet mirror oe
+bloomplot chr18:6mb-10mb -p mirror -d 3mb -le -lvmin -2 -lvmax 2 output/hic/binned/bloom_example_50kb.hic output/hic/binned/bloom_example_50kb.hic
+# end snippet mirror oe
+bloomplot -o ../docsrc/bloomplot-executable/images/bloomplot_square_example_mirror_oe.png chr18:6mb-10mb -p mirror -d 3mb -le -lvmin -2 -lvmax 2 output/hic/binned/bloom_example_50kb.hic output/hic/binned/bloom_example_50kb.hic
+
+

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RegionBased &mdash; bloom 0.9.26b1-beta documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="RegionPairsContainer" href="edges_interface.html" />
+    <link rel="prev" title="Common interfaces" href="../interfaces.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> bloom
+          </a>
+              <div class="version">
+                0.9.26b1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started with bloom</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../bloom.html">bloom: command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../bloomplot.html">bloomplot: plotting from the command line</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">Python API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../compatibility.html">Working with Juicer and Cooler files</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../interfaces.html">Interfaces</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Genomic regions (RegionBased interface)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="edges_interface.html">Edges (contacts, pixels, ...) (RegionPairsContainer interface)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="matrix_interface.html">Matrices (RegionMatrixContainer interface)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../generate.html">Generate Hi-C matrices (API)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analyse.html">Analyse Hi-C matrices (API)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot.html">Plotting (API)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules.html">Reference</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">bloom</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../api.html">bloom Python module</a> &raquo;</li>
+          <li><a href="../interfaces.html">Common interfaces</a> &raquo;</li>
+      <li>RegionBased</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/api/interfaces/regions_interface.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="regionbased">
+<span id="genomic-regions"></span><h1>RegionBased<a class="headerlink" href="#regionbased" title="Permalink to this heading"></a></h1>
+<p>bloom builds extensively on the <code class="code docutils literal notranslate"><span class="pre">genomic_regions</span></code> package, which provides a unified
+interface for most types of region-based genomic data. We highly recommend
+<a class="reference external" href="https://vaquerizaslab.github.io/genomic_regions/">reading the documentation</a>
+of that package before going into the details of bloom, as many of the concepts discussed
+therein are central to the handling of data in bloom.</p>
+<p>You can check whether a bloom object supports the <code class="xref py py-class docutils literal notranslate"><span class="pre">RegionBased</span></code>
+interface with</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">genomic_regions</span> <span class="k">as</span> <span class="nn">gr</span>
+<span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">gr</span><span class="o">.</span><span class="n">RegionBased</span><span class="p">)</span>  <span class="c1"># True for objects supporting the regions interface</span>
+</pre></div>
+</div>
+<p>The current list of bloom objects supporting the <code class="xref py py-class docutils literal notranslate"><span class="pre">RegionBased</span></code>
+interface is:
+<a class="reference internal" href="../modules/architecture/domains.html#bloom.architecture.domains.InsulationScore" title="bloom.architecture.domains.InsulationScore"><code class="xref py py-class docutils literal notranslate"><span class="pre">InsulationScore</span></code></a>,
+<a class="reference internal" href="../modules/architecture/domains.html#bloom.architecture.domains.DirectionalityIndex" title="bloom.architecture.domains.DirectionalityIndex"><code class="xref py py-class docutils literal notranslate"><span class="pre">DirectionalityIndex</span></code></a>,
+<a class="reference internal" href="../modules/architecture/domains.html#bloom.architecture.domains.Boundaries" title="bloom.architecture.domains.Boundaries"><code class="xref py py-class docutils literal notranslate"><span class="pre">Boundaries</span></code></a>,
+<a class="reference internal" href="../modules/architecture/domains.html#bloom.architecture.domains.InsulationScores" title="bloom.architecture.domains.InsulationScores"><code class="xref py py-class docutils literal notranslate"><span class="pre">InsulationScores</span></code></a>,
+<a class="reference internal" href="../modules/architecture/domains.html#bloom.architecture.domains.DirectionalityIndexes" title="bloom.architecture.domains.DirectionalityIndexes"><code class="xref py py-class docutils literal notranslate"><span class="pre">DirectionalityIndexes</span></code></a>,
+<a class="reference internal" href="../modules/architecture/comparisons.html#bloom.architecture.comparisons.FoldChangeScores" title="bloom.architecture.comparisons.FoldChangeScores"><code class="xref py py-class docutils literal notranslate"><span class="pre">FoldChangeScores</span></code></a>,
+<a class="reference internal" href="../modules/architecture/comparisons.html#bloom.architecture.comparisons.DifferenceScores" title="bloom.architecture.comparisons.DifferenceScores"><code class="xref py py-class docutils literal notranslate"><span class="pre">DifferenceScores</span></code></a>,
+<a class="reference internal" href="../modules/architecture/comparisons.html#bloom.architecture.comparisons.DifferenceRegions" title="bloom.architecture.comparisons.DifferenceRegions"><code class="xref py py-class docutils literal notranslate"><span class="pre">DifferenceRegions</span></code></a>,
+<a class="reference internal" href="../modules/architecture/comparisons.html#bloom.architecture.comparisons.FoldChangeRegions" title="bloom.architecture.comparisons.FoldChangeRegions"><code class="xref py py-class docutils literal notranslate"><span class="pre">FoldChangeRegions</span></code></a>,
+<a class="reference internal" href="../modules/compatibility/cooler.html#bloom.compatibility.cooler.CoolerHic" title="bloom.compatibility.cooler.CoolerHic"><code class="xref py py-class docutils literal notranslate"><span class="pre">CoolerHic</span></code></a>,
+<a class="reference internal" href="../modules/compatibility/juicer.html#bloom.compatibility.juicer.JuicerHic" title="bloom.compatibility.juicer.JuicerHic"><code class="xref py py-class docutils literal notranslate"><span class="pre">JuicerHic</span></code></a>,
+<a class="reference internal" href="../modules/hic.html#bloom.hic.Hic" title="bloom.hic.Hic"><code class="xref py py-class docutils literal notranslate"><span class="pre">Hic</span></code></a>,
+<a class="reference internal" href="../modules/architecture/compartments.html#bloom.architecture.compartments.ABCompartmentMatrix" title="bloom.architecture.compartments.ABCompartmentMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABCompartmentMatrix</span></code></a>,
+<a class="reference internal" href="../modules/architecture/comparisons.html#bloom.architecture.comparisons.DifferenceMatrix" title="bloom.architecture.comparisons.DifferenceMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">DifferenceMatrix</span></code></a>,
+<a class="reference internal" href="../modules/architecture/comparisons.html#bloom.architecture.comparisons.FoldChangeMatrix" title="bloom.architecture.comparisons.FoldChangeMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">FoldChangeMatrix</span></code></a>,
+<a class="reference internal" href="../modules/peaks.html#bloom.peaks.PeakInfo" title="bloom.peaks.PeakInfo"><code class="xref py py-class docutils literal notranslate"><span class="pre">PeakInfo</span></code></a>,
+and
+<a class="reference internal" href="../modules/peaks.html#bloom.peaks.RaoPeakInfo" title="bloom.peaks.RaoPeakInfo"><code class="xref py py-class docutils literal notranslate"><span class="pre">RaoPeakInfo</span></code></a>.</p>
+<p>Any object built on that foundation supports, for example, region iterators:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="n">hic</span><span class="o">.</span><span class="n">regions</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">region</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">region</span><span class="o">.</span><span class="n">chromosome</span><span class="p">,</span> <span class="n">region</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">region</span><span class="o">.</span><span class="n">end</span><span class="p">,</span> <span class="n">region</span><span class="o">.</span><span class="n">strand</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">region</span><span class="o">.</span><span class="n">is_forward</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">region</span><span class="o">.</span><span class="n">center</span><span class="p">)</span>
+    <span class="c1"># ...</span>
+</pre></div>
+</div>
+<p>Range queries:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="n">hic</span><span class="o">.</span><span class="n">regions</span><span class="p">(</span><span class="s1">&#39;chr1:3mb-12mb&#39;</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">region</span><span class="o">.</span><span class="n">chromosome</span><span class="p">)</span>  <span class="c1"># chr1</span>
+    <span class="c1"># ...</span>
+</pre></div>
+</div>
+<p>and many more convenient features. The object type returned by all of those queries
+is <code class="xref py py-class docutils literal notranslate"><span class="pre">GenomicRegion</span></code>, which has many convenient functions to
+deal with region properties and operations.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">region</span><span class="p">)</span>  <span class="c1"># returns the size of the region in base pairs</span>
+<span class="n">region</span><span class="o">.</span><span class="n">center</span>  <span class="c1"># returns the base (or fraction of base) at the center of the region</span>
+<span class="n">region</span><span class="o">.</span><span class="n">five_prime</span>  <span class="c1"># returns the starting base at the 5&#39; end of the region</span>
+<span class="n">region</span><span class="o">.</span><span class="n">three_prime</span>  <span class="c1"># returns the starting base at the 3&#39; end of the region</span>
+<span class="n">region</span><span class="o">.</span><span class="n">is_forward</span><span class="p">()</span>  <span class="c1"># True if strand is &#39;+&#39; or &#39;+1&#39;</span>
+<span class="n">region</span><span class="o">.</span><span class="n">is_reverse</span><span class="p">()</span>  <span class="c1"># True if strand is &#39;-&#39; or &#39;-1&#39;</span>
+<span class="n">region</span><span class="o">.</span><span class="n">attributes</span>  <span class="c1"># return all attribute names in this region object</span>
+<span class="n">region</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>  <span class="c1"># return a shallow copy of this region</span>
+<span class="n">region</span><span class="o">.</span><span class="n">to_string</span><span class="p">()</span>  <span class="c1"># return a region identifier string describing the region</span>
+
+<span class="n">region</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">as_region</span><span class="p">(</span><span class="s1">&#39;chr12:12.5Mb-18Mb&#39;</span><span class="p">)</span>
+<span class="n">region</span><span class="o">.</span><span class="n">overlaps</span><span class="p">(</span><span class="s1">&#39;chr12:11Mb-13Mb&#39;</span><span class="p">)</span>  <span class="c1"># True</span>
+<span class="n">region</span><span class="o">.</span><span class="n">overlaps</span><span class="p">(</span><span class="s1">&#39;chr12:11Mb-11.5Mb&#39;</span><span class="p">)</span>  <span class="c1"># False</span>
+<span class="n">region</span><span class="o">.</span><span class="n">overlaps</span><span class="p">(</span><span class="s1">&#39;chr1:11Mb-13Mb&#39;</span><span class="p">)</span>  <span class="c1"># False</span>
+</pre></div>
+</div>
+<p>Refer to the
+<a class="reference external" href="https://github.com/vaquerizaslab/genomic_regions">genomic_regions documentation</a> for
+all the details.</p>
+<p>Similarly to the <code class="code docutils literal notranslate"><span class="pre">regions</span></code> interface for handling collections of genomic regions,
+bloom implements interfaces for working with pairs of genomic regions (<code class="code docutils literal notranslate"><span class="pre">edges</span></code>)
+and matrix operations (<code class="code docutils literal notranslate"><span class="pre">matrix</span></code>). These work in exactly the same way for bloom,
+Cooler, and Juicer files. Hence, all of these are directly compatible with bloom architectural
+functions such as the insulation score or AB compartment analyses, …</p>
+<p>These interfaces will be introduced in the following sections, starting with <a class="reference internal" href="edges_interface.html#edges-interface"><span class="std std-ref">RegionPairsContainer</span></a>.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../interfaces.html" class="btn btn-neutral float-left" title="Common interfaces" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="edges_interface.html" class="btn btn-neutral float-right" title="RegionPairsContainer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Kai Kruse, Vaquerizas lab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

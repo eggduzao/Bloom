@@ -1,0 +1,37 @@
+# start snippet bloomplot regions
+# single region
+bloomplot chr18:6mb-10mb
+
+# multiple regions
+bloomplot chr18:12000000-14000000 chr18:6.5mb-10mb
+
+# BED file
+bloomplot /path/to/file.bed
+# end snippet bloomplot regions
+
+# start snippet bloomplot window
+bloomplot -w 1mb /path/to/chipseq.narrowPeak
+# end snippet bloomplot window
+
+# start snippet bloomplot file
+bloomplot -o /path/to/plot.png chr18:6mb-10mb
+# end snippet bloomplot file
+
+# start snippet bloomplot panel
+bloomplot chr18:6mb-10mb -p triangular
+# end snippet bloomplot panel
+
+# start snippet bloomplot triangular example
+bloomplot chr18:6mb-10mb -p triangular output/hic/binned/bloom_example_50kb.hic
+# end snippet bloomplot triangular example
+bloomplot -o ../docsrc/bloomplot-executable/images/bloomplot_triangular_example.png chr18:6mb-10mb -p triangular output/hic/binned/bloom_example_50kb.hic
+
+# start snippet bloomplot triangular custom ticks
+bloomplot chr18:6mb-10mb --tick-locations 8mb 10mb -p triangular output/hic/binned/bloom_example_50kb.hic
+# end snippet bloomplot triangular custom ticks
+bloomplot -o ../docsrc/bloomplot-executable/images/bloomplot_triangular_example_custom_ticks.png chr18:6mb-10mb --tick-locations 8mb 10mb -p triangular -vmax 0.04 output/hic/binned/bloom_example_50kb.hic
+
+
+# start snippet bloomplot panel help
+bloomplot chr18:6mb-10mb -p triangular -h
+# end snippet bloomplot panel help

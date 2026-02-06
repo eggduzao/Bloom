@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aggregate module &mdash; bloom 0.9.26b1-beta documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Comparisons module" href="comparisons.html" />
+    <link rel="prev" title="bloom Python architecture modules" href="../architecture.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> bloom
+          </a>
+              <div class="version">
+                0.9.26b1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting started with bloom</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../bloom.html">bloom: command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../bloomplot.html">bloomplot: plotting from the command line</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../api.html">Python API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../quickstart.html">Quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../compatibility.html">Working with Juicer and Cooler files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../interfaces.html">Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../generate.html">Generate Hi-C matrices (API)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../analyse.html">Analyse Hi-C matrices (API)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../plot.html">Plotting (API)</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../modules.html">Reference</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../init.html">init</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../map.html">map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../regions.html">regions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../pairs.html">pairs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../matrix.html">matrix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../hic.html">hic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../peaks.html">peaks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../compatibility.html">compatibility</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../architecture.html">architecture</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">aggregate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="comparisons.html">comparisons</a></li>
+<li class="toctree-l4"><a class="reference internal" href="compartments.html">compartments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domains.html">domains</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../plotting.html">plotting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tools.html">tools</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">bloom</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../api.html">bloom Python module</a> &raquo;</li>
+          <li><a href="../../modules.html">bloom Python modules</a> &raquo;</li>
+          <li><a href="../architecture.html">bloom Python architecture modules</a> &raquo;</li>
+      <li>Aggregate module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/api/modules/architecture/aggregate.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-bloom.architecture.aggregate">
+<span id="aggregate-module"></span><h1>Aggregate module<a class="headerlink" href="#module-bloom.architecture.aggregate" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="bloom.architecture.aggregate.AggregateMatrix">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bloom.architecture.aggregate.</span></span><span class="sig-name descname"><span class="pre">AggregateMatrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmpdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.architecture.aggregate.AggregateMatrix" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">FileGroup</span></code></p>
+<p>Construct and store aggregate matrices from matrix-based objects.</p>
+<p>Methods in this class can be used to generate various kinds of aggregate
+matrices, constructed from averaging the signal from different regions
+of a Hi-C (or similar) matrix. Particularly useful is the creation of
+aggregate matrices from observed/expected data.</p>
+<p>Class methods control how exactly an aggregate matrix is constructed:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#bloom.architecture.aggregate.AggregateMatrix.from_center" title="bloom.architecture.aggregate.AggregateMatrix.from_center"><code class="xref py py-func docutils literal notranslate"><span class="pre">AggregateMatrix.from_center()</span></code></a> will aggregate Hi-C matrix regions along the diagonal
+in a fixed window around the region center. This is useful, for example,
+to observe the signal around TAD boundaries or other local features,
+such as the start of genes, enhancer locations, …</p></li>
+<li><p><a class="reference internal" href="#bloom.architecture.aggregate.AggregateMatrix.from_regions" title="bloom.architecture.aggregate.AggregateMatrix.from_regions"><code class="xref py py-func docutils literal notranslate"><span class="pre">AggregateMatrix.from_regions()</span></code></a> will extract sub-matrices using
+regions of variable size - such as TADs - and interpolate them to the
+same number of pixels before aggregating them.</p></li>
+<li><p><a class="reference internal" href="#bloom.architecture.aggregate.AggregateMatrix.from_center_pairs" title="bloom.architecture.aggregate.AggregateMatrix.from_center_pairs"><code class="xref py py-func docutils literal notranslate"><span class="pre">AggregateMatrix.from_center_pairs()</span></code></a> will extract arbitrary Hi-C
+submatrices from a list of region pairs (representing row and column
+of the matrix). Each submatrix is centered on each region,
+and a fixed number of pixels around the center is extracted. This is
+used, for example, to plot aggregate matrices around loops, using the
+loop anchors as input.</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.architecture.aggregate.AggregateMatrix.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">copy_tmp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_tmp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.architecture.aggregate.AggregateMatrix.close" title="Permalink to this definition"></a></dt>
+<dd><p>Close this HDF5 file and run exit operations.</p>
+<p>If file was opened with tmpdir in read-only mode:
+close file and delete temporary copy.</p>
+<p>If file was opened with tmpdir in write or append mode:
+Replace original file with copy and delete copy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>copy_tmp</strong> – If False, does not overwrite original with modified file.</p></li>
+<li><p><strong>remove_tmp</strong> – If False, does not delete temporary copy of file.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.architecture.aggregate.AggregateMatrix.components">
+<span class="sig-name descname"><span class="pre">components</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.architecture.aggregate.AggregateMatrix.components" title="Permalink to this definition"></a></dt>
+<dd><p>Retrieve or store each individual submatrix composing the aggregate matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>components</strong> – List of (masked) numpy arrays</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of (masked) numpy arrays</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.architecture.aggregate.AggregateMatrix.from_center">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_center</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rescale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scaling_exponent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-0.25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmpdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">region_viewpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'center'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.architecture.aggregate.AggregateMatrix.from_center" title="Permalink to this definition"></a></dt>
+<dd><p>Construct an aggregate matrix from square regions along
+the diagonal with a fixed window size.</p>
+<p>By default, the submatrix that is extracted from <code class="code docutils literal notranslate"><span class="pre">matrix</span></code> is
+centred on the region centre and has a window size specified by
+<code class="code docutils literal notranslate"><span class="pre">window</span></code>. You can change where the window will be centered using
+<code class="code docutils literal notranslate"><span class="pre">region_viewpoint</span></code>, which can be any of “center”, “start”, “end”,
+“five_prime”, or “three_prime”. The latter two may be particularly useful
+for genomic features such as genes.</p>
+<p>Example for TAD boundaries:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">bloom</span>
+<span class="n">hic</span> <span class="o">=</span> <span class="n">bloom</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;/path/to/matrix.hic&quot;</span><span class="p">)</span>
+<span class="n">tad_boundaries</span> <span class="o">=</span> <span class="n">bloom</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;/path/to/tad_boundaries.bed&quot;</span><span class="p">)</span>
+
+<span class="c1"># run aggregate analysis</span>
+<span class="n">am</span> <span class="o">=</span> <span class="n">bloom</span><span class="o">.</span><span class="n">AggregateMatrix</span><span class="o">.</span><span class="n">from_center</span><span class="p">(</span><span class="n">hic</span><span class="p">,</span> <span class="n">tad_boundaries</span><span class="o">.</span><span class="n">regions</span><span class="p">,</span>
+                                      <span class="n">window</span><span class="o">=</span><span class="mi">500000</span><span class="p">)</span>
+<span class="c1"># extract matrix when done</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">am</span><span class="o">.</span><span class="n">matrix</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>matrix</strong> – An object of type <code class="xref py py-class docutils literal notranslate"><span class="pre">RegionMatrixContainer</span></code>, such as a
+Hic matrix</p></li>
+<li><p><strong>regions</strong> – A list of <code class="xref py py-class docutils literal notranslate"><span class="pre">GenomicRegion</span></code> objects</p></li>
+<li><p><strong>window</strong> – A window size in base pairs</p></li>
+<li><p><strong>rescale</strong> – If True, will use <code class="code docutils literal notranslate"><span class="pre">scaling_exponent</span></code> to artificially rescale
+the aggregate matrix values using a power law</p></li>
+<li><p><strong>scaling_exponent</strong> – The power law exponent used if <code class="code docutils literal notranslate"><span class="pre">rescale</span></code> is True</p></li>
+<li><p><strong>keep_components</strong> – If True (default) will store each submatrix used
+to generate the aggregate matrix in the
+<a class="reference internal" href="#bloom.architecture.aggregate.AggregateMatrix" title="bloom.architecture.aggregate.AggregateMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">AggregateMatrix</span></code></a> object, which can be retrieved
+using <a class="reference internal" href="#bloom.architecture.aggregate.AggregateMatrix.components" title="bloom.architecture.aggregate.AggregateMatrix.components"><code class="xref py py-func docutils literal notranslate"><span class="pre">AggregateMatrix.components()</span></code></a></p></li>
+<li><p><strong>file_name</strong> – If provided, stores the aggregate matrix object at this location.</p></li>
+<li><p><strong>tmpdir</strong> – If True will work in temporary directory until the object is closed</p></li>
+<li><p><strong>region_viewpoint</strong> – point on which window is centred. any of “center”, “start”, “end”,
+“five_prime”, or “three_prime”</p></li>
+<li><p><strong>kwargs</strong> – Keyword arguments passed to <code class="xref py py-func docutils literal notranslate"><span class="pre">extract_submatrices()</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>aggregate matrix</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.architecture.aggregate.AggregateMatrix.from_center_pairs">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_center_pairs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pair_regions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmpdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">region_viewpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'center'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.architecture.aggregate.AggregateMatrix.from_center_pairs" title="Permalink to this definition"></a></dt>
+<dd><p>Construct an aggregate matrix from pairs of regions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hic</strong> – A compatible Hi-C matrix</p></li>
+<li><p><strong>pair_regions</strong> – A list of region pairs</p></li>
+<li><p><strong>window</strong> – A window size in base pairs</p></li>
+<li><p><strong>pixels</strong> – The dimension (in pixels) of the output matrix</p></li>
+<li><p><strong>keep_components</strong> – Keep all submatrices that make up the aggregate matrix</p></li>
+<li><p><strong>file_name</strong> – Optional path to an output file</p></li>
+<li><p><strong>tmpdir</strong> – Optional. If <code class="docutils literal notranslate"><span class="pre">True</span></code>, will work in temporary
+directory until file is closed</p></li>
+<li><p><strong>region_viewpoint</strong> – Location in each region that is used as
+anchor for the extracted matrix. ‘center’ by default,
+also valid are ‘start’, ‘end’, ‘five_prime’, and
+‘three_prime’</p></li>
+<li><p><strong>kwargs</strong> – Keyword arguments passed on to
+<code class="xref py py-func docutils literal notranslate"><span class="pre">extract_submatrices()</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><a class="reference internal" href="#bloom.architecture.aggregate.AggregateMatrix" title="bloom.architecture.aggregate.AggregateMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">AggregateMatrix</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.architecture.aggregate.AggregateMatrix.from_regions">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_regions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tad_regions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">90</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rescale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scaling_exponent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-0.25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interpolation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'reflect'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">absolute_extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anti_aliasing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmpdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.architecture.aggregate.AggregateMatrix.from_regions" title="Permalink to this definition"></a></dt>
+<dd><p>Construct aggregate matrix from variable regions along the diagonal.</p>
+<p>For each region in <code class="code docutils literal notranslate"><span class="pre">tad_regions</span></code>, a submatrix is extracted and
+interpolated so that it is exactly <code class="code docutils literal notranslate"><span class="pre">pixels</span></code> x <code class="code docutils literal notranslate"><span class="pre">pixels</span></code> big.
+You can expand each region by a relative amount using <code class="code docutils literal notranslate"><span class="pre">relative_extension</span></code>.</p>
+<p>Example for aggregate TADs:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">bloom</span>
+<span class="n">hic</span> <span class="o">=</span> <span class="n">bloom</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;/path/to/matrix.hic&quot;</span><span class="p">)</span>
+<span class="n">tads</span> <span class="o">=</span> <span class="n">bloom</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;/path/to/tads.bed&quot;</span><span class="p">)</span>
+
+<span class="c1"># run aggregate analysis</span>
+<span class="n">am</span> <span class="o">=</span> <span class="n">bloom</span><span class="o">.</span><span class="n">AggregateMatrix</span><span class="o">.</span><span class="n">from_regions</span><span class="p">(</span><span class="n">hic</span><span class="p">,</span> <span class="n">tads</span><span class="o">.</span><span class="n">regions</span><span class="p">,</span>
+                                       <span class="n">relative_extension</span><span class="o">=</span><span class="mf">3.</span><span class="p">)</span>
+<span class="c1"># extract matrix when done</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">am</span><span class="o">.</span><span class="n">matrix</span><span class="p">()</span>  <span class="c1"># 90x90 matrix with aggregate TAD in the centre</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hic</strong> – An object of type <code class="xref py py-class docutils literal notranslate"><span class="pre">RegionMatrixContainer</span></code>, such as a
+Hic matrix</p></li>
+<li><p><strong>tad_regions</strong> – A list of <code class="xref py py-class docutils literal notranslate"><span class="pre">GenomicRegion</span></code> objects</p></li>
+<li><p><strong>pixels</strong> – Number of pixels along each dimension of the aggregate matrix</p></li>
+<li><p><strong>rescale</strong> – If True, will use <code class="code docutils literal notranslate"><span class="pre">scaling_exponent</span></code> to artificially rescale
+the aggregate matrix values using a power law</p></li>
+<li><p><strong>scaling_exponent</strong> – The power law exponent used if <code class="code docutils literal notranslate"><span class="pre">rescale</span></code> is True</p></li>
+<li><p><strong>interpolation</strong> – Type of interpolation used on each submatrix in range 0-5.
+0: Nearest-neighbor (default), 1: Bi-linear, 2: Bi-quadratic,
+3: Bi-cubic, 4: Bi-quartic, 5: Bi-quintic</p></li>
+<li><p><strong>boundary_mode</strong> – Points outside the boundaries of the input are filled
+according to the given mode. Options are constant, edge,
+symmetrix, reflect, and warp. Affects submatrix interpolation.</p></li>
+<li><p><strong>keep_mask</strong> – If True (default) maksed Hi-C regions will also be interpolated.</p></li>
+<li><p><strong>absolute_extension</strong> – Absolute number of base pairs by which to expand each
+region</p></li>
+<li><p><strong>absolute_extension</strong> – Amount by which to expand each region as a fraction
+of each region. Values smaller than 1 lead to region
+shrinking</p></li>
+<li><p><strong>keep_components</strong> – If True (default) will store each submatrix used
+to generate the aggregate matrix in the
+<a class="reference internal" href="#bloom.architecture.aggregate.AggregateMatrix" title="bloom.architecture.aggregate.AggregateMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">AggregateMatrix</span></code></a> object, which can be retrieved
+using <a class="reference internal" href="#bloom.architecture.aggregate.AggregateMatrix.components" title="bloom.architecture.aggregate.AggregateMatrix.components"><code class="xref py py-func docutils literal notranslate"><span class="pre">AggregateMatrix.components()</span></code></a></p></li>
+<li><p><strong>file_name</strong> – If provided, stores the aggregate matrix object at this location.</p></li>
+<li><p><strong>tmpdir</strong> – If True will work in temporary directory until the object is closed</p></li>
+<li><p><strong>kwargs</strong> – Keyword argumnts passed to <code class="xref py py-func docutils literal notranslate"><span class="pre">extract_submatrices()</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>aggregate matrix</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.architecture.aggregate.AggregateMatrix.matrix">
+<span class="sig-name descname"><span class="pre">matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.architecture.aggregate.AggregateMatrix.matrix" title="Permalink to this definition"></a></dt>
+<dd><p>Retrieve or set the aggregate matrix in this object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>m</strong> – Numpy matrix</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>aggregate matrix</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.architecture.aggregate.AggregateMatrix.region_pairs">
+<span class="sig-name descname"><span class="pre">region_pairs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pairs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.architecture.aggregate.AggregateMatrix.region_pairs" title="Permalink to this definition"></a></dt>
+<dd><p>Retrieve or set the regions used to generate the aggregate matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pairs</strong> – Iterable of region tuples of the form
+[(region1, region2), (region3, region4), …].
+If None, simply return the region pairs in this object.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of region pairs [(region1, region2), (region3, region4), …].</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../architecture.html" class="btn btn-neutral float-left" title="bloom Python architecture modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="comparisons.html" class="btn btn-neutral float-right" title="Comparisons module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Kai Kruse, Vaquerizas lab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

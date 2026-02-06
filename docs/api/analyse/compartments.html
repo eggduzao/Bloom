@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AB compartments &mdash; bloom 0.9.26b1-beta documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="PCA" href="pca.html" />
+    <link rel="prev" title="Expected and O/E calculations" href="oe.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> bloom
+          </a>
+              <div class="version">
+                0.9.26b1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started with bloom</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../bloom.html">bloom: command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../bloomplot.html">bloomplot: plotting from the command line</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">Python API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../compatibility.html">Working with Juicer and Cooler files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../interfaces.html">Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../generate.html">Generate Hi-C matrices (API)</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../analyse.html">Analyse Hi-C matrices (API)</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="oe.html">Expected values and O/E matrices</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">AB compartments</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#eigenvectors">Eigenvectors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#enrichment-profiles-saddle-plot">Enrichment profiles (Saddle plot)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pca.html">PCA analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains.html">TADs and TAD boundaries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="comparisons.html">Matrix and score comparisons</a></li>
+<li class="toctree-l3"><a class="reference internal" href="aggregate.html">Aggregate analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="loops.html">Loop calling</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../plot.html">Plotting (API)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules.html">Reference</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">bloom</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../api.html">bloom Python module</a> &raquo;</li>
+          <li><a href="../analyse.html">Analyse Hi-C matrices using the API</a> &raquo;</li>
+      <li>AB compartments</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/api/analyse/compartments.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="ab-compartments">
+<span id="api-compartments"></span><h1>AB compartments<a class="headerlink" href="#ab-compartments" title="Permalink to this heading"></a></h1>
+<p>The following steps assume that you ran the <code class="docutils literal notranslate"><span class="pre">bloom</span> <span class="pre">auto</span></code> command in <a class="reference internal" href="../../getting_started.html#example-bloom-auto"><span class="std std-ref">Example analysis</span></a>.
+Additionally, we set up the Python session like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">bloom</span>
+<span class="kn">import</span> <span class="nn">bloom.plotting</span> <span class="k">as</span> <span class="nn">bloomplot</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">hic_1mb</span> <span class="o">=</span> <span class="n">bloom</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;output/hic/binned/bloom_example_1mb.hic&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If you want to try the tutorial with an equivalent Cooler file, load the Hi-C file like
+this instead:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">hic_1mb</span> <span class="o">=</span> <span class="n">bloom</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;architecture/other-hic/bloom_example.mcool@1mb&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>or like this if you want to work with a Juicer file built from the same data:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">hic_1mb</span> <span class="o">=</span> <span class="n">bloom</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;architecture/other-hic/bloom_example.juicer.hic@1mb&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that there may be minor differences in the results due to the “zooming” and balancing
+applied by the different tools.</p>
+<p>AB correlation matrices can very easily be obtained from Hi-C files using the
+<a class="reference internal" href="../modules/architecture/compartments.html#bloom.architecture.compartments.ABCompartmentMatrix.from_hic" title="bloom.architecture.compartments.ABCompartmentMatrix.from_hic"><code class="xref py py-func docutils literal notranslate"><span class="pre">from_hic()</span></code></a> function:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ab</span> <span class="o">=</span> <span class="n">bloom</span><span class="o">.</span><span class="n">ABCompartmentMatrix</span><span class="o">.</span><span class="n">from_hic</span><span class="p">(</span><span class="n">hic_1mb</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">ab</span></code> object acts like any bloom matrix (see <a class="reference internal" href="../interfaces/matrix_interface.html#matrix-interface"><span class="std std-ref">RegionMatrixContainer</span></a>), which means you
+can query and subset the data any way you like. For example, to get the correlation matrix
+of chromosome 18:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ab_chr18</span> <span class="o">=</span> <span class="n">ab</span><span class="o">.</span><span class="n">matrix</span><span class="p">((</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="s1">&#39;chr18&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>And to visualise the matrix:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">mp</span> <span class="o">=</span> <span class="n">bloomplot</span><span class="o">.</span><span class="n">SquareMatrixPlot</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+                           <span class="n">norm</span><span class="o">=</span><span class="s1">&#39;lin&#39;</span><span class="p">,</span> <span class="n">colormap</span><span class="o">=</span><span class="s1">&#39;RdBu_r&#39;</span><span class="p">,</span>
+                           <span class="n">vmin</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                           <span class="n">draw_minor_ticks</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">mp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;chr18&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../../_images/ab_1mb_correlation.png" src="../../_images/ab_1mb_correlation.png" />
+<section id="eigenvectors">
+<h2>Eigenvectors<a class="headerlink" href="#eigenvectors" title="Permalink to this heading"></a></h2>
+<p>The AB correlation matrix eigenvector (EV) is used to determine if a region is in the active (A) or
+the inactive (B) compartment. It’s calculation is very straightforward:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ev</span> <span class="o">=</span> <span class="n">ab</span><span class="o">.</span><span class="n">eigenvector</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="../modules/architecture/compartments.html#bloom.architecture.compartments.ABCompartmentMatrix.eigenvector" title="bloom.architecture.compartments.ABCompartmentMatrix.eigenvector"><code class="xref py py-func docutils literal notranslate"><span class="pre">eigenvector()</span></code></a> returns a numpy
+array with one entry per region in the AB correlation matrix (you can retrieve a matching
+list of regions with <a class="reference internal" href="../modules/architecture/compartments.html#bloom.architecture.compartments.ABCompartmentMatrix.regions" title="bloom.architecture.compartments.ABCompartmentMatrix.regions"><code class="xref py py-func docutils literal notranslate"><span class="pre">regions()</span></code></a>).
+You can also retrieve only the EV entries for a specific region using the <code class="docutils literal notranslate"><span class="pre">sub_region</span></code>
+argument, but note that the calculation is always performed on the entire genome first
+to avoid biases from subsetting.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Positive EV entries do not automatically mean a region is in the A compartment. In fact,
+if positive or negative entries are representing the A compartment is dependent on
+the implementation of PCA on the platform you are using. Therefore we strongly recommend
+using additional biological information to determine the correspondence between EV entry
+sign and compartment.</p>
+<p>One option implemented in bloom is to use GC content as a proxy for activity, as GC-rich
+regions have been shown to be associated with the active compartment. bloom implements the
+use of a genomic FASTA file, to calculate GC content and then choose the EV sign so that
+positive entries correspond to A, and negative entries to the B compartment.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">gc_ev</span> <span class="o">=</span> <span class="n">ab</span><span class="o">.</span><span class="n">eigenvector</span><span class="p">(</span><span class="n">genome</span><span class="o">=</span><span class="s1">&#39;hg19_chr18_19.fa&#39;</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>To plot the EV, you can use <a class="reference internal" href="../modules/plotting.html#bloom.plotting.LinePlot" title="bloom.plotting.LinePlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">LinePlot</span></code></a>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="n">lp</span> <span class="o">=</span> <span class="n">bloomplot</span><span class="o">.</span><span class="n">LinePlot</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;darkturquoise&#39;</span><span class="p">])</span>
+<span class="n">lp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;chr18&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../../_images/ab_1mb_ev.png" src="../../_images/ab_1mb_ev.png" />
+</section>
+<section id="enrichment-profiles-saddle-plot">
+<h2>Enrichment profiles (Saddle plot)<a class="headerlink" href="#enrichment-profiles-saddle-plot" title="Permalink to this heading"></a></h2>
+<p>An enrichment profile, which is used to create a <code class="xref py py-func docutils literal notranslate"><span class="pre">saddle_plot()</span></code> is used
+to show how “interactive” genomic regions belonging to the A or B compartment are. To
+calculate the enrichment profile, first all genomic regions are divided into bins, according
+to their EV value (the “compartment strength”). Then, we use the O/E matrix the average O/E
+value between all region bins, and take the log2 of the result. Everything is summarised in
+a matrix, where rows and columns correspond to the genomic region bins, and matrix entries
+reflect the bins’ interactivity. Positive values reflect more than expected contacts, while
+negative values reflect less than expected contacts.</p>
+<p>In bloom, you can use the <a class="reference internal" href="../modules/architecture/compartments.html#bloom.architecture.compartments.ABCompartmentMatrix.enrichment_profile" title="bloom.architecture.compartments.ABCompartmentMatrix.enrichment_profile"><code class="xref py py-func docutils literal notranslate"><span class="pre">enrichment_profile()</span></code></a>
+function for this purpose:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">profile</span><span class="p">,</span> <span class="n">cutoffs</span> <span class="o">=</span> <span class="n">ab</span><span class="o">.</span><span class="n">enrichment_profile</span><span class="p">(</span><span class="n">hic_1mb</span><span class="p">,</span> <span class="n">genome</span><span class="o">=</span><span class="s1">&#39;hg19_chr18_19.fa&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="../modules/architecture/compartments.html#bloom.architecture.compartments.ABCompartmentMatrix.enrichment_profile" title="bloom.architecture.compartments.ABCompartmentMatrix.enrichment_profile"><code class="xref py py-func docutils literal notranslate"><span class="pre">enrichment_profile()</span></code></a> also returns
+the EV cutoffs calculated from the <code class="docutils literal notranslate"><span class="pre">percentiles</span></code> argument. To get a higher resolution
+of the enrichment matrix, use more finely-grained percentiles.</p>
+<p>You can use the <code class="xref py py-func docutils literal notranslate"><span class="pre">saddle_plot()</span></code> function to plot the results:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">bloomplot</span><span class="o">.</span><span class="n">saddle_plot</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">cutoffs</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../_images/ab_1mb_saddle.png" src="../../_images/ab_1mb_saddle.png" />
+<p>Since the layout of the matrix and the cutoffs barplot is somewhat complex, the function
+generates its own figure and axes, which for the return values. You can, however,
+specify your own axes using the <code class="docutils literal notranslate"><span class="pre">axes</span></code> parameter. You need to supply three axes:
+one for the matrix, one for the barplot, and one for the colorbar. This allows you to
+integrate the saddle plot into more complex figures. If you supply <code class="docutils literal notranslate"><span class="pre">None</span></code> as any
+of the axes, the corresponding plot will not be generated.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="oe.html" class="btn btn-neutral float-left" title="Expected and O/E calculations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pca.html" class="btn btn-neutral float-right" title="PCA" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Kai Kruse, Vaquerizas lab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

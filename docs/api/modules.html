@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bloom Python modules &mdash; bloom 0.9.26b1-beta documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Map module" href="modules/init.html" />
+    <link rel="prev" title="Region and score plots" href="plot/region.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> bloom
+          </a>
+              <div class="version">
+                0.9.26b1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting started with bloom</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bloom.html">bloom: command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bloomplot.html">bloomplot: plotting from the command line</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="api.html">Python API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="compatibility.html">Working with Juicer and Cooler files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interfaces.html">Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generate.html">Generate Hi-C matrices (API)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analyse.html">Analyse Hi-C matrices (API)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html">Plotting (API)</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/init.html">init</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/map.html">map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/regions.html">regions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/pairs.html">pairs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/matrix.html">matrix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/hic.html">hic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/peaks.html">peaks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/compatibility.html">compatibility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/architecture.html">architecture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/plotting.html">plotting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/tools.html">tools</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">bloom</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="api.html">bloom Python module</a> &raquo;</li>
+      <li>bloom Python modules</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/modules.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="bloom-python-modules">
+<span id="bloom-modules"></span><h1>bloom Python modules<a class="headerlink" href="#bloom-python-modules" title="Permalink to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules/init.html">init</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/init.html#bloom">bloom</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules/map.html">map</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/map.html#bloom.map.Bowtie2Mapper"><code class="docutils literal notranslate"><span class="pre">Bowtie2Mapper</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/map.html#bloom.map.BwaMapper"><code class="docutils literal notranslate"><span class="pre">BwaMapper</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/map.html#bloom.map.SimpleBowtie2Mapper"><code class="docutils literal notranslate"><span class="pre">SimpleBowtie2Mapper</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/map.html#bloom.map.SimpleBwaMapper"><code class="docutils literal notranslate"><span class="pre">SimpleBwaMapper</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/map.html#bloom.map.iterative_mapping"><code class="docutils literal notranslate"><span class="pre">iterative_mapping()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules/regions.html">regions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/regions.html#bloom.regions.Chromosome"><code class="docutils literal notranslate"><span class="pre">Chromosome</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/regions.html#bloom.regions.Genome"><code class="docutils literal notranslate"><span class="pre">Genome</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/regions.html#bloom.regions.LazyGenomicRegion"><code class="docutils literal notranslate"><span class="pre">LazyGenomicRegion</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/regions.html#bloom.regions.RegionsTable"><code class="docutils literal notranslate"><span class="pre">RegionsTable</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/regions.html#bloom.regions.genome_regions"><code class="docutils literal notranslate"><span class="pre">genome_regions()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules/pairs.html">pairs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/pairs.html#bloom.pairs.BwaMemQualityFilter"><code class="docutils literal notranslate"><span class="pre">BwaMemQualityFilter</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/pairs.html#bloom.pairs.BwaMemUniquenessFilter"><code class="docutils literal notranslate"><span class="pre">BwaMemUniquenessFilter</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/pairs.html#bloom.pairs.ContaminantFilter"><code class="docutils literal notranslate"><span class="pre">ContaminantFilter</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/pairs.html#bloom.pairs.FourDNucleomePairGenerator"><code class="docutils literal notranslate"><span class="pre">FourDNucleomePairGenerator</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/pairs.html#bloom.pairs.FragmentRead"><code class="docutils literal notranslate"><span class="pre">FragmentRead</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/pairs.html#bloom.pairs.FragmentReadPair"><code class="docutils literal notranslate"><span class="pre">FragmentReadPair</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/pairs.html#bloom.pairs.FragmentReadPairFilter"><code class="docutils literal notranslate"><span class="pre">FragmentReadPairFilter</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/pairs.html#bloom.pairs.HicProPairGenerator"><code class="docutils literal notranslate"><span class="pre">HicProPairGenerator</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/pairs.html#bloom.pairs.InwardPairsFilter"><code class="docutils literal notranslate"><span class="pre">InwardPairsFilter</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/pairs.html#bloom.pairs.LazyFragment"><code class="docutils literal notranslate"><span class="pre">LazyFragment</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/pairs.html#bloom.pairs.LazyFragmentRead"><code class="docutils literal notranslate"><span class="pre">LazyFragmentRead</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/pairs.html#bloom.pairs.MinimalRead"><code class="docutils literal notranslate"><span class="pre">MinimalRead</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/pairs.html#bloom.pairs.Monitor"><code class="docutils literal notranslate"><span class="pre">Monitor</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/pairs.html#bloom.pairs.OutwardPairsFilter"><code class="docutils literal notranslate"><span class="pre">OutwardPairsFilter</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/pairs.html#bloom.pairs.PCRDuplicateFilter"><code class="docutils literal notranslate"><span class="pre">PCRDuplicateFilter</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/pairs.html#bloom.pairs.PairedSamBamReadPairGenerator"><code class="docutils literal notranslate"><span class="pre">PairedSamBamReadPairGenerator</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/pairs.html#bloom.pairs.QualityFilter"><code class="docutils literal notranslate"><span class="pre">QualityFilter</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/pairs.html#bloom.pairs.ReDistanceFilter"><code class="docutils literal notranslate"><span class="pre">ReDistanceFilter</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/pairs.html#bloom.pairs.ReadFilter"><code class="docutils literal notranslate"><span class="pre">ReadFilter</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/pairs.html#bloom.pairs.ReadPairGenerator"><code class="docutils literal notranslate"><span class="pre">ReadPairGenerator</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/pairs.html#bloom.pairs.ReadPairs"><code class="docutils literal notranslate"><span class="pre">ReadPairs</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/pairs.html#bloom.pairs.SamBamReadPairGenerator"><code class="docutils literal notranslate"><span class="pre">SamBamReadPairGenerator</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/pairs.html#bloom.pairs.SelfLigationFilter"><code class="docutils literal notranslate"><span class="pre">SelfLigationFilter</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/pairs.html#bloom.pairs.TxtReadPairGenerator"><code class="docutils literal notranslate"><span class="pre">TxtReadPairGenerator</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/pairs.html#bloom.pairs.UniquenessFilter"><code class="docutils literal notranslate"><span class="pre">UniquenessFilter</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/pairs.html#bloom.pairs.UnmappedFilter"><code class="docutils literal notranslate"><span class="pre">UnmappedFilter</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/pairs.html#bloom.pairs.generate_pairs"><code class="docutils literal notranslate"><span class="pre">generate_pairs()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/pairs.html#bloom.pairs.generate_pairs_split"><code class="docutils literal notranslate"><span class="pre">generate_pairs_split()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules/matrix.html">matrix</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/matrix.html#bloom.matrix.Edge"><code class="docutils literal notranslate"><span class="pre">Edge</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/matrix.html#bloom.matrix.LazyEdge"><code class="docutils literal notranslate"><span class="pre">LazyEdge</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/matrix.html#bloom.matrix.MutableLazyEdge"><code class="docutils literal notranslate"><span class="pre">MutableLazyEdge</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/matrix.html#bloom.matrix.RegionMatrix"><code class="docutils literal notranslate"><span class="pre">RegionMatrix</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/matrix.html#bloom.matrix.RegionMatrixContainer"><code class="docutils literal notranslate"><span class="pre">RegionMatrixContainer</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/matrix.html#bloom.matrix.RegionMatrixTable"><code class="docutils literal notranslate"><span class="pre">RegionMatrixTable</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/matrix.html#bloom.matrix.RegionPairsContainer"><code class="docutils literal notranslate"><span class="pre">RegionPairsContainer</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/matrix.html#bloom.matrix.RegionPairsTable"><code class="docutils literal notranslate"><span class="pre">RegionPairsTable</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/matrix.html#bloom.matrix.as_edge"><code class="docutils literal notranslate"><span class="pre">as_edge()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules/hic.html">hic</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/hic.html#bloom.hic.DiagonalFilter"><code class="docutils literal notranslate"><span class="pre">DiagonalFilter</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/hic.html#bloom.hic.Hic"><code class="docutils literal notranslate"><span class="pre">Hic</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/hic.html#bloom.hic.HicEdgeFilter"><code class="docutils literal notranslate"><span class="pre">HicEdgeFilter</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/hic.html#bloom.hic.LegacyHic"><code class="docutils literal notranslate"><span class="pre">LegacyHic</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/hic.html#bloom.hic.LowCoverageFilter"><code class="docutils literal notranslate"><span class="pre">LowCoverageFilter</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/hic.html#bloom.hic.ice_balancing"><code class="docutils literal notranslate"><span class="pre">ice_balancing()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/hic.html#bloom.hic.sqrt_vanilla_coverage_norm"><code class="docutils literal notranslate"><span class="pre">sqrt_vanilla_coverage_norm()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/hic.html#bloom.hic.vanilla_coverage_norm"><code class="docutils literal notranslate"><span class="pre">vanilla_coverage_norm()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules/peaks.html">peaks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/peaks.html#bloom.peaks.DistancePeakFilter"><code class="docutils literal notranslate"><span class="pre">DistancePeakFilter</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/peaks.html#bloom.peaks.EnrichmentPeakFilter"><code class="docutils literal notranslate"><span class="pre">EnrichmentPeakFilter</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/peaks.html#bloom.peaks.FdrPeakFilter"><code class="docutils literal notranslate"><span class="pre">FdrPeakFilter</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/peaks.html#bloom.peaks.FdrSumFilter"><code class="docutils literal notranslate"><span class="pre">FdrSumFilter</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/peaks.html#bloom.peaks.LazyPeak"><code class="docutils literal notranslate"><span class="pre">LazyPeak</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/peaks.html#bloom.peaks.MappabilityPeakFilter"><code class="docutils literal notranslate"><span class="pre">MappabilityPeakFilter</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/peaks.html#bloom.peaks.ObservedPeakFilter"><code class="docutils literal notranslate"><span class="pre">ObservedPeakFilter</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/peaks.html#bloom.peaks.Peak"><code class="docutils literal notranslate"><span class="pre">Peak</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/peaks.html#bloom.peaks.PeakFilter"><code class="docutils literal notranslate"><span class="pre">PeakFilter</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/peaks.html#bloom.peaks.PeakInfo"><code class="docutils literal notranslate"><span class="pre">PeakInfo</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/peaks.html#bloom.peaks.RaoMergedPeakFilter"><code class="docutils literal notranslate"><span class="pre">RaoMergedPeakFilter</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/peaks.html#bloom.peaks.RaoPeakCaller"><code class="docutils literal notranslate"><span class="pre">RaoPeakCaller</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/peaks.html#bloom.peaks.RaoPeakFilter"><code class="docutils literal notranslate"><span class="pre">RaoPeakFilter</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/peaks.html#bloom.peaks.RaoPeakInfo"><code class="docutils literal notranslate"><span class="pre">RaoPeakInfo</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/peaks.html#bloom.peaks.overlap_peaks"><code class="docutils literal notranslate"><span class="pre">overlap_peaks()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules/compatibility.html">compatibility</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/compatibility/juicer.html">Juicer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/compatibility/cooler.html">Cooler</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules/architecture.html">architecture</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/architecture/aggregate.html">aggregate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/architecture/comparisons.html">comparisons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/architecture/compartments.html">compartments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/architecture/domains.html">domains</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules/plotting.html">plotting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/plotting.html#index-of-plot-classes">Index of plot classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/plotting.html#module-bloom.plotting">Description and examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules/tools.html">tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/tools/load.html">load</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="plot/region.html" class="btn btn-neutral float-left" title="Region and score plots" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="modules/init.html" class="btn btn-neutral float-right" title="Map module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Kai Kruse, Vaquerizas lab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

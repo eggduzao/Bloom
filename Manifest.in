@@ -1,0 +1,15 @@
+# include license file
+include LICENSE
+
+# include changelog
+include CHANGELOG
+
+# exclude examples
+prune examples
+
+# exclude tests
+prune bloom/test
+
+# exclude legacy code
+prune bloom/legacy
+

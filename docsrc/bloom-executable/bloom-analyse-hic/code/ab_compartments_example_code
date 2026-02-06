@@ -1,0 +1,85 @@
+
+# start snippet compartments basic
+bloom compartments output/hic/binned/bloom_example_1mb.hic architecture/compartments/bloom_example_1mb.ab
+# end snippet compartments basic
+
+# start snippet compartments plot
+bloomplot -o architecture/compartments/bloom_example_1mb.ab.png chr18 \
+     -p square architecture/compartments/bloom_example_1mb.ab \
+     -vmin -0.75 -vmax 0.75 -c RdBu_r
+# end snippet compartments plot
+
+bloomplot -o ../docsrc/bloom-executable/bloom-analyse-hic/images/bloom_example_1mb.ab.png chr18 \
+     -p square architecture/compartments/bloom_example_1mb.ab \
+     -vmin -0.75 -vmax 0.75 -c RdBu_r
+
+
+# start snippet compartments ev
+bloom compartments -v architecture/compartments/bloom_example_1mb.ev.txt \
+                  output/hic/binned/bloom_example_1mb.hic \
+                  architecture/compartments/bloom_example_1mb.ab
+# end snippet compartments ev
+
+# start snippet
+bloom compartments -v architecture/compartments/bloom_example_1mb.ev.txt \
+                  architecture/compartments/bloom_example_1mb.ab
+
+# start snippet compartments pre
+bloom compartments -v architecture/compartments/bloom_example_1mb.ev.txt \
+                  architecture/compartments/bloom_example_1mb.ab
+# end snippet compartments pre
+
+# start snippet compartments evplot
+bloomplot -o architecture/compartments/bloom_example_1mb.ab_and_ev.png chr18 \
+     -p square architecture/compartments/bloom_example_1mb.ab \
+     -vmin -0.75 -vmax 0.75 -c RdBu_r \
+     -p line architecture/compartments/bloom_example_1mb.ev.txt
+# end snippet compartments evplot
+bloomplot -o ../docsrc/bloom-executable/bloom-analyse-hic/images/bloom_example_1mb.ab_and_ev.png chr18 \
+     -p square architecture/compartments/bloom_example_1mb.ab \
+     -vmin -0.75 -vmax 0.75 -c RdBu_r \
+     -p line architecture/compartments/bloom_example_1mb.ev.txt
+
+# start snippet compartments gc
+bloom compartments -g hg19_chr18_19.fa -v architecture/compartments/bloom_example_1mb.ev_gc.txt \
+                      architecture/compartments/bloom_example_1mb.ab
+# end snippet compartments gc
+
+# start snippet compartments domain
+bloom compartments -d architecture/compartments/bloom_example_1mb.domains.bed \
+                      architecture/compartments/bloom_example_1mb.ab
+# end snippet compartments domain
+
+# start snippet compartments gcdomain
+bloom compartments -g hg19_chr18_19.fa \
+                  -d architecture/compartments/bloom_example_1mb.domains_gc.bed \
+                  architecture/compartments/bloom_example_1mb.ab
+# end snippet compartments gcdomain
+
+
+# start snippet compartments enrichment
+bloom compartments -e architecture/compartments/bloom_example_1mb.ab_profile.png \
+                  output/hic/binned/bloom_example_1mb.hic \
+                  architecture/compartments/bloom_example_1mb.ab
+# end snippet compartments enrichment
+bloom compartments -e ../docsrc/bloom-executable/bloom-analyse-hic/images/bloom_example_1mb.ab_profile.png \
+                  output/hic/binned/bloom_example_1mb.hic \
+                  architecture/compartments/bloom_example_1mb.ab
+
+# start snippet compartments gcenrichment
+bloom compartments -g hg19_chr18_19.fa \
+                  -e architecture/compartments/bloom_example_1mb.ab_profile.png \
+                  output/hic/binned/bloom_example_1mb.hic \
+                  architecture/compartments/bloom_example_1mb.ab
+# end snippet compartments gcenrichment
+bloom compartments -g hg19_chr18_19.fa \
+                  -e ../docsrc/bloom-executable/bloom-analyse-hic/images/bloom_example_1mb.ab_profile.png \
+                  output/hic/binned/bloom_example_1mb.hic \
+                  architecture/compartments/bloom_example_1mb.ab
+
+bloom compartments -g hg19_chr18_19.fa \
+                  -e ../docsrc/bloom-executable/bloom-analyse-hic/images/bloom_example_1mb.ab_profile_sym.png \
+                  -p 10 20 30 40 50 60 70 80 90 100 \
+                  -s 0 \
+                  output/hic/binned/bloom_example_1mb.hic \
+                  architecture/compartments/bloom_example_1mb.ab

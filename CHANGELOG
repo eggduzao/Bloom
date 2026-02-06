@@ -1,0 +1,271 @@
+0.9.28
+
+- Fix Biopython import (#182), thanks @rlowe-altoslabs!
+
+0.9.27
+
+- Fixed an issue with Colorbar.draw_all in recent versions of Matplotlib
+
+0.9.26
+
+- Fixed issue #135 where insulation scores were NaN when using geometric mean
+- Fixed issue #136 that prevented the use of -r parameter in bloom insulation
+- Added option to ignore sambamba when using sam_sort or auto
+- Fixed an issue with Juicer fieles when normalisation info is missing
+- Fix issue #163 where boundaries might be reported multiple times in rare cases
+
+0.9.25
+
+- Fixed an issue with plotting insulation scores using bloomplot
+- Fixed an issue with aggregate plots and float coordinates
+
+0.9.24
+
+- Fixed an issue recognising quality cutoffs in bloom map when splitting FASTQ files
+- Support for bwa-mem2
+- Fixed an issue with bloomplot --window-size
+- Fixed an issue with bloom expected where the plot did not respect the -N parameter
+
+0.9.23
+
+- Fixed compatibility with Juicer v9 hic files
+- Fixed issue with loop strength calculation caused by out-of-bounds regions
+
+0.9.22
+
+- to-bloom function consolidates matrix conversion to bloom
+- speed up 4D nucleome pairs file loading
+- reduce downsample memory consumption (thanks @wangfuzhou110)
+
+0.9.21
+
+- Help text improvements
+- Minor plotting fixes
+
+0.9.20
+
+- Fixed an issue retrieving out of bounds matrices with Juicer files
+- Fixed an issue in Juicer files with missing normalisation vectors for small chromosomes
+- Improved EV orientation using GC content by ignoring (but warning about) missing chromosome sequences
+
+0.9.19
+
+- Copy read filtering stats when merging pairs files
+- Fix missing normalisation vector info that affects some Juicer files
+
+0.9.18
+
+- Fix LinePlot color handling
+- Fix hanging of bloom map in some cluster setups
+
+0.9.17
+
+- Fix boundaries command so it works on all region-based files (BED, GFF, BigWig, ...)
+
+0.9.16
+
+- Fix Matplotlib error due to existing default colormaps
+
+0.9.15
+
+- Option to plot aggregate loops below or above matrix diagonal
+- Warn, but no longer crash on too small chromosomes in compartments EV calculation
+
+0.9.14
+
+- Fixed a multiprocessing issue with bloom map
+
+0.9.13
+
+- Fix bug with retrieving off-diagonal, lower triangular matrices from Cooler
+
+0.9.12
+
+- Fix Cooler problem with Virtual4CPlot
+
+0.9.11
+
+- Fix Juicer expected value vector length
+- Fix pairs import issue due to missing multiprocessing manager
+
+0.9.10
+
+- Restore ability to bin regions on the fly in LinePlot and BarPlot
+
+0.9.9
+
+- Report number of pairs as total in stats and split stats plot in alignment and pairs plots
+- Fix Cooler bias vector compatibility (fixes expected values)
+- Fix Cooler attributes list
+
+0.9.8
+
+- Fix mode parameter for matrix comparisons
+- Fix explicit Cooler weight query
+- Speed up region and edge iterators in Cooler objects
+
+0.9.7
+
+- NumExpr logging fix
+
+0.9.6
+
+- Fix from-cooler output file
+
+0.9.5
+
+- Option in bloomplot and in config file to export txt in PDFs as actual text, not as paths
+- Properly raise exception in main thread if SAM file is unsorted
+- Fix error with uncorrected Cooler matrices
+
+0.9.4
+
+- Fix Cooler to bloom conversion
+
+0.9.3
+
+- Improved performance for possible values calculation, especially for matrices with sparse mappability
+- Fix API read pairs merge
+
+0.9.2
+
+- Add a parameter for bloom auto to choose RE distance cutoff manually
+
+0.9.1
+
+- Fix issue where ICE would fail for chromosomes without signal
+
+0.9.0
+
+- Support for VC and SQRT_VC normalisations using --norm-method
+- Support for choosing Juicer normalisation method on the command line using "@" notation
+- Convenience function for saddle plot in Python API
+- Convenience function for aggregate plot in Python API
+- Updated function for distance decay in Python API
+- Fix PCA plot axis labels
+- Fix bug when enabling imputation of contacts in insulation score calculation
+- Fix x axis limits in LinePlot
+- Increased slice size in loops annotation for efficiency
+- Fix Cooler out of bounds error
+- Added support for expected value caching in Cooler files
+- Fix expected values return value when requesting only a single chromosome
+- Fix random freezing of multiprocessing workers by using "spawn" context
+
+0.8.39
+
+- Fix for wrong barplot alignment
+
+0.8.38
+
+- Fix for using bloom pca without -r argument
+
+0.8.37
+
+- Fix for --split-fastq command in bloom map
+
+0.8.36
+
+- Fix crash due to multiprocessing / threading incompatibility
+- Fix ICE balancing bias vector
+- Fix axis label for Hi-C stats plot
+
+0.8.35
+
+- Fix genome partitioning for integer input
+
+0.8.34
+
+- Fix bloom fragments bug where it would not work with bin sizes
+- Fix Juicer issue with missing normalisation information
+- Add support for using multiple regions in PCA analysis
+
+0.8.33
+
+- Do not raise exception when when no contacts between specific chromosomes are found in Juicer file
+
+0.8.32
+
+- Fix for 4D nucleome pairs format import
+- Error when subsetting on files other than bloom
+
+0.8.31
+
+- Remove qname_ix references left over from legacy code
+- Force recalculation of aggregate matrices in tad strength
+
+0.8.30
+
+- Fix a bug in Cooler file expected value calculation
+
+0.8.29
+
+- ensure juicer tools can be found when running to-juicer
+- Fix a bug when manually specifying juicer resolutions
+
+0.8.28
+
+- Remove unsorted BAM files produced by auto
+- Fix an issue with difference matrices where regions were incorrectly masked
+
+0.8.27
+
+- Fix an issue where cooler files could not be generated for highly sparse matrices
+- Fix help text display for bloom map
+
+0.8.26
+
+- Faster edge iterators with speedups up to 10-15x
+- Option to deep-copy a Hi-C (or related) matrix in bloom hic
+- O/E transformation of individual edges is now possible, not just whole matrices
+- Startup and cleanup commands for bloom auto --run-with sge
+- TAD, loop, and compartment strength functions
+
+0.8.25
+
+- Improved subsetting that maintains uncorrected matrix version
+- Removed redundant calculation of expected values when retrieving bias vector
+- Fixed msgpack 1.0.0 compatibility
+- Improved chimeric read resolution
+
+0.8.24
+
+- Silence divide by zero warning in compartment analysis
+- Fix AB domain reporting
+
+0.8.23
+
+- Fix a bug where plotting a gene panel to PDF would crash
+- Optimised file handling for pairs generation
+
+0.8.22
+
+- Juicer compatibility improvements
+- Fix for a bug in bloom dump which ignored expected value normalisation in some cases
+- Improved compartments help text
+
+0.8.21
+
+- Temporary file support for Juicer and Cooler files
+
+0.8.20
+
+- Added support for multiple restriction enzymes in bloom fragments, pairs, map, and auto
+- Optimised binning for large number of very small contigs
+
+0.8.19
+
+- Fixed issue # 9 where BED files were not loaded correctly as genome files
+
+0.8.18
+
+- Fix for an index bug that could lead to table write errors in some settings
+- add from-txt capability to bloom
+- Support for loading gzipped FASTA files as genome. Closes issues #1 and #2
+- Updated bloom fragments. Note that the --chromosomes argument now requires a comma-separated list as input. Closes issue #4
+- Support for multi-threaded SAM/BAM sorting with sambamba. Closes issue #5
+- Check for equal bin sizes before combining matrix for split plot. Fixes issue #7
+
+0.8.17
+
+- Renamed --tads-flyamer to --tads-imakaev in bloom aggregate
+- option for strings passed to max_dist in triangular matrix plot API

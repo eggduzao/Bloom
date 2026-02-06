@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Map module &mdash; bloom 0.9.26b1-beta documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Regions module" href="regions.html" />
+    <link rel="prev" title="Map module" href="init.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> bloom
+          </a>
+              <div class="version">
+                0.9.26b1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started with bloom</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../bloom.html">bloom: command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../bloomplot.html">bloomplot: plotting from the command line</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">Python API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../compatibility.html">Working with Juicer and Cooler files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../interfaces.html">Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../generate.html">Generate Hi-C matrices (API)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analyse.html">Analyse Hi-C matrices (API)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot.html">Plotting (API)</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../modules.html">Reference</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="init.html">init</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">map</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#bloom.map.Bowtie2Mapper"><code class="docutils literal notranslate"><span class="pre">Bowtie2Mapper</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#bloom.map.BwaMapper"><code class="docutils literal notranslate"><span class="pre">BwaMapper</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#bloom.map.SimpleBowtie2Mapper"><code class="docutils literal notranslate"><span class="pre">SimpleBowtie2Mapper</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#bloom.map.SimpleBwaMapper"><code class="docutils literal notranslate"><span class="pre">SimpleBwaMapper</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#bloom.map.iterative_mapping"><code class="docutils literal notranslate"><span class="pre">iterative_mapping()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="regions.html">regions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pairs.html">pairs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="matrix.html">matrix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hic.html">hic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="peaks.html">peaks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="compatibility.html">compatibility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html">architecture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plotting.html">plotting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tools.html">tools</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">bloom</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../api.html">bloom Python module</a> &raquo;</li>
+          <li><a href="../modules.html">bloom Python modules</a> &raquo;</li>
+      <li>Map module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/api/modules/map.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-bloom.map">
+<span id="map-module"></span><h1>Map module<a class="headerlink" href="#module-bloom.map" title="Permalink to this heading"></a></h1>
+<p>This module performs iterative mapping of reads in FASTQ files to a reference genome.</p>
+<p>The main function is <a class="reference internal" href="#bloom.map.iterative_mapping" title="bloom.map.iterative_mapping"><code class="xref py py-func docutils literal notranslate"><span class="pre">iterative_mapping()</span></code></a>, which requires an input FASTQ file,
+an output SAM file, and a suitable mapper. Mapper options are <a class="reference internal" href="#bloom.map.Bowtie2Mapper" title="bloom.map.Bowtie2Mapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bowtie2Mapper</span></code></a>
+and <a class="reference internal" href="#bloom.map.BwaMapper" title="bloom.map.BwaMapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">BwaMapper</span></code></a> for the time being, but by subclassing <code class="xref py py-class docutils literal notranslate"><span class="pre">Mapper</span></code> a user
+can easily write their own mapper implementations that can fully leverage the iterative
+mapping capabilities of bloom. Take a look at the code of <a class="reference internal" href="#bloom.map.Bowtie2Mapper" title="bloom.map.Bowtie2Mapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bowtie2Mapper</span></code></a> for
+an example.</p>
+<p>Example usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">bloom</span>
+<span class="n">mapper</span> <span class="o">=</span> <span class="n">bloom</span><span class="o">.</span><span class="n">BwaMapper</span><span class="p">(</span><span class="s2">&quot;bwa-index/hg19_chr18_19.fa&quot;</span><span class="p">,</span> <span class="n">min_quality</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">bloom</span><span class="o">.</span><span class="n">iterative_mapping</span><span class="p">(</span><span class="s2">&quot;SRR4271982_chr18_19_1.fastq.gzip&quot;</span><span class="p">,</span> <span class="s2">&quot;SRR4271982_chr18_19_1.bam&quot;</span><span class="p">,</span>
+                       <span class="n">mapper</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">restriction_enzyme</span><span class="o">=</span><span class="s2">&quot;HindIII&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="bloom.map.Bowtie2Mapper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bloom.map.</span></span><span class="sig-name descname"><span class="pre">Bowtie2Mapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bowtie2_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_quality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">additional_arguments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_bowtie2_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bowtie2'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.map.Bowtie2Mapper" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Mapper</span></code></p>
+<p>Bowtie2 Mapper for aligning reads against a reference genome.</p>
+<p>Implements <code class="xref py py-class docutils literal notranslate"><span class="pre">Mapper</span></code> by calling the command line “bowtie2”
+program.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="bloom.map.Bowtie2Mapper.bowtie2_index">
+<span class="sig-name descname"><span class="pre">bowtie2_index</span></span><a class="headerlink" href="#bloom.map.Bowtie2Mapper.bowtie2_index" title="Permalink to this definition"></a></dt>
+<dd><p>Path to the bowtie2 index of the reference genome of choice.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="bloom.map.Bowtie2Mapper.min_quality">
+<span class="sig-name descname"><span class="pre">min_quality</span></span><a class="headerlink" href="#bloom.map.Bowtie2Mapper.min_quality" title="Permalink to this definition"></a></dt>
+<dd><p>Minimum MAPQ of an alignment so that it won’t be resubmitted in
+iterative mapping.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="bloom.map.Bowtie2Mapper.additional_arguments">
+<span class="sig-name descname"><span class="pre">additional_arguments</span></span><a class="headerlink" href="#bloom.map.Bowtie2Mapper.additional_arguments" title="Permalink to this definition"></a></dt>
+<dd><p>Arguments passed to the “bowtie2” command in addition to
+-x, -U, –no-unal, –threads, and -S.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="bloom.map.Bowtie2Mapper.threads">
+<span class="sig-name descname"><span class="pre">threads</span></span><a class="headerlink" href="#bloom.map.Bowtie2Mapper.threads" title="Permalink to this definition"></a></dt>
+<dd><p>Number of threads for this mapping process.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.map.Bowtie2Mapper.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bloom.map.Bowtie2Mapper.close" title="Permalink to this definition"></a></dt>
+<dd><p>Final operations after mapping completes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.map.Bowtie2Mapper.map">
+<span class="sig-name descname"><span class="pre">map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.map.Bowtie2Mapper.map" title="Permalink to this definition"></a></dt>
+<dd><p>Map reads in the given FASTQ file using <code class="xref py py-func docutils literal notranslate"><span class="pre">_map()</span></code> implementation.</p>
+<p>Will internally map the FASTQ reads to a SAM file in a
+temporary folder (use output_folder to choose a specific folder),
+split the SAM output into (i) valid alignments according to
+<code class="xref py py-func docutils literal notranslate"><span class="pre">_resubmit()</span></code> and (ii) invalid alignments that get
+caught by the resubmission filter. A FASTQ file will be constructed
+from the invalid alignments, extending the reads by a given step size,
+which can then be used to iteratively repeat the mapping process until
+a valid alignment is found or the full length of the read has been
+restored.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_file</strong> – Path to FASTQ file</p></li>
+<li><p><strong>output_folder</strong> – (optional) path to temporary folder for SAM output</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>tuple, path to valid SAM alignments, path to resubmission FASTQ</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.map.Bowtie2Mapper.resubmit">
+<span class="sig-name descname"><span class="pre">resubmit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sam_fields</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.map.Bowtie2Mapper.resubmit" title="Permalink to this definition"></a></dt>
+<dd><p>Determine if an alignment should be resubmitted.</p>
+<p>Filters unmappable reads by default. Additional criteria can be
+implemented using the <code class="xref py py-func docutils literal notranslate"><span class="pre">_resubmit()</span></code> method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sam_fields</strong> – The individual fields in a SAM line (split by tab)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if read should be extended and aligned to the reference again,
+False if the read passes the validity criteria.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bloom.map.BwaMapper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bloom.map.</span></span><span class="sig-name descname"><span class="pre">BwaMapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bwa_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_quality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">additional_arguments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mem'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_map</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_bwa_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bwa'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.map.BwaMapper" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Mapper</span></code></p>
+<p>BWA Mapper for aligning reads against a reference genome.</p>
+<p>Implements <code class="xref py py-class docutils literal notranslate"><span class="pre">Mapper</span></code> by calling the command line “bwa”
+program.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="bloom.map.BwaMapper.bwa_index">
+<span class="sig-name descname"><span class="pre">bwa_index</span></span><a class="headerlink" href="#bloom.map.BwaMapper.bwa_index" title="Permalink to this definition"></a></dt>
+<dd><p>Path to the BWA index of the reference genome of choice.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="bloom.map.BwaMapper.min_quality">
+<span class="sig-name descname"><span class="pre">min_quality</span></span><a class="headerlink" href="#bloom.map.BwaMapper.min_quality" title="Permalink to this definition"></a></dt>
+<dd><p>Minimum MAPQ of an alignment so that it won’t be resubmitted in
+iterative mapping.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="bloom.map.BwaMapper.additional_arguments">
+<span class="sig-name descname"><span class="pre">additional_arguments</span></span><a class="headerlink" href="#bloom.map.BwaMapper.additional_arguments" title="Permalink to this definition"></a></dt>
+<dd><p>Arguments passed to the “bowtie2” command in addition to
+-t and -o.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="bloom.map.BwaMapper.threads">
+<span class="sig-name descname"><span class="pre">threads</span></span><a class="headerlink" href="#bloom.map.BwaMapper.threads" title="Permalink to this definition"></a></dt>
+<dd><p>Number of threads for this mapping process.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="bloom.map.BwaMapper.algorithm">
+<span class="sig-name descname"><span class="pre">algorithm</span></span><a class="headerlink" href="#bloom.map.BwaMapper.algorithm" title="Permalink to this definition"></a></dt>
+<dd><p>BWA algorithm to use for mapping. Uses “mem” by default.
+See <a class="reference external" href="http://bio-bwa.sourceforge.net/bwa.shtml">http://bio-bwa.sourceforge.net/bwa.shtml</a> for other options.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.map.BwaMapper.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bloom.map.BwaMapper.close" title="Permalink to this definition"></a></dt>
+<dd><p>Final operations after mapping completes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.map.BwaMapper.map">
+<span class="sig-name descname"><span class="pre">map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.map.BwaMapper.map" title="Permalink to this definition"></a></dt>
+<dd><p>Map reads in the given FASTQ file using <code class="xref py py-func docutils literal notranslate"><span class="pre">_map()</span></code> implementation.</p>
+<p>Will internally map the FASTQ reads to a SAM file in a
+temporary folder (use output_folder to choose a specific folder),
+split the SAM output into (i) valid alignments according to
+<code class="xref py py-func docutils literal notranslate"><span class="pre">_resubmit()</span></code> and (ii) invalid alignments that get
+caught by the resubmission filter. A FASTQ file will be constructed
+from the invalid alignments, extending the reads by a given step size,
+which can then be used to iteratively repeat the mapping process until
+a valid alignment is found or the full length of the read has been
+restored.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_file</strong> – Path to FASTQ file</p></li>
+<li><p><strong>output_folder</strong> – (optional) path to temporary folder for SAM output</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>tuple, path to valid SAM alignments, path to resubmission FASTQ</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.map.BwaMapper.resubmit">
+<span class="sig-name descname"><span class="pre">resubmit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sam_fields</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.map.BwaMapper.resubmit" title="Permalink to this definition"></a></dt>
+<dd><p>Determine if an alignment should be resubmitted.</p>
+<p>Filters unmappable reads by default. Additional criteria can be
+implemented using the <code class="xref py py-func docutils literal notranslate"><span class="pre">_resubmit()</span></code> method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sam_fields</strong> – The individual fields in a SAM line (split by tab)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if read should be extended and aligned to the reference again,
+False if the read passes the validity criteria.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bloom.map.SimpleBowtie2Mapper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bloom.map.</span></span><span class="sig-name descname"><span class="pre">SimpleBowtie2Mapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bowtie2_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">additional_arguments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_bowtie2_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bowtie2'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.map.SimpleBowtie2Mapper" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#bloom.map.Bowtie2Mapper" title="bloom.map.Bowtie2Mapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bowtie2Mapper</span></code></a></p>
+<p>Bowtie2 Mapper for aligning reads against a reference genome without resubmission.</p>
+<p>Implements <code class="xref py py-class docutils literal notranslate"><span class="pre">Mapper</span></code> by calling the command line “bowtie2”
+program. Does not resubmit reads under any circumstance.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="bloom.map.SimpleBowtie2Mapper.bowtie2_index">
+<span class="sig-name descname"><span class="pre">bowtie2_index</span></span><a class="headerlink" href="#bloom.map.SimpleBowtie2Mapper.bowtie2_index" title="Permalink to this definition"></a></dt>
+<dd><p>Path to the bowtie2 index of the reference genome of choice.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="bloom.map.SimpleBowtie2Mapper.additional_arguments">
+<span class="sig-name descname"><span class="pre">additional_arguments</span></span><a class="headerlink" href="#bloom.map.SimpleBowtie2Mapper.additional_arguments" title="Permalink to this definition"></a></dt>
+<dd><p>Arguments passed to the “bowtie2” command in addition to
+-x, -U, –no-unal, –threads, and -S.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="bloom.map.SimpleBowtie2Mapper.threads">
+<span class="sig-name descname"><span class="pre">threads</span></span><a class="headerlink" href="#bloom.map.SimpleBowtie2Mapper.threads" title="Permalink to this definition"></a></dt>
+<dd><p>Number of threads for this mapping process.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.map.SimpleBowtie2Mapper.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bloom.map.SimpleBowtie2Mapper.close" title="Permalink to this definition"></a></dt>
+<dd><p>Final operations after mapping completes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.map.SimpleBowtie2Mapper.map">
+<span class="sig-name descname"><span class="pre">map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.map.SimpleBowtie2Mapper.map" title="Permalink to this definition"></a></dt>
+<dd><p>Map reads in the given FASTQ file using <code class="xref py py-func docutils literal notranslate"><span class="pre">_map()</span></code> implementation.</p>
+<p>Will internally map the FASTQ reads to a SAM file in a
+temporary folder (use output_folder to choose a specific folder),
+split the SAM output into (i) valid alignments according to
+<code class="xref py py-func docutils literal notranslate"><span class="pre">_resubmit()</span></code> and (ii) invalid alignments that get
+caught by the resubmission filter. A FASTQ file will be constructed
+from the invalid alignments, extending the reads by a given step size,
+which can then be used to iteratively repeat the mapping process until
+a valid alignment is found or the full length of the read has been
+restored.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_file</strong> – Path to FASTQ file</p></li>
+<li><p><strong>output_folder</strong> – (optional) path to temporary folder for SAM output</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>tuple, path to valid SAM alignments, path to resubmission FASTQ</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.map.SimpleBowtie2Mapper.resubmit">
+<span class="sig-name descname"><span class="pre">resubmit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sam_fields</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.map.SimpleBowtie2Mapper.resubmit" title="Permalink to this definition"></a></dt>
+<dd><p>Determine if an alignment should be resubmitted.</p>
+<p>Filters unmappable reads by default. Additional criteria can be
+implemented using the <code class="xref py py-func docutils literal notranslate"><span class="pre">_resubmit()</span></code> method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sam_fields</strong> – The individual fields in a SAM line (split by tab)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if read should be extended and aligned to the reference again,
+False if the read passes the validity criteria.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bloom.map.SimpleBwaMapper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bloom.map.</span></span><span class="sig-name descname"><span class="pre">SimpleBwaMapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bwa_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">additional_arguments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_map</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_bwa_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bwa'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.map.SimpleBwaMapper" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#bloom.map.BwaMapper" title="bloom.map.BwaMapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">BwaMapper</span></code></a></p>
+<p>BWA Mapper for aligning reads against a reference genome without resubmission.</p>
+<p>Implements <code class="xref py py-class docutils literal notranslate"><span class="pre">Mapper</span></code> by calling the command line “bwa”
+program. Does not resubmit reads under any circumstance, i.e.
+does not perform iterative mapping.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="bloom.map.SimpleBwaMapper.bwa_index">
+<span class="sig-name descname"><span class="pre">bwa_index</span></span><a class="headerlink" href="#bloom.map.SimpleBwaMapper.bwa_index" title="Permalink to this definition"></a></dt>
+<dd><p>Path to the BWA index of the reference genome of choice.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="bloom.map.SimpleBwaMapper.min_quality">
+<span class="sig-name descname"><span class="pre">min_quality</span></span><a class="headerlink" href="#bloom.map.SimpleBwaMapper.min_quality" title="Permalink to this definition"></a></dt>
+<dd><p>Minimum MAPQ of an alignment so that it won’t be resubmitted in
+iterative mapping.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="bloom.map.SimpleBwaMapper.additional_arguments">
+<span class="sig-name descname"><span class="pre">additional_arguments</span></span><a class="headerlink" href="#bloom.map.SimpleBwaMapper.additional_arguments" title="Permalink to this definition"></a></dt>
+<dd><p>Arguments passed to the “bowtie2” command in addition to
+-t and -o.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="bloom.map.SimpleBwaMapper.threads">
+<span class="sig-name descname"><span class="pre">threads</span></span><a class="headerlink" href="#bloom.map.SimpleBwaMapper.threads" title="Permalink to this definition"></a></dt>
+<dd><p>Number of threads for this mapping process.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="bloom.map.SimpleBwaMapper.algorithm">
+<span class="sig-name descname"><span class="pre">algorithm</span></span><a class="headerlink" href="#bloom.map.SimpleBwaMapper.algorithm" title="Permalink to this definition"></a></dt>
+<dd><p>BWA algorithm to use for mapping. Uses “mem” by default.
+See <a class="reference external" href="http://bio-bwa.sourceforge.net/bwa.shtml">http://bio-bwa.sourceforge.net/bwa.shtml</a> for other options.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.map.SimpleBwaMapper.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bloom.map.SimpleBwaMapper.close" title="Permalink to this definition"></a></dt>
+<dd><p>Final operations after mapping completes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.map.SimpleBwaMapper.map">
+<span class="sig-name descname"><span class="pre">map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.map.SimpleBwaMapper.map" title="Permalink to this definition"></a></dt>
+<dd><p>Map reads in the given FASTQ file using <code class="xref py py-func docutils literal notranslate"><span class="pre">_map()</span></code> implementation.</p>
+<p>Will internally map the FASTQ reads to a SAM file in a
+temporary folder (use output_folder to choose a specific folder),
+split the SAM output into (i) valid alignments according to
+<code class="xref py py-func docutils literal notranslate"><span class="pre">_resubmit()</span></code> and (ii) invalid alignments that get
+caught by the resubmission filter. A FASTQ file will be constructed
+from the invalid alignments, extending the reads by a given step size,
+which can then be used to iteratively repeat the mapping process until
+a valid alignment is found or the full length of the read has been
+restored.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_file</strong> – Path to FASTQ file</p></li>
+<li><p><strong>output_folder</strong> – (optional) path to temporary folder for SAM output</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>tuple, path to valid SAM alignments, path to resubmission FASTQ</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bloom.map.SimpleBwaMapper.resubmit">
+<span class="sig-name descname"><span class="pre">resubmit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sam_fields</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.map.SimpleBwaMapper.resubmit" title="Permalink to this definition"></a></dt>
+<dd><p>Determine if an alignment should be resubmitted.</p>
+<p>Filters unmappable reads by default. Additional criteria can be
+implemented using the <code class="xref py py-func docutils literal notranslate"><span class="pre">_resubmit()</span></code> method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sam_fields</strong> – The individual fields in a SAM line (split by tab)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if read should be extended and aligned to the reference again,
+False if the read passes the validity criteria.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bloom.map.iterative_mapping">
+<span class="sig-prename descclassname"><span class="pre">bloom.map.</span></span><span class="sig-name descname"><span class="pre">iterative_mapping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fastq_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sam_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mapper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmp_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trim_front</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restriction_enzyme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bloom.map.iterative_mapping" title="Permalink to this definition"></a></dt>
+<dd><p>Iteratively map sequencing reads using the provided mapper.</p>
+<p>Will attempt to align a read using mapper. If unsuccessful, will
+truncate the read by step_size and attempt to align again. This is
+repeated until a successful alignment is found or the read gets
+truncated below min_size.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fastq_file</strong> – An input FASTQ file path with reds to align</p></li>
+<li><p><strong>sam_file</strong> – An output file path for sequencing results.
+If it ends with ‘.bam’ will compress output
+in bam format.</p></li>
+<li><p><strong>mapper</strong> – An instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">Mapper</span></code>, e.g. <a class="reference internal" href="#bloom.map.Bowtie2Mapper" title="bloom.map.Bowtie2Mapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bowtie2Mapper</span></code></a>.
+Override <code class="xref py py-class docutils literal notranslate"><span class="pre">Mapper</span></code> for creating your own custom mappers.</p></li>
+<li><p><strong>tmp_folder</strong> – A temporary folder for outputting subsets of FASTQ files</p></li>
+<li><p><strong>threads</strong> – Number of mapper threads to use in parallel.</p></li>
+<li><p><strong>min_size</strong> – Minimum length of read for which an alignment is attempted.</p></li>
+<li><p><strong>step_size</strong> – Number of base pairs by which to truncate read.</p></li>
+<li><p><strong>batch_size</strong> – Maximum number of reads processed in one batch</p></li>
+<li><p><strong>trim_front</strong> – Trim bases from front of read instead of back</p></li>
+<li><p><strong>restriction_enzyme</strong> – If provided, will calculate the expected ligation
+junction between reads and split reads accordingly.
+Both ends will be attempted to map. Can be the name
+of a restriction enzyme or a restriction pattern
+(e.g. A^AGCT_T)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="init.html" class="btn btn-neutral float-left" title="Map module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="regions.html" class="btn btn-neutral float-right" title="Regions module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Kai Kruse, Vaquerizas lab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

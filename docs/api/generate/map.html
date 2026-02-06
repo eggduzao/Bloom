@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mapping FASTQ files &mdash; bloom 0.9.26b1-beta documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Generating and filtering read pairs" href="pairs.html" />
+    <link rel="prev" title="Generate Hi-C matrices (API)" href="../generate.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> bloom
+          </a>
+              <div class="version">
+                0.9.26b1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started with bloom</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../bloom.html">bloom: command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../bloomplot.html">bloomplot: plotting from the command line</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">Python API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../compatibility.html">Working with Juicer and Cooler files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../interfaces.html">Interfaces</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../generate.html">Generate Hi-C matrices (API)</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Mapping FASTQ files</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#mappers">Mappers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#iterative-mapping">Iterative mapping</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sam-bam-sorting">SAM/BAM sorting</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pairs.html">Generating and filtering ReadPairs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hic.html">Generating, binning, and filtering Hic objects</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../analyse.html">Analyse Hi-C matrices (API)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot.html">Plotting (API)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules.html">Reference</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">bloom</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../api.html">bloom Python module</a> &raquo;</li>
+          <li><a href="../generate.html">Generate Hi-C matrices (API)</a> &raquo;</li>
+      <li>Mapping FASTQ files</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/api/generate/map.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="mapping-fastq-files">
+<span id="api-map"></span><h1>Mapping FASTQ files<a class="headerlink" href="#mapping-fastq-files" title="Permalink to this heading"></a></h1>
+<p>To map FASTQ files using the API, we will use the <a class="reference internal" href="../modules/map.html#module-bloom.map" title="bloom.map"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bloom.map</span></code></a> module.</p>
+<section id="mappers">
+<h2>Mappers<a class="headerlink" href="#mappers" title="Permalink to this heading"></a></h2>
+<p>First, we need to decide which mapper to use, and under what circumstances an unaligned
+read should be truncated and re-mapped to the genome. The <a class="reference internal" href="../modules/map.html#bloom.map.SimpleBowtie2Mapper" title="bloom.map.SimpleBowtie2Mapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">SimpleBowtie2Mapper</span></code></a>,
+for example, only attempts to align a read once and does no iterative mapping. The
+<a class="reference internal" href="../modules/map.html#bloom.map.Bowtie2Mapper" title="bloom.map.Bowtie2Mapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bowtie2Mapper</span></code></a> resubmits unaligned reads and reads with a low score,
+There are equivalent mappers for BWA named
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SimpleBWAMapper</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">BWAMapper</span></code>, but here we
+choose the <a class="reference internal" href="../modules/map.html#bloom.map.Bowtie2Mapper" title="bloom.map.Bowtie2Mapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bowtie2Mapper</span></code></a>. It requires only the path of the corresponding
+<code class="docutils literal notranslate"><span class="pre">bowtie2</span></code> index:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mapper</span> <span class="o">=</span> <span class="nb">map</span><span class="o">.</span><span class="n">Bowtie2Mapper</span><span class="p">(</span><span class="s1">&#39;hg19_chr18_19/hg19_chr18_19&#39;</span><span class="p">,</span>
+                           <span class="n">threads</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">min_quality</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">threads</span></code> parameter controls how many threads are given to each <code class="docutils literal notranslate"><span class="pre">bowtie2-align</span></code>
+process. By using a <cite>.bam</cite> ending, the output is converted to a BAM file at the end of
+mapping automatically.</p>
+</section>
+<section id="iterative-mapping">
+<h2>Iterative mapping<a class="headerlink" href="#iterative-mapping" title="Permalink to this heading"></a></h2>
+<p>Now we can use <a class="reference internal" href="../modules/map.html#bloom.map.iterative_mapping" title="bloom.map.iterative_mapping"><code class="xref py py-func docutils literal notranslate"><span class="pre">bloom.map.iterative_mapping()</span></code></a> to start the actual mapping process:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sam_folder</span> <span class="o">=</span> <span class="n">mkdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_folder</span><span class="p">,</span> <span class="s1">&#39;sam&#39;</span><span class="p">))</span>
+<span class="n">sam_1_file</span> <span class="o">=</span> <span class="nb">map</span><span class="o">.</span><span class="n">iterative_mapping</span><span class="p">(</span><span class="s1">&#39;SRR4271982_chr18_19_1.fastq.gzip&#39;</span><span class="p">,</span>
+                                   <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sam_folder</span><span class="p">,</span> <span class="s1">&#39;SRR4271982_1.bam&#39;</span><span class="p">),</span>
+                                   <span class="n">mapper</span><span class="p">,</span>
+                                   <span class="n">threads</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">min_size</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">step_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                                   <span class="n">restriction_enzyme</span><span class="o">=</span><span class="s1">&#39;HindIII&#39;</span><span class="p">)</span>
+<span class="n">sam_2_file</span> <span class="o">=</span> <span class="nb">map</span><span class="o">.</span><span class="n">iterative_mapping</span><span class="p">(</span><span class="s1">&#39;SRR4271982_chr18_19_2.fastq.gzip&#39;</span><span class="p">,</span>
+                                   <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sam_folder</span><span class="p">,</span> <span class="s1">&#39;SRR4271982_2.bam&#39;</span><span class="p">),</span>
+                                   <span class="n">mapper</span><span class="p">,</span>
+                                   <span class="n">threads</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">min_size</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">step_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                                   <span class="n">restriction_enzyme</span><span class="o">=</span><span class="s1">&#39;HindIII&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that we are calling iterative mapping twice, independently for each FASTQ file, as
+appropriate for a Hi-C experiment. <code class="docutils literal notranslate"><span class="pre">min_size</span></code> determines the minimum size of a truncated
+read after which it will be discarded, while <code class="docutils literal notranslate"><span class="pre">step_size</span></code> determines the truncation amount.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When downloading FASTQ files from SRA using SRAtools, e.g. with <cite>fastq-dump</cite>, do not
+use the <code class="docutils literal notranslate"><span class="pre">-I</span> <span class="pre">/</span> <span class="pre">--readids</span></code> option, which appends <code class="docutils literal notranslate"><span class="pre">.1</span></code> or <code class="docutils literal notranslate"><span class="pre">.2</span></code> to the read name. This
+interferes with the sorting and read pairing step in bloom. <strong>Read names of the two mates
+must be identical</strong>.</p>
+</div>
+<p>By providing a <code class="docutils literal notranslate"><span class="pre">restriction_enzyme</span></code> name, we enable ligation junction splitting. Each read
+will be scanned for a predicted ligation junction of the provided restriction enzyme and if
+one is encountered, it will be split at the junction before alignment. This can greatly increase
+alignment rates, especially for longer reads.</p>
+</section>
+<section id="sam-bam-sorting">
+<h2>SAM/BAM sorting<a class="headerlink" href="#sam-bam-sorting" title="Permalink to this heading"></a></h2>
+<p>After the mapping is complete, we can sort the files by read name for further processing.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">bloom.tools.files</span> <span class="kn">import</span> <span class="n">sort_natural_sam</span>
+<span class="n">sorted_sam_1_file</span> <span class="o">=</span> <span class="n">sort_natural_sam</span><span class="p">(</span><span class="n">sam_1_file</span><span class="p">)</span>
+<span class="n">sorted_sam_2_file</span> <span class="o">=</span> <span class="n">sort_natural_sam</span><span class="p">(</span><span class="n">sam_2_file</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The above command replaces the original file with the sorted version. You can use the
+<code class="docutils literal notranslate"><span class="pre">output_file</span></code> parameter to output to a different file, if you prefer to keep the unsorted
+version.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../generate.html" class="btn btn-neutral float-left" title="Generate Hi-C matrices (API)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pairs.html" class="btn btn-neutral float-right" title="Generating and filtering read pairs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Kai Kruse, Vaquerizas lab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

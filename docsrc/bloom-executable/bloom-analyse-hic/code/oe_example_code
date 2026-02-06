@@ -1,0 +1,38 @@
+# start snippet expected basic
+bloom expected -p architecture/expected/bloom_example_500kb_expected.png \
+              -c chr19 \
+              output/hic/binned/bloom_example_500kb.hic \
+              architecture/expected/bloom_example_500kb_expected.txt
+# end snippet expected basic
+bloom expected -p ../docsrc/bloom-executable/bloom-analyse-hic/images/bloom_example_500kb_expected.png \
+              -c chr19 \
+              output/hic/binned/bloom_example_500kb.hic \
+              architecture/expected/bloom_example_500kb_expected.txt
+
+# start snippet expected multi
+bloom expected -l "HindIII 100k" "HindIII 5M" "MboI 100k" "MboI 1M" "MboI 50k" \
+              -c chr19 -p architecture/expected/expected_multi.png \
+              architecture/other-hic/lowc_hindiii_100k_1mb.hic \
+              architecture/other-hic/lowc_hindiii_5M_1mb.hic \
+              architecture/other-hic/lowc_mboi_100k_1mb.hic \
+              architecture/other-hic/lowc_mboi_1M_1mb.hic \
+              architecture/other-hic/lowc_mboi_50k_1mb.hic \
+              architecture/expected/expected_multi.txt
+# end snippet expected multi
+bloom expected -l "HindIII 100k" "HindIII 5M" "MboI 100k" "MboI 1M" "MboI 50k" \
+              -c chr19 -p ../docsrc/bloom-executable/bloom-analyse-hic/images/expected_multi.png \
+              architecture/other-hic/lowc_hindiii_100k_1mb.hic \
+              architecture/other-hic/lowc_hindiii_5M_1mb.hic \
+              architecture/other-hic/lowc_mboi_100k_1mb.hic \
+              architecture/other-hic/lowc_mboi_1M_1mb.hic \
+              architecture/other-hic/lowc_mboi_50k_1mb.hic \
+              architecture/expected/expected_multi.txt
+
+# start snippet expected bloomplot
+bloomplot -o architecture/expected/bloom_example_500kb_chr18_oe.png \
+     chr18:1-78mb -p triangular -e output/hic/binned/bloom_example_500kb.hic \
+     -vmin -2 -vmax 2
+# end snippet expected bloomplot
+bloomplot -o ../docsrc/bloom-executable/bloom-analyse-hic/images/bloom_example_500kb_chr18_oe.png \
+     chr18:1-78mb -p triangular -e output/hic/binned/bloom_example_500kb.hic \
+     -vmin -2 -vmax 2
